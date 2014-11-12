@@ -89,6 +89,12 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                     "name": "帮助",
                     "key": WEIXIN_EVENT_KEYS['help'],
                     "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "个人中心",
+                    "url": "http://wx2.igeek.asia/u/usercenter/",
+                    #"sub_button": []
                 }
             ]
         },

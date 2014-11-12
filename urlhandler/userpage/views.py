@@ -181,3 +181,7 @@ def helpclub_view(request):
 def helplecture_view(request):
     variables=RequestContext(request,{})
     return render_to_response('help_lecture.html', variables)
+
+def usercenter_view(request):
+    variables=RequestContext(request,{})
+    return render_to_response('usercenter_ticket.html', variables)
