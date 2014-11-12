@@ -62,7 +62,7 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
             "sub_button": [
                 {
                     "type": "click",
-                    "name": "有啥",
+                    "name": "抢啥",
                     "key": WEIXIN_EVENT_KEYS['ticket_book_what'],
                     "sub_button": []
                 },
