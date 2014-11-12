@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{% load staticfiles %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="{% static "css/usercenter.css"%}" rel="stylesheet" type="text/css" />
+    {% block css %}{% endblock %}
+    <title>个人中心——{% block title %}{% endblock %}</title>
+</head>
+<body>
+<div id="wrap">
+	<div class="menu">
+		<ul>
+			<li id="nav_ticket">
+				<a href="1">我的票</a>
+			</li>
+			<span class="span">|</span>
+			<li id="nav_account">
+				<a href="2">账户管理</a>
+			</li>
+			<span class="span">|</span>
+			<li id="nav_2ticket">
+				<a href="3">双人抢票</a>
+			</li>
+			<span class="span">|</span>
+			<li id="nav_token">
+				<a href="4">指令</a>
+			</li>
+		</ul>
+	</div>
+    <hr />
+    <div id="mainbody">
+    {% block content %}{% endblock %}
+    </div>
+</div>
+<footer id="footer">
+    <hr />
+    共青团清华大学委员会<br/>
+    &copy; 2013
+</footer>
+
+    <script src="{% static "js/weixin_lib.js" %}?_=4"></script>
+    {% block js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,24 @@
+{% extends "usercenter_base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+<div class="ticket">
+	<h2>活动名</h2>
+	<div>
+		<p>活动地点</p>
+		<p>活动时间</p>
+	</div>
+</div>
+<div class="ticket">
+	<h2>活动名</h2>
+	<div>
+		<p>活动地点</p>
+		<p>活动时间</p>
+	</div>
+</div>
+{% endblock %}
+
+{% block css %}
+<link href="{% static "css/centerticket.css"%}" rel="stylesheet" type="text/css" />
+{% endblock %}

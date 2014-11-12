@@ -1,0 +1,60 @@
+* {
+	margin: 0;
+	padding: 0;
+	font-family: "Î¢ÈíÑÅºÚ","ºÚÌå","ËÎÌå";
+}
+
+.menu {
+	background-color: #f9f9f9;
+	height: 7em;
+}
+
+.menu ul {
+	height: 7em;
+	list-style: none;
+	display: block;
+	text-align: center;
+}
+
+.menu li {
+	float: left;
+	width: 23%;
+	font-size: 2em;
+	padding-top: 1.2em;
+	padding-bottom: 1.1em;
+}
+
+.menu li:hover {
+	background-color: #e3e3e3;
+}
+
+.menu ul .span {
+	display: block;
+	float: left;
+	font-size: 2em;
+	padding-top: 1.2em;
+	padding-bottom: 1.1em;
+}
+
+.menu li a {
+	text-decoration: none;
+	color: black;
+	display: block;
+	width: 100%;
+}
+
+.menu li a:hover {
+	color: red;
+}
+
+#mainbody {
+    padding-bottom: 50px;/* the same height value with footer */
+}
+
+#footer {
+    position: relative;
+    margin-top: -60px; /* minus footer height */
+    height: 37px; /* a little smaller than 50 to avoid scroll*/
+    clear:both;
+    text-align: center;
+}

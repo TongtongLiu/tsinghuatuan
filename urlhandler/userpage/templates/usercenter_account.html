@@ -1,0 +1,18 @@
+{% extends "usercenter_base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+<div class="account">
+	<h2>账户状态：已绑定</h2>
+	<div class="ac_info">
+		<p>绑定学号：XXXXXXXXX</p>
+		<p>用户姓名：某某某</p>
+	</div>
+	<a href="#">解绑</a>
+</div>
+{% endblock %}
+
+{% block css %}
+<link href="{% static "css/centeraccount.css"%}" rel="stylesheet" type="text/css" />
+{% endblock %}

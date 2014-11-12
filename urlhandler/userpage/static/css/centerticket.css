@@ -1,0 +1,13 @@
+.ticket {
+	margin: 1em 1.5em;
+	padding: 0.5em;
+	border: 1px solid #a1a1a1;
+}
+
+#nav_ticket {
+	background-color: #e3e3e3;
+}
+
+#nav_ticket a {
+	color: red;
+}
