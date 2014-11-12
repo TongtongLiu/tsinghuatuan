@@ -58,18 +58,18 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
             ]
         },
         {
-            "name": "服务",
+			"name": "服务",
             "sub_button": [
                 {
                     "type": "click",
-                    "name": "个人中心", #"查票",
-                    "key": WEIXIN_EVENT_KEYS['ticket_get'],
+                    "name": "抢啥",
+                    "key": WEIXIN_EVENT_KEYS['ticket_book_what'],
                     "sub_button": []
                 },
                 {
                     "type": "click",
-                    "name": "有啥", #"抢啥",
-                    "key": WEIXIN_EVENT_KEYS['ticket_book_what'],
+                    "name": "查票",
+                    "key": WEIXIN_EVENT_KEYS['ticket_get'],
                     "sub_button": []
                 },
                 #{
@@ -78,12 +78,12 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                 #    "key": "TSINGHUA_PATH",
                 #    "sub_button": []
                 #},
-                #{
-                #    "type": "click",
-                #    "name": "绑定",
-                #    "key": WEIXIN_EVENT_KEYS['account_bind'],
-                #    "sub_button": []
-                #},
+                {
+                    "type": "click",
+                    "name": "绑定",
+                    "key": WEIXIN_EVENT_KEYS['account_bind'],
+                    "sub_button": []
+                },
                 {
                     "type": "click",
                     "name": "帮助",
