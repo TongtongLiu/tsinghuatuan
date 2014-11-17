@@ -22,5 +22,3 @@ def s_reverse_activity_menu(actid):
     return SITE_DOMAIN + reverse('userpage.views.activity_menu_view', kwargs={'actid': actid})
 
 
-def s_reverse_usercenter():
-    return SITE_DOMAIN + reverse('userpage.views.usercenter_view')
