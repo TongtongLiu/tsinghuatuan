@@ -2,9 +2,9 @@
 
 WEIXIN_TOKEN = 'F8ZFW1Cyzr5z6nNoJ5uZhA8iXEbe1hvX'
 
-WEIXIN_APPID = 'wx8388304f2788434b'
+WEIXIN_APPID = 'wxee3650a4c4fc6718'
 
-WEIXIN_SECRET = '91c7999204daa95e1e1e659848b85ffd'
+WEIXIN_SECRET = '692211561b14daae68a8cee4310db019'
 
 WEIXIN_EVENT_KEYS = {
     'info_activity': 'V1001_TODAT_ACTIVE',
@@ -57,8 +57,8 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                 }
             ]
         },
-        {
-			"name": "服务",
+		{
+            "name": "服务",
             "sub_button": [
                 {
                     "type": "click",
@@ -89,12 +89,6 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                     "name": "帮助",
                     "key": WEIXIN_EVENT_KEYS['help'],
                     "sub_button": []
-                },
-                {
-                    "type": "view",
-                    "name": "个人中心",
-                    "url": "http://wx2.igeek.asia/u/usercenter/",
-                    #"sub_button": []
                 }
             ]
         },
