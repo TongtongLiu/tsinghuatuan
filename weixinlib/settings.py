@@ -1,4 +1,5 @@
 #-*- coding:utf-8 -*-
+from urlhandler.userpage.safe_reverse import s_reverse_usercenter
 
 WEIXIN_TOKEN = 'F8ZFW1Cyzr5z6nNoJ5uZhA8iXEbe1hvX'
 
@@ -19,6 +20,8 @@ WEIXIN_EVENT_KEYS = {
     'ticket_book_header': 'TSINGHUA_BOOK_',
     'modern_figure': 'V1001_MODERN_FIGURE',
 }
+
+WEIXIN_USERCENTER_URL = s_reverse_usercenter()
 
 WEIXIN_CUSTOM_MENU_TEMPLATE = {
     "button": [
@@ -69,7 +72,7 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                 {
                     "type": "view",
                     "name": "个人中心",
-                    "url": "http://wx2.igeek.asia/u/usercenter/"
+                    "url": WEIXIN_USERCENTER_URL
                 },
                 #{
                 #    "type": "click",
