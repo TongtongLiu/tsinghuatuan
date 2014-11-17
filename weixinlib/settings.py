@@ -67,23 +67,28 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                     "sub_button": []
                 },
                 {
-                    "type": "click",
-                    "name": "查票",
-                    "key": WEIXIN_EVENT_KEYS['ticket_get'],
-                    "sub_button": []
+                    "type": "view",
+                    "name": "个人中心",
+                    "url": "http://wx2.igeek.asia/weixin/usercenter"
                 },
+                #{
+                #    "type": "click",
+                #    "name": "查票",
+                #    "key": WEIXIN_EVENT_KEYS['ticket_get'],
+                #    "sub_button": []
+                #},
                 #{
                 #    "type": "click",
                 #    "name": "指路",
                 #    "key": "TSINGHUA_PATH",
                 #    "sub_button": []
                 #},
-                {
-                    "type": "click",
-                    "name": "绑定",
-                    "key": WEIXIN_EVENT_KEYS['account_bind'],
-                    "sub_button": []
-                },
+                #{
+                #    "type": "click",
+                #    "name": "绑定",
+                #    "key": WEIXIN_EVENT_KEYS['account_bind'],
+                #    "sub_button": []
+                #},
                 {
                     "type": "click",
                     "name": "帮助",
