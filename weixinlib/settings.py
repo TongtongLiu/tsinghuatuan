@@ -69,7 +69,7 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                 {
                     "type": "view",
                     "name": "个人中心",
-                    "url": "http://wx2.igeek.asia/weixin/usercenter/"
+                    "url": "http://wx2.igeek.asia/weixin/u/usercenter/"
                 },
                 #{
                 #    "type": "click",
