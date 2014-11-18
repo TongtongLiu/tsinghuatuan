@@ -100,7 +100,6 @@ def validate_post_auth(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
             (not 'valid' in request.POST):
         raise Http404
-
     validate_result = request.POST['valid']
     if validate_result == 'Accepted':
         userid = request.POST['username']

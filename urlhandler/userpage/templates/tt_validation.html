@@ -36,7 +36,7 @@
 {% endblock %}
 
 {% block content %}
-    <div id="validationHolder">
+    <div id="validationHolder">luanqibazao
         <form class="form-horizontal" role="form" action="{% url "userpage.views.validate_post_auth" %}" method="post" id="validationForm" onsubmit="return false;">
             {% csrf_token %}
           <div class="form-group" id="usernameGroup">
