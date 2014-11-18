@@ -4,11 +4,16 @@ from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from urlhandler.models import User, Activity, Ticket
+from django.views.decorators.csrf import  csrf_exempt
 from urlhandler.settings import STATIC_URL
 import urllib, urllib2
 import datetime
+import json
+from django.db import transaction
 from django.utils import timezone
 
+
+from userpage.safe_reverse import *
 
 def home(request):
     return render_to_response('mobile_base.html')
@@ -24,7 +29,7 @@ def validate_view(request, openid):
     studentid = ''
     if request.GET:
         studentid = request.GET.get('studentid', '')
-    return render_to_response('tt_validation.html', {
+    return render_to_response('validation.html', {
         'openid': openid,
         'studentid': studentid,
         'isValidated': isValidated,
@@ -185,8 +190,10 @@ def ticket_view(request, uid):
     if act_endtime < now:#表示活动已经结束
         ticket_status = 3
     ticket_seat = ticket[0].seat
-    if(ticket_seat = '')
+    if ticket_seat == '':
         ticket_url = s_reverse_ticket_selecttion(uid)
+    else:
+        ticket_url = ''
     act_photo = "http://qr.ssast.org/fit/"+uid
     variables=RequestContext(request,{'act_id':act_id, 'act_name':act_name,'act_place':act_place, 'act_begintime':act_begintime,
                                       'act_endtime':act_endtime,'act_photo':act_photo, 'ticket_status':ticket_status,

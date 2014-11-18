@@ -13,5 +13,6 @@ urlpatterns = patterns('',
                        url(r'^helplecture/$','userpage.views.helplecture_view'),
                        url(r'^activity/(?P<actid>\d+)/menu/$', 'userpage.views.activity_menu_view'),
                        url(r'^usercenter/$', 'userpage.views.usercenter_view'),
-                       url(r'^seat/$', 'userpage.views.views_seats'),
+                       url(r'^seat/(?P<uid>\S+)/$', 'userpage.views.views_seats'),
                        )
+
