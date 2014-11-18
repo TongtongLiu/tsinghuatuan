@@ -15,10 +15,10 @@
     <script src="{% static "js/validation_student.js" %}?_=1"></script>
     <script>
     function ajaxForm_auth() {
-        var time_xmlhttp = newXMLHttpRequest();
-        xmlhttp.open("GET","{% url 'userpage.views.validate_get_time_auth' %}",true);
-        xmlhttp.send();
-        submit2auththu('{{ openid }}', xmlhttp.responseText);
+        var time_xmlhttp = new XMLHttpRequest();
+        time_xmlhttp.open("GET","{% url 'userpage.views.validate_get_time_auth' %}",true);
+        time_xmlhttp.send();
+        submit2auththu('{{ openid }}', time_xmlhttp.responseText);
     }
     window.addEventListener('load', function() {showValidation({{ isValidated }});}, false);
     </script>
