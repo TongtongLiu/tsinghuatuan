@@ -168,7 +168,6 @@ function readyStateChanged_auth() {
 
 function submit2auththu(openid) {
     if (checkUsername() & checkPassword()) {
-		console.info("button is clicked");
         disableAll(true);
         showLoading(true);
 

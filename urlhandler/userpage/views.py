@@ -29,7 +29,7 @@ def validate_view(request, openid):
     studentid = ''
     if request.GET:
         studentid = request.GET.get('studentid', '')
-    return render_to_response('validation.html', {
+    return render_to_response('tt_validation.html', {
         'openid': openid,
         'studentid': studentid,
         'isValidated': isValidated,
