@@ -75,7 +75,7 @@ def validate_get_time_auth(request):
     try:
         res = res_data.read()
     except:
-        return 'Error'
+        return HttpResponse('Error')
     return HttpResponse(res)
 
 
