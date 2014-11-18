@@ -185,8 +185,8 @@ function submit2auththu(openid, timestamp) {
         xmlhttp.onreadystatechange = readyStateChanged_auth;
         xmlhttp.send(params);
         document.getElementById('inputPassword').value = '';
-        return false;
     }
+    return false;
 }
 
 function checkNotEmpty(groupid, helpid, inputid, hintName) {

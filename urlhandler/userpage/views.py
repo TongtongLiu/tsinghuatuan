@@ -69,8 +69,8 @@ def validate_through_student(userid, userpass):
 
 
 def validate_get_time_auth(request):
-    url = "http://auth.igeek.asia/v1/time"
-    req = urllib2.Request(url)
+    request_url = "http://auth.igeek.asia/v1/time"
+    req = urllib2.Request(url = request_url)
     res_data = urllib2.urlopen(req)
     try:
         res = res_data.read()
@@ -88,7 +88,7 @@ def validate_through_auth(secret):
         res = res_data.read()
     except:
         return 'Error'
-    if res_data.has_key('data') in res:
+    if res['code'] == 0:
         return 'Accepted'
     else:
         return 'Rejected'
