@@ -39,14 +39,22 @@
         活动地点：<b>{{ act_place }}</b>
     </div>
     {% if ticket_status > 0 %}
-        {% if ticket_seat == 'B' %}
-            <div class="ticket-wrapper">
-                说明：<span class="status-size ticket-used">您的座位在B区 请从二楼北侧进入</span>
-            </div>
-        {% elif ticket_seat == 'C' %}
-            <div class="ticket-wrapper">
-                说明：<span class="status-size ticket-used">您的座位在C区 请从二楼南侧进入</span>
-            </div>
+        {% if ticket_seat == '' %}
+            <a href="{{ ticket_url }}"> 您还没有选座位哦～请点击进行选座^_^</a>
+        {% else %}
+            {% if ticket_seat == 'B' %}
+                <div class="ticket-wrapper">
+                    说明：<span class="status-size ticket-used">您的座位在B区 请从二楼北侧进入</span>
+                </div>
+            {% elif ticket_seat == 'C' %}
+                <div class="ticket-wrapper">
+                    说明：<span class="status-size ticket-used">您的座位在C区 请从二楼南侧进入</span>
+                </div>
+            {% else %}
+                <div class="ticket-wrapper">
+                    说明：<span class="status-size ticket-used">您的座位在{{ ticket_seat }}</span>
+                </div>
+            {% endif %}
         {% endif %}
     {% endif %}
     <div class="ticket-wrapper">

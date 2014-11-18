@@ -19,6 +19,7 @@ class Activity(models.Model):
     book_start = models.DateTimeField()
     book_end = models.DateTimeField()
     seat_status = models.IntegerField(default=0)
+    seat_table = models.CharField(max_length=1024)
     total_tickets = models.IntegerField()
     status = models.IntegerField()
     pic_url = models.CharField(max_length=255)

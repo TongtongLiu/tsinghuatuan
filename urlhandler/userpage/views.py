@@ -185,11 +185,14 @@ def ticket_view(request, uid):
     if act_endtime < now:#表示活动已经结束
         ticket_status = 3
     ticket_seat = ticket[0].seat
+    if(ticket_seat = '')
+        ticket_url = s_reverse_ticket_selecttion(uid)
     act_photo = "http://qr.ssast.org/fit/"+uid
     variables=RequestContext(request,{'act_id':act_id, 'act_name':act_name,'act_place':act_place, 'act_begintime':act_begintime,
                                       'act_endtime':act_endtime,'act_photo':act_photo, 'ticket_status':ticket_status,
                                       'ticket_seat':ticket_seat,
-                                      'act_key':act_key})
+                                      'act_key':act_key,
+                                      'ticket_url':ticket_url})
     return render_to_response('activityticket.html', variables)
 
 def help_view(request):
@@ -216,3 +219,50 @@ def helplecture_view(request):
 def usercenter_view(request):
     variables=RequestContext(request,{})
     return render_to_response('usercenter_ticket.html', variables)
+
+@csrf_exempt
+def views_seats(request, uid):
+    if not request.POST:
+        rtnJSON = {}
+        ticket = Ticket.objects.filter(unique_id=uid, status=1)
+        if not ticket.exists():
+            seats_list = []
+        else:
+            seats_list = json.loads(ticket[0].activity.seat_table)
+        title = u"Activity Title"
+        time = u"Activity Time: 2014-11-11 11:11"
+        return render_to_response('seats.html', locals())
+
+    else:
+        rtnJSON = {}
+        ticketID = request.POST.get('ticketID', '')
+        seat = request.POST.get('postSelect', '')
+        row = int(seat.split("-")[0]) - 1
+        column = int(seat.split("-")[1]) - 1
+
+        try:
+            ticket = Ticket.objects.get(unique_id=ticketID, status=1)
+        except:
+            rtnJSON['msg'] = 'invalidTicket'
+            return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+
+        activityName = ticket.activity.name
+
+        with transaction.atomic():
+            activity = Activity.objects.select_for_update().filter(name = activityName)
+            seatsTable = json.loads(activity[0].seat_table)
+            ticket = Ticket.objects.select_for_update().filter(status=1, seat=seat)
+            if ticket.exists():
+                rtnJSON['seat'] = seatsTable
+                rtnJSON['msg'] = 'invalidSeat'
+                return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+            else:
+                seatsTable[row][column] = 2
+                seats_list = json.dumps(seatsTable)
+                Ticket.objects.filter(unique_id=ticketID).update(seat=seat)
+                Activity.objects.filter(name=activityName).update(seat_table=seats_list)
+                rtnJSON['seat'] = seatsTable
+                rtnJSON['msg'] = 'success'
+                #title = activityName
+                #time = "Activity Time: 2014-11-11 11:11"
+                return HttpResponse(json.dumps(rtnJSON), content_type='application/json')

@@ -1,0 +1,58 @@
+{% extends "mobile_base.html" %}
+
+{% load staticfiles %}
+
+	{% block css %}
+	<link href="{% static "css/seats.css" %}" rel="stylesheet" type="text/css" />
+	{% endblock %}
+
+	{% block theme %}
+		{{ title }}
+	{% endblock %}
+
+	{% block content %}
+	<p class="activityTime"> {{ time }} </p>
+	<div id="alert">请选择您的座位</div>
+	<p id="showSelection">您选择的座位为第<span class="num" id="row"></span>行第<span class="num" id="column"></span>列</p>
+	<div class="seatsTable" align="center">
+		<table>
+			<tr>
+				<td class="valid"></td>
+				<td>可选</td>
+				<td class="selected"></td>
+				<td>已售</td>
+				<td class="selectThis"></td>
+				<td>已选</td>
+			</tr>
+		</table>
+		<table id="selectSeat">
+			{% for line in seats_list %}
+				<tr>
+					{% for seat in line %}
+						{% ifequal seat 0 %}
+							<td class="empty" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
+						{% endifequal %}
+						{% ifequal seat 1 %}
+							<td class="valid" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
+						{% endifequal %}
+						{% ifequal seat 2 %}
+							<td class="selected" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
+						{% endifequal %}
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+
+	<form role="form" method="post" id="submitForm">
+		<input id="input" type="text" name="postSelect" style="display:none"/>
+		<input id="ticketID" type="text" name="ticketID" style="display:none" value="{{ ticketID }}" />
+		<input id="submitButton" type="submit" value="确定" disabled="disabled">
+	</form>
+
+{% endblock %}
+
+{% block js %}
+	<script src="{% static "lib/jq/jquery-1.10.2.min.js" %}"></script>
+    <script src="{% static "js/seats.js" %}"></script>
+{% endblock %}

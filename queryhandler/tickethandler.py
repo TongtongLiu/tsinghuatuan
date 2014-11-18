@@ -175,7 +175,7 @@ def response_book_ticket(msg):
         tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activities[0], status__gt=0)
         if tickets.exists():
             return get_reply_text_xml(msg, get_text_existed_book_ticket(tickets[0]))
-        ticket = book_ticket(user, key, now)
+        ticket = book_ticket_select_seat(user, key, now)
         if ticket is None:
             return get_reply_text_xml(msg, get_text_fail_book_ticket(activities[0], now))
         else:
@@ -219,6 +219,46 @@ def book_ticket(user, key, now):
                 unique_id=random_string,
                 status=1,
                 seat=next_seat
+            )
+            return ticket
+        elif tickets[0].status == 0:
+            Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
+            ticket = tickets[0]
+            ticket.status = 1
+            ticket.seat = next_seat
+            ticket.save()
+            return ticket
+        else:
+            return None
+
+def book_ticket_select_seat(user, key, now):
+    with transaction.atomic():
+        activities = Activity.objects.select_for_update().filter(status=1, book_end__gte=now, book_start__lte=now, key=key)
+
+        if not activities.exists():
+            return None
+        else:
+            activity = activities[0]
+
+        if activity.remain_tickets <= 0:
+            return None
+
+        random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+        while Ticket.objects.filter(unique_id=random_string).exists():
+            random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+
+        tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, activity=activity)
+        if tickets.exists() and tickets[0].status != 0:
+            return None
+
+        if not tickets.exists():
+            Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
+            ticket = Ticket.objects.create(
+                stu_id=user.stu_id,
+                activity=activity,
+                unique_id=random_string,
+                status=1,
+                seat=''
             )
             return ticket
         elif tickets[0].status == 0:
