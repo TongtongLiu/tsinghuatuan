@@ -70,13 +70,13 @@ def validate_through_student(userid, userpass):
 
 def validate_get_time_auth(request):
     request_url = "http://auth.igeek.asia/v1/time"
-    req = urllib2.Request(url = request_url)
+    req = urllib2.Request(url=request_url)
     res_data = urllib2.urlopen(req)
     try:
         res = res_data.read()
     except:
         return 'Error'
-    return res
+    return HttpResponse(res)
 
 
 def validate_through_auth(secret):
