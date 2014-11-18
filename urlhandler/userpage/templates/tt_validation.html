@@ -21,6 +21,7 @@
         submitValidation('{{ openid }}');
     }
     function ajaxForm_auth() {
+		console.info("hello");
         submit2auththu('{{ openid }}');
     }
     window.addEventListener('load', function() {showValidation({{ isValidated }});}, false);
@@ -36,7 +37,7 @@
 {% endblock %}
 
 {% block content %}
-    <div id="validationHolder">luanqibazao
+    <div id="validationHolder">
         <form class="form-horizontal" role="form" action="{% url "userpage.views.validate_post_auth" %}" method="post" id="validationForm" onsubmit="return false;">
             {% csrf_token %}
           <div class="form-group" id="usernameGroup">
