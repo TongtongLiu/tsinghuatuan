@@ -95,6 +95,37 @@ def validate_post(request):
                 return HttpResponse('Error')
     return HttpResponse(validate_result)
 
+
+def validate_post_auth(request):
+    if (not request.POST) or (not 'openid' in request.POST) or \
+            (not 'valid' in request.POST):
+        raise Http404
+
+    validate_result = request.POST['valid']
+    if validate_result == 'Accepted':
+        userid = request.POST['username']
+        openid = request.POST['openid']
+        try:
+            User.objects.filter(stu_id=userid).update(status=0)
+            User.objects.filter(weixin_id=openid).update(status=0)
+        except:
+            return HttpResponse('Error')
+        try:
+            currentUser = User.objects.get(stu_id=userid)
+            currentUser.weixin_id = openid
+            currentUser.status = 1
+            try:
+                currentUser.save()
+            except:
+                return HttpResponse('Error')
+        except:
+            try:
+                newuser = User.objects.create(weixin_id=openid, stu_id=userid, status=1)
+                newuser.save()
+            except:
+                return HttpResponse('Error')
+    return HttpResponse(validate_result)
+
 ###################### Activity Detail ######################
 
 def details_view(request, activityid):
