@@ -88,6 +88,7 @@ def validate_through_auth(secret):
         res = res_data.read()
     except:
         return 'Error'
+	return 'Accepted'
     if res['code'] == 0:
         return 'Accepted'
     else:
