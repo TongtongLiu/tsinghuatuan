@@ -68,7 +68,7 @@ $('#submitForm').on('submit', function(e) {
 	e.preventDefault();
 
     $.ajax({
-        url: "/seat/",
+        url: window.location.pathname,
         type: "POST",
         data: {
             ticketID: $('#ticketID').val(),

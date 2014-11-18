@@ -210,8 +210,8 @@ function submit2auththu(openid) {
             }
         });
         xmlhttp.send(params);
-        $(".inputPassword").val() = '';
-        //document.getElementById('inputPassword').value = '';
+        //$(".inputPassword").val() = '';
+        document.getElementById('inputPassword').value = '';
         return false;
     }
 }

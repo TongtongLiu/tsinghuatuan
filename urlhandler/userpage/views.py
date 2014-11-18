@@ -236,6 +236,7 @@ def views_seats(request, uid):
             seats_list = []
         else:
             seats_list = json.loads(ticket[0].activity.seat_table)
+        ticketID = uid
         title = u"Activity Title"
         time = u"Activity Time: 2014-11-11 11:11"
         return render_to_response('seats.html', locals())
