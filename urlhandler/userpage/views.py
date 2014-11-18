@@ -68,11 +68,38 @@ def validate_through_student(userid, userpass):
     return 'Error'
 
 
+def validate_get_time_auth(request):
+    url = "http://auth.igeek.asia/v1/time"
+    req = urllib2.Request(url)
+    res_data = urllib2.urlopen(req)
+    try:
+        res = res_data.read()
+    except:
+        return 'Error'
+    return res
+
+
+def validate_through_auth(secret):
+    req_data = urllib.urlencode({'secret': secret})
+    request_url = 'http://auth.igeek.asia/v1'
+    req = urllib2.Request(url=request_url, data=req_data)
+    res_data = urllib2.urlopen(req)
+    try:
+        res = res_data.read()
+    except:
+        return 'Error'
+    if res_data.has_key('data') in res:
+        return 'Accepted'
+    else:
+        return 'Rejected'
+
+
 def validate_post_auth(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
-            (not 'valid' in request.POST):
+            (not 'secret' in request.POST) or (not 'username' in request.POST):
         raise Http404
-    validate_result = request.POST['valid']
+    secret = request.POST['secret']
+    validate_result = validate_through_auth(secret)
     if validate_result == 'Accepted':
         userid = request.POST['username']
         openid = request.POST['openid']

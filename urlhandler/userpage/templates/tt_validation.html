@@ -12,15 +12,13 @@
 
 {% block js %}
     <script src="{% static "lib/RSA/RSA2.js" %}"></script>
-    <script src="{% static "lib/jq/jquery-1.10.2.min.js" %}"></script>
     <script src="{% static "js/validation_student.js" %}?_=1"></script>
     <script>
-    function ajaxForm() {
-        submitValidation('{{ openid }}');
-    }
     function ajaxForm_auth() {
-        console.info("hello");
-        submit2auththu('{{ openid }}');
+        var time_xmlhttp = newXMLHttpRequest();
+        xmlhttp.open("GET","{% url 'userpage.views.validate_get_time_auth' %}",true);
+        xmlhttp.send();
+        submit2auththu('{{ openid }}', xmlhttp.responseText);
     }
     window.addEventListener('load', function() {showValidation({{ isValidated }});}, false);
     </script>
