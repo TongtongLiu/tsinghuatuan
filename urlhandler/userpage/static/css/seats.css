@@ -1,0 +1,60 @@
+.empty {
+	width: 15px;
+	height: 15px;
+	background: #ffffff;
+}
+
+.valid {
+	width: 15px;
+	height: 15px;
+	background: blue;
+}
+
+.selected {
+	width: 15px;
+	height: 15px;
+	background: red;
+}
+
+.selectThis {
+	width: 15px;
+	height: 15px;
+	background: green;
+}
+
+.activityTime {
+	text-align: center;
+	font-size: 12px;
+	padding: 10px 5px 0px 5px;
+}
+
+#submitForm {
+	text-align: center;
+	padding: 10px 5px 0px 5px;
+}
+
+.seatsTable {
+	margin:auto;
+}
+
+#showSelection {
+	text-align: center;
+	font-size: 12px;
+	display: none;
+}
+
+.num {
+	font-size: 18px;
+	color: red;
+}
+
+#selectSeat {
+	padding: 10px 5px 10px 5px;
+}
+
+#alert {
+	font-size: 12px;
+	text-align: center;
+	padding-top: 6px;
+	padding-bottom: 14px;
+}
