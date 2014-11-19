@@ -498,6 +498,4 @@ $('#activity-form').submit(function() {
     return false;
 });
 
-$('#identifier').modal(options);
-
 $('.form-control').on('focus', function() {var me = $(this); setTimeout(function(){me.select();}, 100)});
