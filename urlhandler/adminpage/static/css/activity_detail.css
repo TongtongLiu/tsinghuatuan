@@ -21,6 +21,7 @@
 
 #selectSeat {
     padding: 10px 5px 10px 5px;
+    border-collapse: inherit;
 }
 
 .progress-in-form {
