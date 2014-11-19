@@ -27,13 +27,15 @@
 
 #tbody {
     line-height: 1;
+    border-spacing: 5px;
+    border-collapse: separate;
 }
 
 .selectThis {
     margin: 1px;
     width: 15px;
     height: 15px;
-    background: rgba(248,100,2,0,8);
+    background: rgba(248,100,2,0.8);
 }
 
 .seatsTable {
