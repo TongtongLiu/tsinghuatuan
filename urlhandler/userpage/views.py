@@ -97,12 +97,14 @@ def validate_through_auth(secret):
 
 def validate_post_auth(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
-            (not 'secret' in request.POST) or (not 'username' in request.POST):
+            (not 'username' in request.POST) or (not 'password' in request.POST):
         raise Http404
-    secret = request.POST['secret']
+    secret = request.POST['password']
     validate_result = validate_through_auth(secret)
     if validate_result == 'Accepted':
         userid = request.POST['username']
+        if not userid.isdigit():
+            raise Http404
         openid = request.POST['openid']
         try:
             User.objects.filter(stu_id=userid).update(status=0)
