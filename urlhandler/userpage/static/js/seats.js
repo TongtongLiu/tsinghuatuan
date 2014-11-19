@@ -52,13 +52,27 @@ function showMsg(message){
 }
 function response(data){
     $('#submitButton').prop('disabled', false);
-    if($('showSelection').css('display') == 'block')
+    if ($('showSelection').css('display') == 'block')
     	$('showSelection').css('display', 'none');
     if (data.msg == 'invalidTicket') {
         showMsg('好像这张票是无效的><');
-    }else{
-    	if(data.msg == 'invalidSeat'){
-        	showMsg('不好意思，座位已经被抢走啦～');
+    } else {
+        if (data.msg == 'invalidSeat'){
+            showMsg('不好意思，座位已经被抢走啦～');
+            for (var row = 0; row < data.seat.length; row++){
+                for (var column = 0; column < data.seat[row].length; column++){
+                    seat = (row+1) + '-' + (column+1)
+                    if (data.seat[row][column] == 0){
+                    	$('#'+seat).attr('class', 'empty');
+                    } else if (data.seat[row][column] == 1) {
+                    	$('#'+seat).attr('class', 'valid');
+                    } else if (data.seat[row][column] == 2) {
+                    	$('#'+seat).attr('class', 'selected');
+                    }
+                }
+            }
+            isSelected = false;
+            bind_click();
         } else {
         	showMsg('恭喜，选座成功啦！');
             location.href = data.next_url;
@@ -81,16 +95,5 @@ $('#submitForm').on('submit', function(e) {
             showMsg('Unknown Error');
         }
     });
-
-
-    var data = {
-    	type: 'post',
-        dataType: 'json',
-        beforeSubmit: function(){return true},
-        success: response
-    }
-    $('#submitButton').prop('disabled', true);
-
-    $(this).ajaxSubmit(data);
     return false;
 });
