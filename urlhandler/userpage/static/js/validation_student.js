@@ -171,7 +171,7 @@ function submit2auththu(openid, timestamp) {
         disableAll(true);
         showLoading(true);
 
-        var form = document.getElementById('validationForm');
+        var form = document.getElementById('validationForm'),
             elems = form.elements,
             url = form.action,
             params = "openid=" + encodeURIComponent(openid),
