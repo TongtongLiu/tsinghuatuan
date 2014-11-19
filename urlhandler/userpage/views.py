@@ -258,7 +258,7 @@ def helplecture_view(request):
 def uc_center(request, code):
     url = WEIXIN_URLS['get_openid'](code)
     res = http_get(url)
-    rjson = json.loads(res);
+    rjson = json.loads(res)
     openid = rjson['openid']
     return redirect(s_reverse_uc_ticket(openid))
 
