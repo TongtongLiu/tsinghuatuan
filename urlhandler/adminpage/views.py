@@ -243,7 +243,8 @@ def activity_add(request):
     return render_to_response('activity_detail.html', {
         'activity': {
             'name': u'新建活动',
-        }
+        },
+        'seats_list':[[1,2,1,1,1],[1,1,1,1,1],[1,2,1,1,1]]
     }, context_instance=RequestContext(request))
 
 

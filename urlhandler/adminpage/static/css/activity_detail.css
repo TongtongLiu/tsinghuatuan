@@ -1,3 +1,21 @@
+.empty {
+    width: 15px;
+    height: 15px;
+    background: #ffffff;
+}
+
+.valid {
+    width: 15px;
+    height: 15px;
+    background: blue;
+}
+
+.selected {
+    width: 15px;
+    height: 15px;
+    background: red;
+}
+
 .progress-in-form {
     margin-top: 7px;
     margin-bottom: 0;
