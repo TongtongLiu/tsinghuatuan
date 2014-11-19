@@ -155,6 +155,9 @@ function readyStateChanged_auth() {
                 case 'Error':
                     showError('submitGroup', 'helpSubmit', '出现了奇怪的错误，我们已经记录下来了，请稍后重试。')
                     break;
+
+                default:
+                    window.location.href = result;
             }
         }
         else

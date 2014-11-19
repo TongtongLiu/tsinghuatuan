@@ -127,6 +127,7 @@ def validate_post_auth(request):
                 newuser.save()
             except:
                 return HttpResponse('Error')
+        return HttpResponse(s_reverse_uc_account(openid))
     return HttpResponse(validate_result)
 
 
@@ -261,7 +262,11 @@ def uc_center(request):
     res = http_get(url)
     rjson = json.loads(res)
     openid = rjson['openid']
-    return redirect(s_reverse_uc_ticket(openid))
+    user = User.objects.filter(weixin_id=openid, status=1)
+    if user:
+        return redirect(s_reverse_uc_ticket(openid))
+    else:
+        return redirect(s_reverse_uc_account(openid))
 
 @csrf_exempt
 def uc_ticket(request, weixinid):
@@ -291,7 +296,7 @@ def uc_ticket(request, weixinid):
                 return HttpResponse('logout error')
         except:
             return HttpResponse('logout error')
-    weixin_id=weixinid
+    weixin_id = weixinid
     tickets = []
     user = User.objects.filter(weixin_id=weixinid, status=1)
     if user:
@@ -303,51 +308,51 @@ def uc_ticket(request, weixinid):
                                                          'isValidated':isValidated, 'weixin_id':weixin_id})
 
 def uc_account(request, weixinid):
-    weixin_id=weixinid
+    weixin_id = weixinid
     user = User.objects.filter(weixin_id=weixinid, status=1)
     if user:
-        if request.method == 'POST':
-            try:
-                user.update(status=0)
-            except:
-                return HttpResponse('logout error')
-            return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':weixin_id}))
+        # if request.method == 'POST':
+        #     try:
+        #         user.update(status=0)
+        #     except:
+        #         return HttpResponse('logout error')
+        #     return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':weixin_id}))
         return render_to_response('usercenter_account.html', context_instance=RequestContext(request,{'weixin_id':weixin_id, 'userid':user[0].stu_id}))
     else:
-        errors = []
-        if request.method == 'POST':
-            if not request.POST.get('studentId', ''):
-                errors.append('1')
-            if not request.POST.get('infoPass', ''):
-                errors.append('2')
-            if not errors:
-                stuid = request.POST['studentId']
-                password = request.POST['infoPass']
-                try:
-                    User.objects.filter(stu_id=stuid).update(status=0)
-                    User.objects.filter(weixin_id=weixinid).update(status=0)
-                except:
-                    return HttpResponse('haha')
-                try:
-                    currentUser = User.objects.get(stu_id=stuid)
-                    currentUser.weixin_id = weixinid
-                    currentUser.status = 1
-                    try:
-                        currentUser.save()
-                    except:
-                        return HttpResponse('Error')
-                except:
-                    try:
-                        newuser = User.objects.create(weixin_id=weixinid, stu_id=stuid, status=1)
-                        newuser.save()
-                    except:
-                        return HttpResponse('Error')
-            user = User.objects.filter(weixin_id=weixinid, status=1)
-            return render_to_response('usercenter_account.html', context_instance=RequestContext(request,{'weixin_id':weixin_id, 'userid':user[0].stu_id}))
+        # errors = []
+        # if request.method == 'POST':
+        #     if not request.POST.get('studentId', ''):
+        #         errors.append('1')
+        #     if not request.POST.get('infoPass', ''):
+        #         errors.append('2')
+        #     if not errors:
+        #         stuid = request.POST['studentId']
+        #         password = request.POST['infoPass']
+        #         try:
+        #             User.objects.filter(stu_id=stuid).update(status=0)
+        #             User.objects.filter(weixin_id=weixinid).update(status=0)
+        #         except:
+        #             return HttpResponse('haha')
+        #         try:
+        #             currentUser = User.objects.get(stu_id=stuid)
+        #             currentUser.weixin_id = weixinid
+        #             currentUser.status = 1
+        #             try:
+        #                 currentUser.save()
+        #             except:
+        #                 return HttpResponse('Error')
+        #         except:
+        #             try:
+        #                 newuser = User.objects.create(weixin_id=weixinid, stu_id=stuid, status=1)
+        #                 newuser.save()
+        #             except:
+        #                 return HttpResponse('Error')
+        #     user = User.objects.filter(weixin_id=weixinid, status=1)
+        #     return render_to_response('usercenter_account.html', context_instance=RequestContext(request,{'weixin_id':weixin_id, 'userid':user[0].stu_id}))
         return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':weixin_id}))
             
 def uc_2ticket(request, weixinid):
-    weixin_id=weixinid
+    weixin_id = weixinid
     if User.objects.filter(weixin_id=weixinid, status=1).exists():
         isValidated = 1
     else:
@@ -355,7 +360,7 @@ def uc_2ticket(request, weixinid):
     return render_to_response('usercenter_2ticket.html',{'isValidated':isValidated, 'weixin_id':weixin_id})
 
 def uc_token(request, weixinid):
-    weixin_id=weixinid
+    weixin_id = weixinid
     if User.objects.filter(weixin_id=weixinid, status=1).exists():
         isValidated = 1
     else:

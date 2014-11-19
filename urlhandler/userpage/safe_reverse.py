@@ -26,5 +26,9 @@ def s_reverse_uc_ticket(openid):
     return SITE_DOMAIN + reverse('userpage.views.uc_ticket', kwargs={'weixinid': openid})
 
 
+def s_reverse_uc_account(openid):
+    return SITE_DOMAIN + reverse('userpage.views.uc_account', kwargs={'weixinid': openid})
+
+
 def s_reverse_ticket_selecttion(uid):
 	return SITE_DOMAIN + reverse('userpage.views.views_seats', kwargs={'uid': uid})
