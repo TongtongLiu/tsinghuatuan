@@ -103,11 +103,11 @@ def validate_post_auth(request):
         raise Http404
     secret = request.POST['password']
     validate_result = validate_through_auth(secret)
+    userid = request.POST['username']
+    if not userid.isdigit():
+        raise Http404
+    openid = request.POST['openid']
     if validate_result == 'Accepted':
-        userid = request.POST['username']
-        if not userid.isdigit():
-            raise Http404
-        openid = request.POST['openid']
         try:
             User.objects.filter(stu_id=userid).update(status=0)
             User.objects.filter(weixin_id=openid).update(status=0)
