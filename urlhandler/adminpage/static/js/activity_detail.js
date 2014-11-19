@@ -478,6 +478,7 @@ function publishActivity() {
     return false;
 }
 
+var isSelected = false;
 function bind_click(){
     var valid_list = document.getElementsByClassName('valid');
     var inputSelect = document.getElementById('input');
