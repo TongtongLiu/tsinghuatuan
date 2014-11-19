@@ -311,7 +311,7 @@ def uc_account(request, weixinid):
             user = User.objects.filter(weixin_id=weixinid, status=1)
             return render_to_response('usercenter_account.html', context_instance=RequestContext(request,{'weixin_id':weixin_id, 'userid':user[0].stu_id}))
         return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':weixin_id}))
-
+            
 def uc_2ticket(request, weixinid):
     weixin_id=weixinid
     if User.objects.filter(weixin_id=weixinid, status=1).exists():
@@ -372,6 +372,5 @@ def views_seats(request, uid):
                 Activity.objects.filter(name=activityName).update(seat_table=seats_list)
                 rtnJSON['seat'] = seatsTable
                 rtnJSON['msg'] = 'success'
-                #title = activityName
-                #time = "Activity Time: 2014-11-11 11:11"
+                rtnJSON['next_url'] = s_reverse_ticket_detail(uid)
                 return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
