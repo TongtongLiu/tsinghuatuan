@@ -26,3 +26,13 @@ img{
     text-align: center;
     padding-top: 3px;
 }
+.clickToSelect {
+    text-align: center;
+    color: red;
+    font-size: 16px;
+}
+a:visited {
+    text-align: center;
+    color: red;
+    font-size: 16px;
+}
