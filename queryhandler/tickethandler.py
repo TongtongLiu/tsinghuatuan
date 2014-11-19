@@ -305,7 +305,7 @@ def response_cancel_ticket(msg):
                 if len(seat) > 1:
                     row = int(seat[0]) - 1
                     column = int(seat[1]) - 1
-                    seat_table = josn.loads(activity.seat_table)
+                    seat_table = json.loads(activity.seat_table)
                     seat_table[row][column] = 1
                     Activity.objects.filter(id=activity.id).update(seat_table=json.dumps(seat_table))
                 Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')+1)

@@ -61,6 +61,7 @@ function response(data){
         	showMsg('不好意思，座位已经被抢走啦～');
         } else {
         	showMsg('恭喜，选座成功啦！');
+            location.href = data.next_url;
         }
     }
 }
