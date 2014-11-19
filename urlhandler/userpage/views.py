@@ -338,8 +338,8 @@ def views_seats(request, uid):
         else:
             seats_list = json.loads(ticket[0].activity.seat_table)
         ticketID = uid
-        title = u"Activity Title"
-        time = u"Activity Time: 2014-11-11 11:11"
+        title = ticket[0].activity.name
+        time = start_time
         return render_to_response('seats.html', locals())
 
     else:

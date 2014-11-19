@@ -11,7 +11,7 @@
 	{% endblock %}
 
 	{% block content %}
-	<p class="activityTime"> {{ time }} </p>
+	<p class="activityTime"> {{ time|date:"Y年m月d日 H:i" }} </p>
 	<div id="alert">请选择您的座位</div>
 	<p id="showSelection">您选择的座位为第<span class="num" id="row"></span>行第<span class="num" id="column"></span>列</p>
 	<div class="seatsTable" align="center">
