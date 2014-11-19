@@ -25,7 +25,12 @@
     border-spacing: 2px;
 }
 
+#tbody {
+    line-height: 1;
+}
+
 .selectThis {
+    margin: 1px;
     width: 15px;
     height: 15px;
     background: rgba(248,100,2,0,8);
@@ -33,10 +38,6 @@
 
 .seatsTable {
     margin:auto;
-}
-
-#myModelLable {
-    text-align: center;
 }
 
 #selectSeat {
