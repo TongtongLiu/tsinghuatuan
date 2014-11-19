@@ -2,6 +2,10 @@
 
 {% load staticfiles %}
 
+	{% bolck viewport %}
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+	{% endblock %}
+
 	{% block css %}
 	<link href="{% static "css/seats.css" %}" rel="stylesheet" type="text/css" />
 	{% endblock %}
