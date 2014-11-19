@@ -8,6 +8,7 @@
 
 {% block css %}
 <link href="{% static "css/ticket.css" %}?_=3" rel="stylesheet" type="text/css" />
+<link href="{% static "lib/bs/css/bootstrap.min.css" %}?_=3" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block js %}
@@ -40,7 +41,7 @@
     </div>
     {% if ticket_status > 0 %}
         {% if ticket_seat == '' %}
-            <a href="{{ ticket_url }}"> 您还没有选座位哦～请点击进行选座^_^</a>
+            <a class="btn btn-primary btn-lg active" href="{{ ticket_url }}"> 您还没有选座位哦～请点击进行选座^_^</a>
         {% else %}
             {% if ticket_seat == 'B' %}
                 <div class="ticket-wrapper">

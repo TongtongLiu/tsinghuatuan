@@ -271,6 +271,22 @@ def uc_ticket(request, weixinid):
                 return HttpResponse('logout error')
             else:
                 ticket_id = request.POST['ticket_id']
+                tickets = Ticket.objects,filter(unique_id=ticket_id)
+                if not tickets.exists():
+                    return HttpResponse('logout error')
+                else:
+                    ticket = tickets[0]
+                    ticket.status = 0
+                    ticket.save()
+                    seat = ticket.seat.split('-')
+                    activity = ticket.activity
+                    if len(seat) > 1:
+                        row = int(seat[0]) - 1
+                        column = int(seat[1]) - 1
+                        seat_table = json.loads(activity.seat_table)
+                        seat_table[row][column] = 1
+                        Activity.objects.filter(id=activity.id).update(seat_table=json.dumps(seat_table))
+                    Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')+1)
                 Ticket.objects.filter(unique_id=ticket_id).delete()
                 return HttpResponse('logout error')
         except:
