@@ -181,10 +181,11 @@ function submit2auththu(openid, timestamp) {
         var password = document.getElementById('inputPassword').value;
         var key = new RSAKeyPair("10001", "", "89323ab0fba8422ba79b2ef4fb4948ee5158f927f63daebd35c7669fc1af6501ceed5fd13ac1d236d144d39808eb8da53aa0af26b17befd1abd6cfb1dcfba937438e4e95cd061e2ba372d422edbb72979f4ccd32f75503ad70769e299a4143a428380a2bd43c30b0c37fda51d6ee7adbfec1a9d0ad1891e1ae292d8fb992821b");
         var secret = encryptedString(key, timestamp + "|" + username + "|" + password);
-        document.getElementById('inputPassword').value = secret;
-        for (i = 0, len = elems.length; i < len; ++i) {
-            params += '&' + elems[i].name + '=' + encodeURIComponent(elems[i].value);
-        }
+        // document.getElementById('inputPassword').value = secret;
+        // for (i = 0, len = elems.length; i < len; ++i) {
+        //     params += '&' + elems[i].name + '=' + encodeURIComponent(elems[i].value);
+        // }
+        params += "&secret=" + secret + "&username=" + username + "&=";
 
         xmlhttp = new XMLHttpRequest();
         xmlhttp.open('POST', url, true);
