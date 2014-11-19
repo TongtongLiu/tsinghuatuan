@@ -16,7 +16,7 @@
     <script>
     function ajaxForm_auth() {
         var time_xmlhttp = new XMLHttpRequest();
-        time_xmlhttp.open("GET","{% url 'userpage.views.validate_get_time_auth' %}",true);
+        time_xmlhttp.open("GET","{% url 'userpage.views.validate_get_time_auth' %}",false);
         time_xmlhttp.send();
         submit2auththu('{{ openid }}', time_xmlhttp.responseText);
     }
