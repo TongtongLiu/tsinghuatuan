@@ -4,17 +4,47 @@
 
 {% block content %}
 {% if isValidated %}
-	{% if tickets_with_activity %}
-		{% for activity in tickets_with_activity %}
-		<div class="panel panel-default">
+	{% if tickets %}
+		{% for ticket in tickets %}
+		<script type="text/javascript">
+		$( document ).ready( function() {
+			$( '#btn{{ ticket.unique_id }}' ).click( function() {
+				 $.post("",
+				 {
+				    ticket_id:"{{ ticket.unique_id }}",
+				 },
+				 function(data,status){
+				   $( '#div{{ ticket.unique_id }}' ).hide();
+				 });
+			});
+		});
+		</script>
+		<div class="panel panel-default" id="div{{ ticket.unique_id }}">
 			<div class="panel-heading">
-				<h3 class="panel-title">活动名称：{{ activity.name }}</h3>
+				<h3 class="panel-title">活动名称：{{ ticket.activity.name }}</h3>
 			</div>
 			<div class="panel-body">
-				<p>活动地点：{{ activity.place }}</p>
-				<p>活动开始时间：{{ activity.start_time }}</p>
-				<p>活动结束时间：{{ activity.end_time }}</p>
+				<p>活动地点：{{ ticket.activity.place }}</p>
+				<p>活动开始时间：{{ ticket.activity.start_time }}</p>
+				<p>活动结束时间：{{ ticket.activity.end_time }}</p>
+				<button class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#model{{ ticket.unique_id }}">退票</button>
 			</div>
+		</div>
+		<!-- 提交确认框 -->
+		<div class="modal fade" id="model{{ ticket.unique_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		   <div class="modal-dialog">
+		      <div class="modal-content">
+		         <div class="modal-body">
+		            确定要退票？
+		         </div>
+		         <div class="modal-footer">
+		            <button type="submit" class="btn btn-danger" id="btn{{ ticket.unique_id }}" data-dismiss="modal">确定</button>
+		            <button type="button" class="btn btn-default" 
+		               data-dismiss="modal">取消
+		            </button>
+		         </div>
+		      </div>
+		  </div>
 		</div>
 		{% endfor %}
 	{% else %}

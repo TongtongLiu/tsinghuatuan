@@ -4,7 +4,7 @@ from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from urlhandler.models import User, Activity, Ticket
-from django.views.decorators.csrf import  csrf_exempt
+from django.views.decorators.csrf import csrf_exempt
 from urlhandler.settings import STATIC_URL
 import urllib, urllib2
 import datetime
@@ -263,19 +263,27 @@ def uc_center(request):
     openid = rjson['openid']
     return redirect(s_reverse_uc_ticket(openid))
 
+@csrf_exempt
 def uc_ticket(request, weixinid):
+    if request.is_ajax():
+        try:
+            if not request.POST.get('ticket_id', ''):
+                return HttpResponse('logout error')
+            else:
+                ticket_id = request.POST['ticket_id']
+                Ticket.objects.filter(unique_id=ticket_id).delete()
+                return HttpResponse('logout error')
+        except:
+            return HttpResponse('logout error')
     weixin_id=weixinid
     tickets_with_activity = []
     user = User.objects.filter(weixin_id=weixinid, status=1)
     if user:
         isValidated = 1
         tickets = Ticket.objects.filter(stu_id=user[0].stu_id)
-        for ticket in tickets:
-            activity = ticket.activity
-            tickets_with_activity.append(activity)
     else:
         isValidated = 0
-    return render_to_response('usercenter_ticket.html', {'tickets_with_activity':tickets_with_activity,
+    return render_to_response('usercenter_ticket.html', {'tickets':tickets,
                                                          'isValidated':isValidated, 'weixin_id':weixin_id})
 
 def uc_account(request, weixinid):
