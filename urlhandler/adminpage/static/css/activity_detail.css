@@ -1,16 +1,19 @@
 .empty {
+    margin: 1px;
     width: 15px;
     height: 15px;
     background: #ffffff;
 }
 
 .valid {
+    margin: 1px;
     width: 15px;
     height: 15px;
     background: blue;
 }
 
 .selected {
+    margin: 1px;
     width: 15px;
     height: 15px;
     background: red;
