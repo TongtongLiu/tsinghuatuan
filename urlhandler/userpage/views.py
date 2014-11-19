@@ -128,7 +128,7 @@ def validate_post_auth(request):
             except:
                 return HttpResponse('Error')
         #account_url = s_reverse_uc_account(openid)
-        #return HttpResponse(account_url)
+        return HttpResponse('http://wx2.igeek.asia/u/account/' + openid)
     return HttpResponse(validate_result)
 
 
