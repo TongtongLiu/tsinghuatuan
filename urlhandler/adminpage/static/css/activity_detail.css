@@ -16,6 +16,10 @@
     background: red;
 }
 
+#selectSeat {
+    padding: 10px 5px 10px 5px;
+}
+
 .progress-in-form {
     margin-top: 7px;
     margin-bottom: 0;
