@@ -11,7 +11,9 @@ import datetime
 import json
 from django.db import transaction
 from django.utils import timezone
-
+from weixinlib.weixin_urls import WEIXIN_URLS
+from weixinlib import http_get
+from django.shortcuts import redirect
 
 from userpage.safe_reverse import *
 
@@ -253,8 +255,12 @@ def helplecture_view(request):
     variables=RequestContext(request,{})
     return render_to_response('help_lecture.html', variables)
 
-#def uc_center(request):
-
+def uc_center(request, code):
+    url = WEIXIN_URLS['get_openid'](code)
+    res = http_get(url)
+    rjson = json.loads(res)
+    openid = rjson['openid']
+    return redirect(s_reverse_uc_ticket(openid))
 
 def uc_ticket(request, weixinid):
     weixin_id=weixinid
