@@ -3,16 +3,47 @@
 {% load staticfiles %}
 
 {% block content %}
-<div class="two_ticket">
-	<a href="#">双人抢票操作说明</a>
-	<div>
-		<p>请输入被绑人指令：</p>
-		<input />
-		<submit>
-	</div>
+{% if isValidated %}
+<ul class="list-group">
+   <li class="list-group-item">
+    <a href="#couple_intro" data-toggle="modal">双人抢票&nbsp;
+      <span class="glyphicon glyphicon-question-sign"></span>
+    </a>
+  </li>
+   <li class="list-group-item">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="请输入被绑人指令">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button">
+                     确定
+            </button>
+            </span>
+        </div>
+   </li>
+</ul>
+<div class="modal fade" id="couple_intro" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!--模态框，提示双人抢票说明-->
+<div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-body">
+          <p id="myModalLabel" style="font-weight:bold">
+               双人抢票操作说明&nbsp;:
+          </p>
+            双人抢票是很复杂滴
+         </div>
+      </div>
+  </div>
 </div>
+{% else %}
+  <p style="text-align: center; font-weight: bold;">请先绑定账户</p>
+{% endif %}
 {% endblock %}
 
-{% block css %}
-<link href="{% static "css/centertwoticket.css"%}" rel="stylesheet" type="text/css" />
+{% block js %}
+<script>
+$(document).ready(function(){
+  $("li.active").toggleClass("active");
+  $("li#nav_2ticket").addClass("active");
+});
+</script>
 {% endblock %}

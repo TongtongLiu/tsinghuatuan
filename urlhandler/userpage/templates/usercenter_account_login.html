@@ -1,0 +1,30 @@
+{% extends "usercenter_base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+<form class="form-horizontal" role="form" action="" method="post" id="validationForm">
+  {% csrf_token %}
+    <div class="panel-heading">
+        <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span>&nbsp;账户状态：未绑定</h3>
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon">学号：</span>
+        <input type="text" class="form-control" name="studentId" placeholder="请输入学号">
+  </div>
+  <div class="input-group">
+        <span class="input-group-addon">密码：</span>
+      <input type="text" class="form-control" name="infoPass" placeholder="请输入info密码">
+  </div>
+    <button type="submit" class="btn btn-default" id="submitBtn">绑定</button>
+</form>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function(){
+  $("li.active").toggleClass("active");
+  $("li#nav_account").addClass("active");
+});
+</script>
+{% endblock %}

@@ -2,44 +2,67 @@
 <html lang="zh-CN">
 {% load staticfiles %}
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link href="{% static "css/usercenter.css"%}" rel="stylesheet" type="text/css" />
-    {% block css %}{% endblock %}
-    <title>个人中心——{% block title %}{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <link href="{% static "lib/bs/css/bootstrap.min.css"%}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{% static "lib/jq/jquery-1.11.1.min.js" %}"></script>
+    <script src="{% static "lib/bs/js/bootstrap.min.js" %}"></script>
+    {% block css %}
+    {% endblock %}
+    <title>个人中心</title>
+    <style>
+    .nav-col {
+        text-align:center;
+    }
+    .nav-col ul {
+        display:inline-block;
+    }
+    .nav-col li {
+        float:left;
+    }
+    hr {
+        margin-top:10px;
+        margin-bottom: 10px;
+    }
+    </style>
 </head>
 <body>
-<div id="wrap">
-	<div class="menu">
-		<ul>
-			<li id="nav_ticket">
-				<a href="1">我的票</a>
-			</li>
-			<span class="span">|</span>
-			<li id="nav_account">
-				<a href="2">账户管理</a>
-			</li>
-			<span class="span">|</span>
-			<li id="nav_2ticket">
-				<a href="3">双人抢票</a>
-			</li>
-			<span class="span">|</span>
-			<li id="nav_token">
-				<a href="4">指令</a>
-			</li>
-		</ul>
-	</div>
-    <hr />
-    <div id="mainbody">
-    {% block content %}{% endblock %}
+<div class="container">
+    <div class="row">
+        <div class="nav-col">
+        <ul class="nav nav-pills" > 
+            <li class="active" id="nav_ticket">
+                <a href="../ticket/{{ weixin_id }}">我的票</a>
+            </li>
+            <li id="nav_account">
+                <a href="../account/{{ weixin_id }}">账户管理</a>
+            </li>
+            <li id="nav_2ticket">
+                <a href="../couple/{{ weixin_id }}">双人抢票</a>
+            </li>
+            <li id="nav_token">
+                <a href="../token/{{ weixin_id }}">指令</a>
+            </li>
+        </ul>
+        </div>
     </div>
-</div>
-<footer id="footer">
     <hr />
-    共青团清华大学委员会<br/>
-    &copy; 2013
-</footer>
-
-    <script src="{% static "js/weixin_lib.js" %}?_=4"></script>
-    {% block js %}{% endblock %}
+    <div class="row" id="mainbody">
+        <div class="col-xs-12">
+        {% block content %}{% endblock %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+        <footer id="footer">
+        <hr />
+        共青团清华大学委员会<br/>
+        &copy; 2013
+        </footer>
+        </div>
+    </div>
+    {% block js %}
+    {% endblock %}
+</div>
 </body>
 </html>

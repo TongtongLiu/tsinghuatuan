@@ -3,16 +3,47 @@
 {% load staticfiles %}
 
 {% block content %}
-<div class="account">
-	<h2>账户状态：已绑定</h2>
-	<div class="ac_info">
-		<p>绑定学号：XXXXXXXXX</p>
-		<p>用户姓名：某某某</p>
-	</div>
-	<a href="#">解绑</a>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span>&nbsp;账户状态：已绑定</h3>
+    </div>
+    <div class="panel-body">
+        <div class="input-group">
+            <span class="input-group-addon">学号：</span>
+      <input type="text" class="form-control" placeholder="{{ userid }}" disabled>
+    </div>
+    <button class="btn btn-default" data-toggle="modal" data-target="#myModal">解绑</button>
+    </div>
 </div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-body">
+            确定要解绑？
+         </div>
+         <div class="modal-footer">
+            <form role="form" action="" method="post" id="validationForm">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary" id="submitBtn">确认</button>
+            <button type="button" class="btn btn-default" 
+               data-dismiss="modal">取消
+            </button>
+            </form>
+            
+         </div>
+      </div><!-- /.modal-content -->
+  </div>
+</div><!-- /.modal -->
 {% endblock %}
 
-{% block css %}
-<link href="{% static "css/centeraccount.css"%}" rel="stylesheet" type="text/css" />
+{% block js %}
+<script>
+$(document).ready(function(){
+  $("li.active").toggleClass("active");
+  $("li#nav_account").addClass("active");
+});
+</script>
 {% endblock %}
