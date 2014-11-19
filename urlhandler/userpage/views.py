@@ -271,7 +271,7 @@ def uc_ticket(request, weixinid):
                 return HttpResponse('logout error')
             else:
                 ticket_id = request.POST['ticket_id']
-                tickets = Ticket.objects,filter(unique_id=ticket_id)
+                tickets = Ticket.objects.filter(unique_id=ticket_id)
                 if not tickets.exists():
                     return HttpResponse('logout error')
                 else:
@@ -292,11 +292,11 @@ def uc_ticket(request, weixinid):
         except:
             return HttpResponse('logout error')
     weixin_id=weixinid
-    tickets_with_activity = []
+    tickets = []
     user = User.objects.filter(weixin_id=weixinid, status=1)
     if user:
         isValidated = 1
-        tickets = Ticket.objects.filter(stu_id=user[0].stu_id)
+        tickets = Ticket.objects.filter(stu_id=user[0].stu_id, status=1)
     else:
         isValidated = 0
     return render_to_response('usercenter_ticket.html', {'tickets':tickets,
