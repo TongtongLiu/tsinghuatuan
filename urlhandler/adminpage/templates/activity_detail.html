@@ -340,27 +340,39 @@
                       &times;
                 </button>
                 <h4 class="modal-title" id="myModalLabel">
-                   这里是选座页面呦！
+                   这里是设置座位的页面呦！
                 </h4>
              </div>
              <div class="modal-body">
-                <table id="selectSeat">
-                {% for line in seats_list %}
-                    <tr>
-                        {% for seat in line %}
-                            {% ifequal seat 0 %}
-                                <td class="empty" id="{{ forloop.parentloop.counter }}-{{ forloop.counter   }}"></td>
-                            {% endifequal %}
-                            {% ifequal seat 1 %}
-                                <td class="valid" id="{{ forloop.parentloop.counter }}-{{ forloop.counter   }}"></td>
-                            {% endifequal %}
-                            {% ifequal seat 2 %}
-                                <td class="selected" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
-                            {% endifequal %}
+                <div class="seatsTable" align="center">
+                    <table>
+                        <tr>
+                            <td class="valid"></td>
+                            <td>可选</td>
+                            <td class="selected"></td>
+                            <td>已售</td>
+                            <td class="selectThis"></td>
+                            <td>已选</td>
+                        </tr>
+                    </table>
+                    <table id="selectSeat">
+                        {% for line in seats_list %}
+                            <tr>
+                                {% for seat in line %}
+                                    {% ifequal seat 0 %}
+                                        <td class="empty" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
+                                    {% endifequal %}
+                                    {% ifequal seat 1 %}
+                                        <td class="valid" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
+                                    {% endifequal %}
+                                    {% ifequal seat 2 %}
+                                        <td class="selected" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
+                                    {% endifequal %}
+                                {% endfor %}
+                            </tr>
                         {% endfor %}
-                    </tr>
-                {% endfor %}
-                </table>
+                    </table>
+                </div>
              </div>
 
              <div class="modal-footer">

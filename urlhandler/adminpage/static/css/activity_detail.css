@@ -22,6 +22,25 @@
 #selectSeat {
     padding: 10px 5px 10px 5px;
     border-collapse: inherit;
+    border-spacing: 3px;
+}
+
+.selectThis {
+    width: 15px;
+    height: 15px;
+    background: green;
+}
+
+.seatsTable {
+    margin:auto;
+}
+
+#myModelLable {
+    text-align: center;
+}
+
+#selectSeat {
+    padding: 10px 5px 10px 5px;
 }
 
 .progress-in-form {
