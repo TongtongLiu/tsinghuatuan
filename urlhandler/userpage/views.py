@@ -127,11 +127,9 @@ def validate_post_auth(request):
                 newuser.save()
             except:
                 return HttpResponse('Error')
-    if validate_result == 'Accepted':
         account_url = s_reverse_uc_account(request.POST['openid'])
-        return HttpResponse(account_url)
-    else:
-        return HttpResponse(validate_result)
+        return HttpResponse("Accepted")
+    return HttpResponse(validate_result)
 
 
 def validate_post(request):
