@@ -171,6 +171,7 @@ function submit2auththu(openid, timestamp) {
         disableAll(true);
         showLoading(true);
 
+        setMaxDigits(150);
         var form = document.getElementById('validationForm');
         var url = form.action;
         var username = document.getElementById('inputUsername').value;

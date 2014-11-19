@@ -86,9 +86,10 @@ def validate_through_auth(secret):
     res_data = urllib2.urlopen(req)
     try:
         res = res_data.read()
+        res_dict = eval(res)
     except:
         return 'Error'
-    if res['code'] == 0:
+    if res_dict['code'] == 0:
         return 'Accepted'
     else:
         return 'Rejected'
