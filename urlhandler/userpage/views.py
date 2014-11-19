@@ -256,7 +256,7 @@ def helplecture_view(request):
     return render_to_response('help_lecture.html', variables)
 
 def uc_center(request):
-    code = request.querystring['code']
+    code = request.GET.get('code')
     url = WEIXIN_URLS['get_openid'](code)
     res = http_get(url)
     rjson = json.loads(res)
