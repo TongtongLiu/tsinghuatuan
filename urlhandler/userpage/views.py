@@ -253,6 +253,9 @@ def helplecture_view(request):
     variables=RequestContext(request,{})
     return render_to_response('help_lecture.html', variables)
 
+#def uc_center(request):
+
+
 def uc_ticket(request, weixinid):
     weixin_id=weixinid
     tickets_with_activity = []
