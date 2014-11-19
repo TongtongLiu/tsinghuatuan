@@ -2,6 +2,7 @@
 import random
 import string
 import datetime
+import json
 from urlhandler.models import *
 from queryhandler.settings import QRCODE_URL
 from django.db.models import F
@@ -265,7 +266,7 @@ def book_ticket_select_seat(user, key, now):
             Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
             ticket = tickets[0]
             ticket.status = 1
-            ticket.seat = next_seat
+            ticket.seat = ''
             ticket.save()
             return ticket
         else:
@@ -300,6 +301,13 @@ def response_cancel_ticket(msg):
                 ticket = tickets[0]
                 ticket.status = 0
                 ticket.save()
+                seat = ticket.seat.split('-')
+                if len(seat) > 1:
+                    row = int(seat[0]) - 1
+                    column = int(seat[1]) - 1
+                    seat_table = josn.loads(activity.seat_table)
+                    seat_table[row][column] = 1
+                    Activity.objects.filter(id=activity.id).update(seat_table=json.dumps(seat_table))
                 Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')+1)
                 return get_reply_text_xml(msg, get_text_success_cancel_ticket())
             else:

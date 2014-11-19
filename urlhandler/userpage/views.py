@@ -259,8 +259,8 @@ def uc_ticket(request, weixinid):
     user = User.objects.filter(weixin_id=weixinid, status=1)
     if user:
         isValidated = 1
-        tickets = Ticket.objects.filter(stu_id=user[0].stu_id)        
-        for ticket in tickets: 
+        tickets = Ticket.objects.filter(stu_id=user[0].stu_id)
+        for ticket in tickets:
             activity = ticket.activity
             tickets_with_activity.append(activity)
     else:
@@ -311,7 +311,7 @@ def uc_account(request, weixinid):
             user = User.objects.filter(weixin_id=weixinid, status=1)
             return render_to_response('usercenter_account.html', context_instance=RequestContext(request,{'weixin_id':weixin_id, 'userid':user[0].stu_id}))
         return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':weixin_id}))
-            
+
 def uc_2ticket(request, weixinid):
     weixin_id=weixinid
     if User.objects.filter(weixin_id=weixinid, status=1).exists():
