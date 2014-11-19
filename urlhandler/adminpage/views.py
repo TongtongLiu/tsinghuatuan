@@ -244,7 +244,7 @@ def activity_add(request):
         'activity': {
             'name': u'新建活动',
         },
-        'seats_list':[[1,2,1,1,1],[1,1,1,1,1],[1,2,1,1,1]]
+        'seats_list':[[0,0,1,2,1,1,1,0],[0,2,1,1,1,2,1,0],[0,1,2,1,2,1,1,0],[1,1,2,2,1,1,2,1],[1,2,1,1,1,1,1,1]]
     }, context_instance=RequestContext(request))
 
 

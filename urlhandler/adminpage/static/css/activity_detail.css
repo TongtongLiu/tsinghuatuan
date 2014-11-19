@@ -2,33 +2,33 @@
     margin: 1px;
     width: 15px;
     height: 15px;
-    background: #ffffff;
+    background: rgba(0,0,0,0);
 }
 
 .valid {
     margin: 1px;
     width: 15px;
     height: 15px;
-    background: blue;
+    background: rgba(112,204,243,0.8);
 }
 
 .selected {
     margin: 1px;
     width: 15px;
     height: 15px;
-    background: red;
+    background: rgba(131,1,47,0.8);
 }
 
 #selectSeat {
     padding: 10px 5px 10px 5px;
     border-collapse: inherit;
-    border-spacing: 3px;
+    border-spacing: 2px;
 }
 
 .selectThis {
     width: 15px;
     height: 15px;
-    background: green;
+    background: rgba(248,100,2,0,8);
 }
 
 .seatsTable {
