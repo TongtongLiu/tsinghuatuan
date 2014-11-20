@@ -6,6 +6,8 @@ import uuid
 class User(models.Model):
     weixin_id = models.CharField(max_length=255)
     stu_id = models.CharField(max_length=255)
+    stu_name = models.CharField(max_length=255)
+    stu_type = models.CharField(max_length=255)
     status = models.IntegerField()
     seed = models.FloatField(default=1024)
 

@@ -90,11 +90,11 @@ def validate_through_auth(secret):
         res = res_data.read()
         res_dict = eval(res)
     except:
-        return 'Error'
+        return json.dumps({'result': 'Error'})
     if res_dict['code'] == 0:
-        return 'Accepted'
+        return json.dumps({'result': 'Accepted', 'name': res_dict['name'], 'type': res_dict['type']})
     else:
-        return 'Rejected'
+        return json.dumps({'result': 'Rejected'})
 
 def validate_post_auth(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
@@ -106,7 +106,7 @@ def validate_post_auth(request):
         raise Http404
     secret = request.POST['password']
     validate_result = validate_through_auth(secret)
-    if validate_result == 'Accepted':
+    if validate_result['result'] == 'Accepted':
         try:
             User.objects.filter(stu_id=userid).update(status=0)
             User.objects.filter(weixin_id=openid).update(status=0)
@@ -116,17 +116,19 @@ def validate_post_auth(request):
             currentUser = User.objects.get(stu_id=userid)
             currentUser.weixin_id = openid
             currentUser.status = 1
+            currentUser.stu_name = validate_result['name']
+            currentUser.stu_type = validate_result['type']
             try:
                 currentUser.save()
             except:
                 return HttpResponse('Error')
         except:
             try:
-                newuser = User.objects.create(weixin_id=openid, stu_id=userid, status=1)
+                newuser = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'], stu_type=validate_result['type'], status=1)
                 newuser.save()
             except:
                 return HttpResponse('Error')
-    return HttpResponse(validate_result)
+    return HttpResponse(validate_result['result'])
 
 
 def validate_post(request):
@@ -315,7 +317,7 @@ def uc_validate_post_auth(request):
         raise Http404
     secret = request.POST['password']
     validate_result = validate_through_auth(secret)
-    if validate_result == 'Accepted':
+    if validate_result['result'] == 'Accepted':
         try:
             User.objects.filter(stu_id=userid).update(status=0)
             User.objects.filter(weixin_id=openid).update(status=0)
@@ -325,18 +327,20 @@ def uc_validate_post_auth(request):
             currentUser = User.objects.get(stu_id=userid)
             currentUser.weixin_id = openid
             currentUser.status = 1
+            currentUser.stu_name = validate_result['name']
+            currentUser.stu_type = validate_result['type']
             try:
                 currentUser.save()
             except:
                 return HttpResponse('Error')
         except:
             try:
-                newuser = User.objects.create(weixin_id=openid, stu_id=userid, status=1)
+                newuser = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'], stu_type=validate_result['type'], status=1)
                 newuser.save()
             except:
                 return HttpResponse('Error')
         return HttpResponse(s_reverse_uc_account(openid))
-    return HttpResponse(validate_result)
+    return HttpResponse(validate_result['result'])
 
 
 def uc_account(request, openid):
@@ -347,9 +351,14 @@ def uc_account(request, openid):
                 user.update(status=0)
             except:
                 return HttpResponse('logout error')
-            return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':openid}))
+            return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
         else:
-            return render_to_response('usercenter_account.html', {'weixin_id': openid, 'studentid': user[0].stu_id}, context_instance=RequestContext(request))
+            return render_to_response('usercenter_account.html', {
+                'weixin_id': openid,
+                'student_id': user[0].stu_id,
+                'student_name': user[0].stu_name,
+                'student_type': user[0].stu_type
+            }, context_instance=RequestContext(request))
     else:
         return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
     #user = User.objects.filter(weixin_id=openid, status=1)
