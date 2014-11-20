@@ -12,66 +12,65 @@
 {% endblock %}
 
 {% block content %}
-<!--<form class="form-horizontal" role="form" action="" method="post" id="validationForm">-->
-  <!--{% csrf_token %}-->
-    <!--<div class="panel-heading">-->
-        <!--<h3 class="panel-title"><span class="glyphicon glyphicon-user"></span>&nbsp;账户状态：未绑定</h3>-->
-    <!--</div>-->
-    <!--<div class="input-group">-->
-        <!--<span class="input-group-addon">学号：</span>-->
-        <!--<input type="text" class="form-control" name="studentId" placeholder="请输入学号">-->
-  <!--</div>-->
-  <!--<div class="input-group">-->
-        <!--<span class="input-group-addon">密码：</span>-->
-      <!--<input type="text" class="form-control" name="infoPass" placeholder="请输入info密码">-->
-  <!--</div>-->
-    <!--<button type="submit" class="btn btn-default" id="submitBtn">绑定</button>-->
-<!--</form>-->
-<form class="form-horizontal" role="form" action="{% url "userpage.views.uc_validate_post_auth" %}" method="post" id="validationForm" onsubmit="return false;">
-    {% csrf_token %}
+<div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span>&nbsp;账户状态：未绑定</h3>
     </div>
-    <div class="input-group" id="usernameGroup">
-        <span class="input-group-addon">学号：</span>
-        <input type="tel" class="form-control" id="inputUsername" name="username" placeholder="请输入您的学号" onblur="checkUsername();">
+    <div class="panel-body">
+        <form class="form-horizontal" role="form" action="{% url "userpage.views.uc_validate_post_auth" %}" method="post" id="validationForm" onsubmit="return false;">
+            {% csrf_token %}
+            <div class="input-group" id="usernameGroup">
+                <span class="input-group-addon">学号：</span>
+                <input type="tel" class="form-control" id="inputUsername" name="username" placeholder="请输入您的学号" onblur="checkUsername();">
+            </div>
+            <!--<div class="form-group" id="usernameGroup">-->
+                <!--<label for="inputUsername" class="col-xs-3 control-label">学号</label>-->
+                <!--<div class="col-xs-9">-->
+                    <!--<input type="tel" class="form-control" id="inputUsername" placeholder="请输入您的学号" name="username" value="{{ studentid }}" onblur="checkUsername();">-->
+                    <!--<span class="help-block" id="helpUsername"></span>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="input-group" id="passwordGroup">
+                <span class="input-group-addon">密码：</span>
+                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="请输入info密码" onblur="checkPassword();">
+            </div>
+            <!--<div class="form-group" id="passwordGroup">-->
+                <!--<label for="inputPassword" class="col-xs-3 control-label">密码</label>-->
+                <!--<div class="col-xs-9">-->
+                    <!--<input type="password" class="form-control" id="inputPassword" placeholder="使用info密码进行登录" name="password" onblur="checkPassword();">-->
+                    <!--<span class="help-block" id="helpPassword"></span>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="input-group" id="submitGroup">
+                <button onclick="ajaxForm_auth();" class="btn btn-default btn-block" id="submitBtn">绑定</button>
+                <p class="help-block" id="helpLoading" style="display: none"><img src="{% static "img/loading.gif" %}">正在认证，请稍候...</p>
+                <p class="help-block" id="helpSubmit"></p>
+            </div>
+            <!--<div class="form-group" id="submitGroup">-->
+                <!--<div class="col-xs-offset-3 col-xs-9">-->
+                    <!--<button onclick="ajaxForm_auth();" class="btn btn-default" id="submitBtn">认证</button>-->
+                    <!--<p class="help-block" id="helpLoading" style="display: none"><img src="{% static "img/loading.gif" %}">正在认证，请稍候...</p>-->
+                    <!--<p class="help-block" id="helpSubmit"></p>-->
+                <!--</div>-->
+            <!--</div>-->
+        </form>
     </div>
-    <!--<div class="form-group" id="usernameGroup">-->
-        <!--<label for="inputUsername" class="col-xs-3 control-label">学号</label>-->
-        <!--<div class="col-xs-9">-->
-            <!--<input type="tel" class="form-control" id="inputUsername" placeholder="请输入您的学号" name="username" value="{{ studentid }}" onblur="checkUsername();">-->
-            <!--<span class="help-block" id="helpUsername"></span>-->
+    <!--<div class="panel-body">-->
+        <!--<div class="input-group">-->
+            <!--<span class="input-group-addon">姓名：</span>-->
+            <!--<input type="text" class="form-control" placeholder="{{ student_name }}" disabled>-->
         <!--</div>-->
-    <!--</div>-->
-    <div class="input-group" id="passwordGroup">
-        <span class="input-group-addon">密码：</span>
-        <input type="password" class="form-control" id="inputPassword" name="password" placeholder="请输入info密码" onblur="checkPassword();">
-    </div>
-    <!--<div class="form-group" id="passwordGroup">-->
-        <!--<label for="inputPassword" class="col-xs-3 control-label">密码</label>-->
-        <!--<div class="col-xs-9">-->
-            <!--<input type="password" class="form-control" id="inputPassword" placeholder="使用info密码进行登录" name="password" onblur="checkPassword();">-->
-            <!--<span class="help-block" id="helpPassword"></span>-->
+        <!--<div class="input-group">-->
+            <!--<span class="input-group-addon">学号：</span>-->
+            <!--<input type="text" class="form-control" placeholder="{{ student_id }}" disabled>-->
         <!--</div>-->
-    <!--</div>-->
-    <div class="input-group" id="submitGroup">
-        <button onclick="ajaxForm_auth();" class="btn btn-default btn-block" id="submitBtn">绑定</button>
-        <p class="help-block" id="helpLoading" style="display: none"><img src="{% static "img/loading.gif" %}">正在认证，请稍候...</p>
-        <p class="help-block" id="helpSubmit"></p>
-    </div>
-    <!--<div class="form-group" id="submitGroup">-->
-        <!--<div class="col-xs-offset-3 col-xs-9">-->
-            <!--<button onclick="ajaxForm_auth();" class="btn btn-default" id="submitBtn">认证</button>-->
-            <!--<p class="help-block" id="helpLoading" style="display: none"><img src="{% static "img/loading.gif" %}">正在认证，请稍候...</p>-->
-            <!--<p class="help-block" id="helpSubmit"></p>-->
+        <!--<div class="input-group">-->
+            <!--<span class="input-group-addon">类别：</span>-->
+            <!--<input type="text" class="form-control" placeholder="{{ student_type }}" disabled>-->
         <!--</div>-->
+        <!--<button class="btn btn-default btn-block" id="relieve-btn" data-toggle="modal" data-target="#myModal">解绑</button>-->
     <!--</div>-->
-</form>
-<!--<div id="successHolder" style="display: none">-->
-    <!--<img src="{% static "img/success.png" %}" />-->
-    <!--<p>认证成功！</p>-->
-    <!--<p>您已经可以使用“紫荆之声”的全部功能了！</p>-->
-<!--</div>-->
+</div>
 {% endblock %}
 
 {% block js %}
