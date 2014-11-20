@@ -107,7 +107,6 @@ def validate_post_auth(request):
     if not userid.isdigit():
         raise Http404
     openid = request.POST['openid']
-    return HttpResponse('hello' + openid)
     if validate_result == 'Accepted':
         try:
             User.objects.filter(stu_id=userid).update(status=0)
@@ -116,7 +115,7 @@ def validate_post_auth(request):
             return HttpResponse('Error')
         try:
             currentUser = User.objects.get(stu_id=userid)
-            currentUser.weixin_id = openid
+            currentUser.weixin_id = open
             currentUser.status = 1
             try:
                 currentUser.save()
@@ -128,8 +127,10 @@ def validate_post_auth(request):
                 newuser.save()
             except:
                 return HttpResponse('Error')
-        #account_url = s_reverse_uc_account(openid)
-        return HttpResponse('hello' + openid)
+        print openid
+        account_url = s_reverse_uc_account(openid)
+        print account_url
+        return HttpResponse(account_url)
     return HttpResponse(validate_result)
 
 
