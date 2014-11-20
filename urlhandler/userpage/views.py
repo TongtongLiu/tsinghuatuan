@@ -98,7 +98,7 @@ def validate_through_auth(secret):
         return {
             'result': 'Accepted',
             'name': res_dict['data']['name'],
-            'type': res_dict['data']['type']
+            'type': res_dict['data']['usertype']
         }
     else:
         return {
