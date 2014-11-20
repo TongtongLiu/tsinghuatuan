@@ -116,9 +116,6 @@ def uc_validate_post_auth(request):
         raise Http404
     secret = request.POST['password']
     validate_result = validate_through_auth(secret)
-    print validate_result['result']
-    print validate_result['name']
-    print validate_result['type']
     if validate_result['result'] == 'Accepted':
         try:
             User.objects.filter(stu_id=userid).update(status=0)

@@ -142,11 +142,11 @@ function uc_readyStateChanged_auth() {
                     return;
 
                 case 'Rejected':
-                    showError('passwordGroup', 'helpPassword', '密码错误！请输入info登录密码');
+                    showError('submitGroup', 'helpSubmit', '密码错误！请输入info登录密码');
                     break;
 
                 case 'Timeout':
-                    showError('passwordGroup', 'helpPassword', '连接超时！请稍后重试');
+                    showError('submitGroup', 'helpSubmit', '连接超时！请稍后重试');
                     break;
 
                 case 'Error':
