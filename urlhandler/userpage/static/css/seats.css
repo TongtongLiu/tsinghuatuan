@@ -58,3 +58,9 @@
 	padding-top: 6px;
 	padding-bottom: 14px;
 }
+
+#tableContainer {
+	height: 250px;
+	width: 80%;
+	overflow: hidden;
+}

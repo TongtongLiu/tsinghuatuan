@@ -25,23 +25,27 @@
 				<td>已选</td>
 			</tr>
 		</table>
-		<table id="selectSeat">
-			{% for line in seats_list %}
-				<tr>
-					{% for seat in line %}
-						{% ifequal seat 0 %}
-							<td class="empty" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
-						{% endifequal %}
-						{% ifequal seat 1 %}
-							<td class="valid" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
-						{% endifequal %}
-						{% ifequal seat 2 %}
-							<td class="selected" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
-						{% endifequal %}
+		<div id="tableContainer">
+			<div id="moveableDiv">
+				<table id="selectSeat">
+					{% for line in seats_list %}
+						<tr>
+							{% for seat in line %}
+								{% ifequal seat 0 %}
+									<td class="empty" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
+								{% endifequal %}
+								{% ifequal seat 1 %}
+									<td class="valid" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
+								{% endifequal %}
+								{% ifequal seat 2 %}
+									<td class="selected" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
+								{% endifequal %}
+							{% endfor %}
+						</tr>
 					{% endfor %}
-				</tr>
-			{% endfor %}
-		</table>
+				</table>
+			</div>
+		</div>
 	</div>
 
 	<form role="form" method="post" id="submitForm">
