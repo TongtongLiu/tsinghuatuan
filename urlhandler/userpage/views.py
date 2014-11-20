@@ -106,6 +106,7 @@ def uc_validate_post_auth(request):
     if not userid.isdigit():
         raise Http404
     secret = request.POST['password']
+    print secret
     validate_result = validate_through_auth(secret)
     print validate_result['result']
     print validate_result['name']
