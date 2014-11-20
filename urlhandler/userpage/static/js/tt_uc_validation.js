@@ -28,14 +28,14 @@ function clearAllHelps() {
 function showSuccess(groupid, helpid) {
     document.getElementById(groupid).setAttribute('class', 'input-group has-success');
     //document.getElementById(helpid).setAttribute('hidden', 'hidden');
-    hideElem(helpid);
+    //hideElem(helpid);
 }
 
 function showError(groupid, helpid, text) {
     var dom = document.getElementById(helpid);
     dom.innerText = text;
     //dom.removeAttribute('hidden');
-    showElem(helpid);
+    //showElem(helpid);
     document.getElementById(groupid).setAttribute('class', 'input-group has-error');
 }
 
