@@ -342,7 +342,14 @@ def uc_validate_post_auth(request):
 def uc_account(request, openid):
     user = User.objects.filter(weixin_id=openid, status=1)
     if user:
-        return render_to_response('usercenter_account.html', {'weixin_id': openid, 'studentid': user[0].stu_id}, context_instance=RequestContext(request))
+        if request.method == 'POST':
+            try:
+                user.update(status=0)
+            except:
+                return HttpResponse('logout error')
+            return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':openid}))
+        else:
+            return render_to_response('usercenter_account.html', {'weixin_id': openid, 'studentid': user[0].stu_id}, context_instance=RequestContext(request))
     else:
         return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
     #user = User.objects.filter(weixin_id=openid, status=1)
