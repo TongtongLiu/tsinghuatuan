@@ -96,6 +96,46 @@ def validate_through_auth(secret):
     else:
         return {'result': 'Rejected'}
 
+
+def uc_validate_post_auth(request):
+    if (not request.POST) or (not 'openid' in request.POST) or \
+            (not 'username' in request.POST) or (not 'password' in request.POST):
+        raise Http404
+    openid = request.POST['openid']
+    userid = request.POST['username']
+    if not userid.isdigit():
+        raise Http404
+    secret = request.POST['password']
+    validate_result = validate_through_auth(secret)
+    print validate_result['result']
+    print validate_result['name']
+    print validate_result['type']
+    if validate_result['result'] == 'Accepted':
+        try:
+            User.objects.filter(stu_id=userid).update(status=0)
+            User.objects.filter(weixin_id=openid).update(status=0)
+        except:
+            return HttpResponse('Error')
+        try:
+            currentUser = User.objects.get(stu_id=userid)
+            currentUser.weixin_id = openid
+            currentUser.status = 1
+            currentUser.stu_name = validate_result['name']
+            currentUser.stu_type = validate_result['type']
+            try:
+                currentUser.save()
+            except:
+                return HttpResponse('Error')
+        except:
+            try:
+                newuser = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'], stu_type=validate_result['type'], status=1)
+                newuser.save()
+            except:
+                return HttpResponse('Error')
+        return HttpResponse(s_reverse_uc_account(openid))
+    return HttpResponse(validate_result['result'])
+
+
 def validate_post_auth(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
             (not 'username' in request.POST) or (not 'password' in request.POST):
@@ -305,42 +345,6 @@ def uc_ticket(request, openid):
         isValidated = 0
     return render_to_response('usercenter_ticket.html', {'tickets':tickets,
                                                          'isValidated':isValidated, 'weixin_id':openid})
-
-
-def uc_validate_post_auth(request):
-    if (not request.POST) or (not 'openid' in request.POST) or \
-            (not 'username' in request.POST) or (not 'password' in request.POST):
-        raise Http404
-    openid = request.POST['openid']
-    userid = request.POST['username']
-    if not userid.isdigit():
-        raise Http404
-    secret = request.POST['password']
-    validate_result = validate_through_auth(secret)
-    if validate_result['result'] == 'Accepted':
-        try:
-            User.objects.filter(stu_id=userid).update(status=0)
-            User.objects.filter(weixin_id=openid).update(status=0)
-        except:
-            return HttpResponse('Error')
-        try:
-            currentUser = User.objects.get(stu_id=userid)
-            currentUser.weixin_id = openid
-            currentUser.status = 1
-            currentUser.stu_name = validate_result['name']
-            currentUser.stu_type = validate_result['type']
-            try:
-                currentUser.save()
-            except:
-                return HttpResponse('Error')
-        except:
-            try:
-                newuser = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'], stu_type=validate_result['type'], status=1)
-                newuser.save()
-            except:
-                return HttpResponse('Error')
-        return HttpResponse(s_reverse_uc_account(openid))
-    return HttpResponse(validate_result['result'])
 
 
 def uc_account(request, openid):
