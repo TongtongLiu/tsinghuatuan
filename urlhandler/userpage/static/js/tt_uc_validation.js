@@ -142,7 +142,7 @@ function uc_readyStateChanged_auth() {
                     return;
 
                 case 'Rejected':
-                    showError('submitGroup', 'helpSubmit', '密码错误！请输入info登录密码');
+                    showError('submitGroup', 'helpSubmit', '学号或密码错误！请输入学号和info登录密码');
                     break;
 
                 case 'Timeout':
