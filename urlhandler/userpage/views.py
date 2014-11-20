@@ -100,12 +100,12 @@ def validate_post_auth(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
             (not 'username' in request.POST) or (not 'password' in request.POST):
         raise Http404
-    secret = request.POST['password']
-    validate_result = validate_through_auth(secret)
+    openid = request.POST['openid']
     userid = request.POST['username']
     if not userid.isdigit():
         raise Http404
-    openid = request.POST['openid']
+    secret = request.POST['password']
+    validate_result = validate_through_auth(secret)
     if validate_result == 'Accepted':
         try:
             User.objects.filter(stu_id=userid).update(status=0)
@@ -114,7 +114,7 @@ def validate_post_auth(request):
             return HttpResponse('Error')
         try:
             currentUser = User.objects.get(stu_id=userid)
-            currentUser.weixin_id = open
+            currentUser.weixin_id = openid
             currentUser.status = 1
             try:
                 currentUser.save()
