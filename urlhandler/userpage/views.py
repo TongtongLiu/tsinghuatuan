@@ -340,11 +340,12 @@ def uc_validate_post_auth(request):
 
 
 def uc_account(request, openid):
-    user = User.objects.filter(weixin_id=openid, status=1).exists()
+    user = User.objects.filter(weixin_id=openid, status=1)
     if user:
         return render_to_response('usercenter_account.html', {'weixin_id': openid, 'studentid': user[0].stu_id})
     else:
         return render_to_response('usercenter_account_login.html', {'weixin_id': openid})
+    #user = User.objects.filter(weixin_id=openid, status=1)
     # if user:
         # if request.method == 'POST':
         #     try:
