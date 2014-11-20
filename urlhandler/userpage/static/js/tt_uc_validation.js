@@ -13,7 +13,7 @@ function showElem(id) {
 }
 
 function clearHelp(groupid, helpid) {
-    document.getElementById(groupid).setAttribute('class', 'form-group');
+    document.getElementById(groupid).setAttribute('class', 'input-group');
     //document.getElementById(helpid).setAttribute('hidden', 'hidden');
     //document.getElementById(helpid).setAttribute('style', 'display:none;');
     hideElem(helpid);
@@ -26,7 +26,7 @@ function clearAllHelps() {
 }
 
 function showSuccess(groupid, helpid) {
-    document.getElementById(groupid).setAttribute('class', 'form-group has-success');
+    document.getElementById(groupid).setAttribute('class', 'input-group has-success');
     //document.getElementById(helpid).setAttribute('hidden', 'hidden');
     hideElem(helpid);
 }
@@ -36,7 +36,7 @@ function showError(groupid, helpid, text) {
     dom.innerText = text;
     //dom.removeAttribute('hidden');
     showElem(helpid);
-    document.getElementById(groupid).setAttribute('class', 'form-group has-error');
+    document.getElementById(groupid).setAttribute('class', 'input-group has-error');
 }
 
 function disableOne(id, flag) {
@@ -198,7 +198,7 @@ function uc_submit2auththu(openid, timestamp) {
 
 function checkNotEmpty(groupid, helpid, inputid, hintName) {
     if (document.getElementById(inputid).value.trim().length == 0) {
-        document.getElementById(groupid).setAttribute('class', 'form-group has-error');
+        document.getElementById(groupid).setAttribute('class', 'input-group has-error');
         var dom = document.getElementById(helpid);
         dom.innerText = '请输入' + hintName + '！';
         //dom.removeAttribute('hidden');
@@ -212,7 +212,7 @@ function checkNotEmpty(groupid, helpid, inputid, hintName) {
 
 function checkIsDigit(groupid, helpid, inputid, hintName) {
     if (isNaN(document.getElementById(inputid).value)) {
-        document.getElementById(groupid).setAttribute('class', 'form-group has-error');
+        document.getElementById(groupid).setAttribute('class', 'input-group has-error');
         var dom = document.getElementById(helpid);
         dom.innerText = hintName + '必须为数字！';
         //dom.removeAttribute('hidden');
