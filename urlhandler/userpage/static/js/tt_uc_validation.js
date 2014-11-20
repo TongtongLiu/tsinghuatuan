@@ -199,10 +199,10 @@ function uc_submit2auththu(openid, timestamp) {
 function checkNotEmpty(groupid, helpid, inputid, hintName) {
     if (document.getElementById(inputid).value.trim().length == 0) {
         document.getElementById(groupid).setAttribute('class', 'input-group has-error');
-        var dom = document.getElementById(helpid);
-        dom.innerText = '请输入' + hintName + '！';
+        //var dom = document.getElementById(helpid);
+        //dom.innerText = '请输入' + hintName + '！';
         //dom.removeAttribute('hidden');
-        showElem(helpid);
+        //showElem(helpid);
         return false;
     } else {
         showSuccess(groupid, helpid);
@@ -213,10 +213,10 @@ function checkNotEmpty(groupid, helpid, inputid, hintName) {
 function checkIsDigit(groupid, helpid, inputid, hintName) {
     if (isNaN(document.getElementById(inputid).value)) {
         document.getElementById(groupid).setAttribute('class', 'input-group has-error');
-        var dom = document.getElementById(helpid);
-        dom.innerText = hintName + '必须为数字！';
+        //var dom = document.getElementById(helpid);
+        //dom.innerText = hintName + '必须为数字！';
         //dom.removeAttribute('hidden');
-        showElem(helpid);
+        //showElem(helpid);
         return false;
     } else {
         showSuccess(groupid, helpid);
