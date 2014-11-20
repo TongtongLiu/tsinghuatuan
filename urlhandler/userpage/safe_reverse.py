@@ -23,11 +23,11 @@ def s_reverse_activity_menu(actid):
 
 
 def s_reverse_uc_ticket(openid):
-    return SITE_DOMAIN + reverse('userpage.views.uc_ticket', kwargs={'weixinid': openid})
+    return SITE_DOMAIN + reverse('userpage.views.uc_ticket', kwargs={'openid': openid})
 
 
 def s_reverse_uc_account(openid):
-    return SITE_DOMAIN + reverse('userpage.views.uc_account', kwargs={'weixinid': openid})
+    return SITE_DOMAIN + reverse('userpage.views.uc_account', kwargs={'openid': openid})
 
 
 def s_reverse_ticket_selecttion(uid):
