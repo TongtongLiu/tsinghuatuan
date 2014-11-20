@@ -96,7 +96,6 @@ def validate_through_auth(secret):
     else:
         return 'Rejected'
 
-
 def validate_post_auth(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
             (not 'username' in request.POST) or (not 'password' in request.POST):
@@ -127,10 +126,6 @@ def validate_post_auth(request):
                 newuser.save()
             except:
                 return HttpResponse('Error')
-        print openid
-        account_url = s_reverse_uc_account(openid)
-        print account_url
-        return HttpResponse(account_url)
     return HttpResponse(validate_result)
 
 
@@ -272,7 +267,7 @@ def uc_center(request):
         return redirect(s_reverse_uc_account(openid))
 
 @csrf_exempt
-def uc_ticket(request, weixinid):
+def uc_ticket(request, openid):
     if request.is_ajax():
         try:
             if not request.POST.get('ticket_id', ''):
@@ -299,29 +294,66 @@ def uc_ticket(request, weixinid):
                 return HttpResponse('logout error')
         except:
             return HttpResponse('logout error')
-    weixin_id = weixinid
     tickets = []
-    user = User.objects.filter(weixin_id=weixinid, status=1)
+    user = User.objects.filter(weixin_id=openid, status=1)
     if user:
         isValidated = 1
         tickets = Ticket.objects.filter(stu_id=user[0].stu_id, status=1)
     else:
         isValidated = 0
     return render_to_response('usercenter_ticket.html', {'tickets':tickets,
-                                                         'isValidated':isValidated, 'weixin_id':weixin_id})
+                                                         'isValidated':isValidated, 'weixin_id':openid})
 
-def uc_account(request, weixinid):
-    weixin_id = weixinid
-    user = User.objects.filter(weixin_id=weixinid, status=1)
+
+def uc_validate_post_auth(request):
+    if (not request.POST) or (not 'openid' in request.POST) or \
+            (not 'username' in request.POST) or (not 'password' in request.POST):
+        raise Http404
+    openid = request.POST['openid']
+    userid = request.POST['username']
+    if not userid.isdigit():
+        raise Http404
+    secret = request.POST['password']
+    validate_result = validate_through_auth(secret)
+    if validate_result == 'Accepted':
+        try:
+            User.objects.filter(stu_id=userid).update(status=0)
+            User.objects.filter(weixin_id=openid).update(status=0)
+        except:
+            return HttpResponse('Error')
+        try:
+            currentUser = User.objects.get(stu_id=userid)
+            currentUser.weixin_id = open
+            currentUser.status = 1
+            try:
+                currentUser.save()
+            except:
+                return HttpResponse('Error')
+        except:
+            try:
+                newuser = User.objects.create(weixin_id=openid, stu_id=userid, status=1)
+                newuser.save()
+            except:
+                return HttpResponse('Error')
+        return HttpResponse(s_reverse_uc_account(openid))
+    return HttpResponse(validate_result)
+
+
+def uc_account(request, openid):
+    user = User.objects.filter(weixin_id=openid, status=1).exists()
     if user:
+        return render_to_response('usercenter_account.html', {'weixin_id': openid, 'studentid': user[0].stu_id})
+    else:
+        return render_to_response('usercenter_account_login.html', {'weixin_id': openid})
+    # if user:
         # if request.method == 'POST':
         #     try:
         #         user.update(status=0)
         #     except:
         #         return HttpResponse('logout error')
-        #     return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':weixin_id}))
-        return render_to_response('usercenter_account.html', context_instance=RequestContext(request,{'weixin_id':weixin_id, 'userid':user[0].stu_id}))
-    else:
+        #     return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':openid}))
+        # return render_to_response('usercenter_account.html', context_instance=RequestContext(request,{'weixin_id':openid, 'userid':user[0].stu_id}))
+    # else:
         # errors = []
         # if request.method == 'POST':
         #     if not request.POST.get('studentId', ''):
@@ -333,12 +365,12 @@ def uc_account(request, weixinid):
         #         password = request.POST['infoPass']
         #         try:
         #             User.objects.filter(stu_id=stuid).update(status=0)
-        #             User.objects.filter(weixin_id=weixinid).update(status=0)
+        #             User.objects.filter(weixin_id=openid).update(status=0)
         #         except:
         #             return HttpResponse('haha')
         #         try:
         #             currentUser = User.objects.get(stu_id=stuid)
-        #             currentUser.weixin_id = weixinid
+        #             currentUser.weixin_id = openid
         #             currentUser.status = 1
         #             try:
         #                 currentUser.save()
@@ -346,29 +378,27 @@ def uc_account(request, weixinid):
         #                 return HttpResponse('Error')
         #         except:
         #             try:
-        #                 newuser = User.objects.create(weixin_id=weixinid, stu_id=stuid, status=1)
+        #                 newuser = User.objects.create(weixin_id=openid, stu_id=stuid, status=1)
         #                 newuser.save()
         #             except:
         #                 return HttpResponse('Error')
-        #     user = User.objects.filter(weixin_id=weixinid, status=1)
-        #     return render_to_response('usercenter_account.html', context_instance=RequestContext(request,{'weixin_id':weixin_id, 'userid':user[0].stu_id}))
-        return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':weixin_id}))
+        #     user = User.objects.filter(weixin_id=openid, status=1)
+        #     return render_to_response('usercenter_account.html', context_instance=RequestContext(request,{'weixin_id':openid, 'userid':user[0].stu_id}))
+        # return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':openid}))
             
-def uc_2ticket(request, weixinid):
-    weixin_id = weixinid
-    if User.objects.filter(weixin_id=weixinid, status=1).exists():
+def uc_2ticket(request, openid):
+    if User.objects.filter(weixin_id=openid, status=1).exists():
         isValidated = 1
     else:
         isValidated = 0
-    return render_to_response('usercenter_2ticket.html',{'isValidated':isValidated, 'weixin_id':weixin_id})
+    return render_to_response('usercenter_2ticket.html',{'isValidated':isValidated, 'weixin_id':openid})
 
-def uc_token(request, weixinid):
-    weixin_id = weixinid
-    if User.objects.filter(weixin_id=weixinid, status=1).exists():
+def uc_token(request, openid):
+    if User.objects.filter(weixin_id=openid, status=1).exists():
         isValidated = 1
     else:
         isValidated = 0
-    return render_to_response('usercenter_token.html',{'isValidated':isValidated, 'weixin_id':weixin_id})
+    return render_to_response('usercenter_token.html',{'isValidated':isValidated, 'weixin_id':openid})
 
 @csrf_exempt
 def views_seats(request, uid):

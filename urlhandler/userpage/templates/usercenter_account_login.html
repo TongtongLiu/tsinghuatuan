@@ -67,14 +67,13 @@
     </script>
 
     <script src="{% static "lib/RSA/RSA2.js" %}"></script>
-    <script src="{% static "js/validation_student.js" %}?_=1"></script>
+    <script src="{% static "js/tt_uc_validation.js" %}?_=1"></script>
     <script>
     function ajaxForm_auth() {
         var time_xmlhttp = new XMLHttpRequest();
         time_xmlhttp.open("GET","{% url 'userpage.views.validate_get_time_auth' %}",false);
         time_xmlhttp.send();
-        submit2auththu('{{ openid }}', time_xmlhttp.responseText);
+        uc_submit2auththu('{{ weixin_id }}', time_xmlhttp.responseText);
     }
-    window.addEventListener('load', function() {showValidation({{ isValidated }});}, false);
     </script>
 {% endblock %}
