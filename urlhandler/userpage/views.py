@@ -91,21 +91,18 @@ def validate_through_auth(secret):
         res_dict = eval(res)
     except:
         return {
-            'result': 'Error',
-            'name': '',
-            'type': ''
+            'result': 'Error'
         }
     if res_dict['code'] == 0:
+        print
         return {
             'result': 'Accepted',
-            'name': res_dict['name'],
-            'type': res_dict['type']
+            'name': res_dict['data']['name'],
+            'type': res_dict['data']['type']
         }
     else:
         return {
-            'result': 'Rejected',
-            'name': '',
-            'type': ''
+            'result': 'Rejected'
         }
 
 
