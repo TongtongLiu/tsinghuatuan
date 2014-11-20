@@ -127,7 +127,7 @@ def validate_post_auth(request):
                 newuser.save()
             except:
                 return HttpResponse('Error')
-        account_url = s_reverse_uc_account(openid)
+        #account_url = s_reverse_uc_account(openid)
         return HttpResponse(openid)
     return HttpResponse(validate_result)
 
