@@ -323,7 +323,7 @@ def uc_validate_post_auth(request):
             return HttpResponse('Error')
         try:
             currentUser = User.objects.get(stu_id=userid)
-            currentUser.weixin_id = open
+            currentUser.weixin_id = openid
             currentUser.status = 1
             try:
                 currentUser.save()
