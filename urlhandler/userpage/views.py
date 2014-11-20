@@ -90,11 +90,11 @@ def validate_through_auth(secret):
         res = res_data.read()
         res_dict = eval(res)
     except:
-        return json.dumps({'result': 'Error'})
+        return {'result': 'Error'}
     if res_dict['code'] == 0:
-        return json.dumps({'result': 'Accepted', 'name': res_dict['name'], 'type': res_dict['type']})
+        return {'result': 'Accepted', 'name': res_dict['name'], 'type': res_dict['type']}
     else:
-        return json.dumps({'result': 'Rejected'})
+        return {'result': 'Rejected'}
 
 def validate_post_auth(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
@@ -105,7 +105,7 @@ def validate_post_auth(request):
     if not userid.isdigit():
         raise Http404
     secret = request.POST['password']
-    validate_result = json.loads(validate_through_auth(secret))
+    validate_result = validate_through_auth(secret)
     if validate_result['result'] == 'Accepted':
         try:
             User.objects.filter(stu_id=userid).update(status=0)
