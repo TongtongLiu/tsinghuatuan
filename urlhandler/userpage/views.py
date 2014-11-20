@@ -90,11 +90,23 @@ def validate_through_auth(secret):
         res = res_data.read()
         res_dict = eval(res)
     except:
-        return {'result': 'Error'}
+        return {
+            'result': 'Error',
+            'name': '',
+            'type': ''
+        }
     if res_dict['code'] == 0:
-        return {'result': 'Accepted', 'name': res_dict['name'], 'type': res_dict['type']}
+        return {
+            'result': 'Accepted',
+            'name': res_dict['name'],
+            'type': res_dict['type']
+        }
     else:
-        return {'result': 'Rejected'}
+        return {
+            'result': 'Rejected',
+            'name': '',
+            'type': ''
+        }
 
 
 def uc_validate_post_auth(request):
@@ -106,7 +118,6 @@ def uc_validate_post_auth(request):
     if not userid.isdigit():
         raise Http404
     secret = request.POST['password']
-    print secret
     validate_result = validate_through_auth(secret)
     print validate_result['result']
     print validate_result['name']
