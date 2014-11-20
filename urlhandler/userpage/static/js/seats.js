@@ -97,3 +97,44 @@ $('#submitForm').on('submit', function(e) {
     });
     return false;
 });
+
+var moveableDiv = document.getElementById('moveableDiv');
+var dx, dy;
+
+touch.on(moveableDiv, 'touchstart', function(ev){
+    ev.preventDefault();
+});
+
+touch.on(moveableDiv, 'drag', function(ev){
+    dx = dx || 0;
+    dy = dy || 0;
+    var offx = dx + ev.x + "px";
+    var offy = dy + ev.y + "px";
+    moveableDiv.style.webkitTransform = "translate3d(" + offx + "," + offy + ",0)";
+});
+
+touch.on(moveableDiv, 'dragend', function(ev){
+    dx += ev.x;
+    dy += ev.y;
+});
+
+var table = document.getElementById('selectSeat');
+
+touch.on(table, 'touchstart', function(ev){
+    ev.preventDefault();
+}
+
+var initialScale = 1;
+var currentScale;
+
+touch.on(table, 'pinch', function(ev){
+    currentScale = ev.scale - 1;
+    currentScale = initialScale + currentScale;
+    currentScale = currentScale > 2 ? 2 : currentScale;
+    currentScale = currentScale < 1 ? 1 : currentScale;
+    table.style.webkitTransform = 'scale(' + currentScale + ')';
+});
+
+touch.on(table, 'pinchend', function(ev){
+    initialScale = currentScale;
+})

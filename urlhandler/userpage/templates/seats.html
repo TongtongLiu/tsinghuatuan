@@ -2,10 +2,6 @@
 
 {% load staticfiles %}
 
-	{% block viewport %}
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-	{% endblock %}
-
 	{% block css %}
 	<link href="{% static "css/seats.css" %}" rel="stylesheet" type="text/css" />
 	{% endblock %}
@@ -58,5 +54,6 @@
 
 {% block js %}
 	<script src="{% static "lib/jq/jquery-1.10.2.min.js" %}"></script>
+	<script src="{% static "lib/touch/touch.min.js" %}"></script>
     <script src="{% static "js/seats.js" %}"></script>
 {% endblock %}
