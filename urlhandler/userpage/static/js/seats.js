@@ -43,8 +43,6 @@ function bind_click(){
 	}
 }
 
-bind_click();
-
 function showMsg(message){
 	$('#showSelection').hide();
     $('#alert').text(message);
@@ -72,7 +70,7 @@ function response(data){
                 }
             }
             isSelected = false;
-            bind_click();
+            bind_tap();
         } else {
         	showMsg('恭喜，选座成功啦！');
             location.href = data.next_url;
@@ -101,10 +99,6 @@ $('#submitForm').on('submit', function(e) {
 var moveableDiv = document.getElementById('moveableDiv');
 var dx, dy;
 
-touch.on(moveableDiv, 'touchstart', function(ev){
-    ev.preventDefault();
-});
-
 touch.on(moveableDiv, 'drag', function(ev){
     dx = dx || 0;
     dy = dy || 0;
@@ -120,21 +114,62 @@ touch.on(moveableDiv, 'dragend', function(ev){
 
 var table = document.getElementById('selectSeat');
 
-touch.on(table, 'touchstart', function(ev){
-    ev.preventDefault();
-}
-
 var initialScale = 1;
 var currentScale;
 
 touch.on(table, 'pinch', function(ev){
     currentScale = ev.scale - 1;
     currentScale = initialScale + currentScale;
-    currentScale = currentScale > 2 ? 2 : currentScale;
+    currentScale = currentScale > 6 ? 6 : currentScale;
     currentScale = currentScale < 1 ? 1 : currentScale;
     table.style.webkitTransform = 'scale(' + currentScale + ')';
 });
 
 touch.on(table, 'pinchend', function(ev){
     initialScale = currentScale;
-})
+});
+
+function bind_tap(){
+    var valid_list = document.getElementsByClassName('valid');
+    var inputSelect = document.getElementById('input');
+    for (var i = 0; i < valid_list.length; i++) {
+        touch.on(valid_list[i], 'tap', function (evt) {
+            if (this.getAttribute('class') == 'valid') {
+                if(isSelected == false) {
+                    this.setAttribute('class', 'selectThis');
+                    inputSelect.value = this.getAttribute('id');
+                    showText(this.getAttribute('id'));
+                    isSelected = true;
+                } else {
+                    document.getElementsByClassName('selectThis')[1].setAttribute('class', 'valid');
+                    this.setAttribute('class', 'selectThis');
+                    inputSelect.value = this.getAttribute('id');
+                    showText(this.getAttribute('id'));
+                }
+            } else if ((this.getAttribute('class') == 'selectThis')) {
+                this.setAttribute('class', 'valid');
+                hideText();
+                inputSelect.value = '';
+                isSelected = false;
+            }
+
+            function showText(seat){
+                var location = seat.split('-');
+                document.getElementById('row').innerText = location[0];
+                document.getElementById('column').innerText = location[1];
+                document.getElementById('showSelection').style.display = 'block';
+                document.getElementById('submitButton').disabled = false;
+                document.getElementById('alert').style.display = 'none';
+            }
+
+            function hideText(){
+                document.getElementById('showSelection').style.display = 'none';
+                document.getElementById('alert').innerText = '请选择您的座位';
+                document.getElementById('alert').style.display = 'block';
+                document.getElementById('submitButton').disabled = true;
+            }
+        });
+    }
+}
+
+bind_tap();
