@@ -99,6 +99,10 @@ $('#submitForm').on('submit', function(e) {
 var moveableDiv = document.getElementById('moveableDiv');
 var dx, dy;
 
+touch.on(moveableDiv, 'touchstart', function(ev){
+	ev.preventDefault();
+});
+
 touch.on(moveableDiv, 'drag', function(ev){
     dx = dx || 0;
     dy = dy || 0;
@@ -113,6 +117,11 @@ touch.on(moveableDiv, 'dragend', function(ev){
 });
 
 var table = document.getElementById('selectSeat');
+
+
+touch.on(table, 'touchstart', function(ev){
+	ev.preventDefault();
+});
 
 var initialScale = 1;
 var currentScale;
@@ -173,3 +182,4 @@ function bind_tap(){
 }
 
 bind_tap();
+
