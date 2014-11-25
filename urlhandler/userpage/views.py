@@ -128,13 +128,14 @@ def uc_validate_post_auth(request):
             currentUser.status = 1
             currentUser.stu_name = validate_result['name']
             currentUser.stu_type = validate_result['type']
+            currentUser.bind_count = 0
             try:
                 currentUser.save()
             except:
                 return HttpResponse('Error')
         except:
             try:
-                newuser = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'], stu_type=validate_result['type'], status=1)
+                newuser = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'], stu_type=validate_result['type'], status=1, bind_count=0)
                 newuser.save()
             except:
                 return HttpResponse('Error')
