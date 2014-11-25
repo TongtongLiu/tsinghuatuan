@@ -8,6 +8,7 @@ class User(models.Model):
     stu_id = models.CharField(max_length=255)
     stu_name = models.CharField(max_length=255)
     stu_type = models.CharField(max_length=255)
+    bind_count = models.IntegerField()
     status = models.IntegerField()
     seed = models.FloatField(default=1024)
 
@@ -40,11 +41,17 @@ class Ticket(models.Model):
     unique_id = models.CharField(max_length=255)
     activity = models.ForeignKey(Activity)
     status = models.IntegerField()
+    partner_id = models.CharField(max_length=255)
     seat = models.CharField(max_length=255)
     # Something about isUsed
     # 0: ticket order is cancelled
     # 1: ticket order is valid
     # 2: ticket is used
+
+class Bind(models.Model):
+    activity = models.ForeignKey(Activity)
+    active_stu_id = models.CharField(max_length=255)
+    passive_stu_id = models.CharField(max_length=255)
 
 '''
 class UserSession(models.Model):
