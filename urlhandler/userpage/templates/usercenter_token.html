@@ -18,19 +18,17 @@
     $(document).ready(function() {
         $("li.active").toggleClass("active");
         $("li#nav_token").addClass("active");
-        (function ajax_token() {
-            $.post("",
-            {
-                openid: "{{ weixin_id }}"
-            },
-            function(data, status) {
-                if (status == "success") {
-                    $("token-holder").val(data.token);
-                } else {
-                    $("token-holder").val("Error token! Please refresh.");
-                }
-            });
-        })()
+        $.post("",
+        {
+            openid: "{{ weixin_id }}"
+        },
+        function(data, status) {
+            if (status == "success") {
+                $("token-holder").val(data.token);
+            } else {
+                $("token-holder").val("Error token! Please refresh.");
+            }
+        });
     });
     </script>
 {% endblock %}
