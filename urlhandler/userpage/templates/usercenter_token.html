@@ -6,7 +6,7 @@
 {% if isValidated %}
  <div class="input-group">
      <span class="input-group-addon">指令：</span>
-     <input type="text" class="form-control" value="twitterhandle" disabled>
+     <input type="text" id="token-holder" class="form-control" value="token" disabled>
 </div>
 {% else %}
     <p style="text-align: center; font-weight: bold;">请先绑定账户</p>
@@ -14,10 +14,12 @@
 {% endblock %}
 
 {% block js %}
-<script>
-$(document).ready(function(){
-  $("li.active").toggleClass("active");
-  $("li#nav_token").addClass("active");
-});
-</script>
+    <script src="{% static "js/tt_token_generate.js" %}"></script>
+    <script>
+    $(document).ready(function(){
+        $("li.active").toggleClass("active");
+        $("li#nav_token").addClass("active");
+        ajax_token();
+    });
+    </script>
 {% endblock %}

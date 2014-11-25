@@ -7,7 +7,7 @@ from urlhandler.models import User, Activity, Ticket
 from django.views.decorators.csrf import csrf_exempt
 from urlhandler.settings import STATIC_URL
 import urllib, urllib2
-import datetime
+import datetime, time
 import json
 from django.db import transaction
 from django.utils import timezone
@@ -372,54 +372,20 @@ def uc_account(request, openid):
             }, context_instance=RequestContext(request))
     else:
         return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
-    #user = User.objects.filter(weixin_id=openid, status=1)
-    # if user:
-        # if request.method == 'POST':
-        #     try:
-        #         user.update(status=0)
-        #     except:
-        #         return HttpResponse('logout error')
-        #     return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':openid}))
-        # return render_to_response('usercenter_account.html', context_instance=RequestContext(request,{'weixin_id':openid, 'userid':user[0].stu_id}))
-    # else:
-        # errors = []
-        # if request.method == 'POST':
-        #     if not request.POST.get('studentId', ''):
-        #         errors.append('1')
-        #     if not request.POST.get('infoPass', ''):
-        #         errors.append('2')
-        #     if not errors:
-        #         stuid = request.POST['studentId']
-        #         password = request.POST['infoPass']
-        #         try:
-        #             User.objects.filter(stu_id=stuid).update(status=0)
-        #             User.objects.filter(weixin_id=openid).update(status=0)
-        #         except:
-        #             return HttpResponse('haha')
-        #         try:
-        #             currentUser = User.objects.get(stu_id=stuid)
-        #             currentUser.weixin_id = openid
-        #             currentUser.status = 1
-        #             try:
-        #                 currentUser.save()
-        #             except:
-        #                 return HttpResponse('Error')
-        #         except:
-        #             try:
-        #                 newuser = User.objects.create(weixin_id=openid, stu_id=stuid, status=1)
-        #                 newuser.save()
-        #             except:
-        #                 return HttpResponse('Error')
-        #     user = User.objects.filter(weixin_id=openid, status=1)
-        #     return render_to_response('usercenter_account.html', context_instance=RequestContext(request,{'weixin_id':openid, 'userid':user[0].stu_id}))
-        # return render_to_response('usercenter_account_login.html', context_instance=RequestContext(request,{'weixin_id':openid}))
-            
+
 def uc_2ticket(request, openid):
-    if User.objects.filter(weixin_id=openid, status=1).exists():
-        isValidated = 1
+    if request.method == 'POST':
+        weixin_id = request.POST.get('openid', '')
+        user = User.objects.filter(weixin_id=weixin_id, status=1)
+        timestamp = int(time.time()) / 100
+        rtnJSON = {'token': user.stu_id ^ timestamp}
+        return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
     else:
-        isValidated = 0
-    return render_to_response('usercenter_2ticket.html',{'isValidated':isValidated, 'weixin_id':openid})
+        if User.objects.filter(weixin_id=openid, status=1).exists():
+            isValidated = 1
+        else:
+            isValidated = 0
+        return render_to_response('usercenter_2ticket.html',{'isValidated':isValidated, 'weixin_id':openid})
 
 def uc_token(request, openid):
     if User.objects.filter(weixin_id=openid, status=1).exists():
