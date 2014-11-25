@@ -8,7 +8,7 @@ class User(models.Model):
     stu_id = models.CharField(max_length=255)
     stu_name = models.CharField(max_length=255)
     stu_type = models.CharField(max_length=255)
-    bind_count = models.IntegerField()
+    bind_count = models.IntegerField(default=0)
     status = models.IntegerField()
     seed = models.FloatField(default=1024)
 

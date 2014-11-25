@@ -23,12 +23,24 @@
     padding: 10px 5px 10px 5px;
     border-collapse: inherit;
     border-spacing: 2px;
+    float: left;
+    width: 70%;
+}
+
+#infoSet {
+    padding: 10px 5px 10px 5px;
+    width: 25%;
 }
 
 #tbody {
     line-height: 1;
     border-spacing: 5px;
     border-collapse: separate;
+}
+
+#clear-float {
+    clear:both;
+    height: 0px;
 }
 
 .selectThis {

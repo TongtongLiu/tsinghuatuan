@@ -128,6 +128,7 @@ def uc_validate_post_auth(request):
             currentUser.status = 1
             currentUser.stu_name = validate_result['name']
             currentUser.stu_type = validate_result['type']
+            currentUser.bind_count = 0
             try:
                 currentUser.save()
             except:
