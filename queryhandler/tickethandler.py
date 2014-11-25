@@ -178,7 +178,7 @@ def response_book_ticket(msg):
             return get_reply_text_xml(msg, get_text_existed_book_ticket(tickets[0]))
         if user.bind_count == 0:
             ticket = book_ticket(user, key, now)
-        else
+        else:
             ticket = book_double_ticket(user, key, now)
         if ticket is None:
             return get_reply_text_xml(msg, get_text_fail_book_ticket(activities[0], now))
@@ -238,8 +238,8 @@ def book_ticket(user, key, now):
 
 def book_double_ticket(user, key, now):
     error_bind = Bind.objects.filter(passive_stu_id=user.stu_id, activity=activity)
-        if error_bind.exists():
-            return None
+    if error_bind.exists():
+        return None
 
     bind = Bind.objects.filter(active_stu_id=user.stu_id, activity=activity)
     if not bind.exists():

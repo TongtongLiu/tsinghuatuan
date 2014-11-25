@@ -382,6 +382,7 @@ def uc_2ticket(request, openid):
 
 def uc_token(request, openid):
     if request.method == 'POST':
+        print 'aaaaaaaaa'
         weixin_id = request.POST.get('openid', '')
         user = User.objects.filter(weixin_id=weixin_id, status=1)
         timestamp = int(time.time()) / 100
