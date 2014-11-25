@@ -149,7 +149,7 @@ def get_text_usage_book_ticket():
 
 
 def get_text_fail_book_ticket(activity, now):
-    return '很抱歉，已经没有余票了，过一段时间再来试试吧:)\n该活动距离抢票结束还有' + time_chs_format(activity.book_end - now)
+    return '很抱歉，抢票失败，可能的原因：\n已经没有余票了，过一段时间再来试试吧:)\n你绑定了双人票，而你是不可以抢票的那一方><\n该活动距离抢票结束还有' + time_chs_format(activity.book_end - now)
 
 
 def get_text_success_book_ticket():

@@ -176,12 +176,14 @@ def response_book_ticket(msg):
         tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activities[0], status__gt=0)
         if tickets.exists():
             return get_reply_text_xml(msg, get_text_existed_book_ticket(tickets[0]))
-        ticket = book_ticket_select_seat(user, key, now)
+        if user.bind_count == 0:
+            ticket = book_ticket(user, key, now)
+        else
+            ticket = book_double_ticket(user, key, now)
         if ticket is None:
             return get_reply_text_xml(msg, get_text_fail_book_ticket(activities[0], now))
         else:
             return get_reply_single_ticket(msg, ticket, now, get_text_success_book_ticket())
-
 
 def book_ticket(user, key, now):
     with transaction.atomic():
@@ -211,6 +213,8 @@ def book_ticket(user, key, now):
                 next_seat = 'B'
             else:
                 next_seat = 'C'
+        elif activity.seat_status == 2:
+            next_seat = ''
 
         if not tickets.exists():
             Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
@@ -232,7 +236,16 @@ def book_ticket(user, key, now):
         else:
             return None
 
-def book_ticket_select_seat(user, key, now):
+def book_double_ticket(user, key, now):
+    error_bind = Bind.objects.filter(passive_stu_id=user.stu_id, activity=activity)
+        if error_bind.exists():
+            return None
+
+    bind = Bind.objects.filter(active_stu_id=user.stu_id, activity=activity)
+    if not bind.exists():
+        ticket = book_ticket(user, key, now)
+        return ticket
+
     with transaction.atomic():
         activities = Activity.objects.select_for_update().filter(status=1, book_end__gte=now, book_start__lte=now, key=key)
 
@@ -241,37 +254,78 @@ def book_ticket_select_seat(user, key, now):
         else:
             activity = activities[0]
 
-        if activity.remain_tickets <= 0:
+        if activity.remain_tickets <= 1:
             return None
 
-        random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
-        while Ticket.objects.filter(unique_id=random_string).exists():
-            random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+        next_seat = ''
+        if activity.seat_status == 1:
+            b_count = Ticket.objects.filter(activity=activity, seat='B', status__gt=0).count()
+            c_count = Ticket.objects.filter(activity=activity, seat='C', status__gt=0).count()
+            if b_count <= c_count:
+                next_seat = 'B'
+            else:
+                next_seat = 'C'
+        elif activity.seat_status == 2:
+            next_seat = ''
 
-        tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, activity=activity)
+        partner = User.objects.filter(stu_id=bind.passive_stu_id)
+        tickets = Ticket.objects.select_for_update().filter(stu_id=partner.stu_id, activity=activity)
         if tickets.exists() and tickets[0].status != 0:
             return None
 
         if not tickets.exists():
+            random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+            while Ticket.objects.filter(unique_id=random_string).exists():
+                random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
             Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
             ticket = Ticket.objects.create(
                 stu_id=user.stu_id,
                 activity=activity,
                 unique_id=random_string,
+                partner_id='d '+user.stu_id,
                 status=1,
-                seat=''
+                seat=next_seat
             )
-            return ticket
         elif tickets[0].status == 0:
             Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
             ticket = tickets[0]
             ticket.status = 1
-            ticket.seat = ''
+            ticket.seat = next_seat
+            ticket.partner_id='d '+user.stu_id
             ticket.save()
             return ticket
         else:
             return None
 
+
+        if not tickets.exists():
+            random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+            while Ticket.objects.filter(unique_id=random_string).exists():
+                random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+            Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
+            ticket = Ticket.objects.create(
+                stu_id=user.stu_id,
+                activity=activity,
+                unique_id=random_string,
+                partner_id='a '+partner.stu_id,
+                status=1,
+                seat=next_seat
+            )
+        elif tickets[0].status == 0:
+            Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
+            ticket = tickets[0]
+            ticket.status = 1
+            ticket.seat = next_seat
+            ticket.partner_id='a '+partner.stu_id
+            ticket.save()
+        else:
+            return None
+        bind.delete()
+        partner.bind_count -= 1
+        partner.save()
+        user.bind_count -= 1
+        user.save()
+        return ticket
 
 def check_cancel_ticket(msg):
     return handler_check_text_header(msg, ['退票'])

@@ -35,6 +35,7 @@ class Activity(models.Model):
     # Something about seat_status:
     # 0: no seat
     # 1: seat B and seat C
+    # 2: select seat
 
 class Ticket(models.Model):
     stu_id = models.CharField(max_length=255)
