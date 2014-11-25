@@ -38,6 +38,11 @@
     border-collapse: separate;
 }
 
+#clear-float {
+    clear:both;
+    height: 0px;
+}
+
 .selectThis {
     margin: 1px;
     width: 15px;
