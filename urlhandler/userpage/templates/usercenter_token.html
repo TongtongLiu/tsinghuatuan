@@ -24,9 +24,9 @@
         },
         function(data, status) {
             if (status == "success") {
-                $("token-holder").val(data.token);
+                $("#token-holder").val(data.token);
             } else {
-                $("token-holder").val("Error token! Please refresh.");
+                $("#token-holder").val("Error token! Please refresh.");
             }
         });
     });
