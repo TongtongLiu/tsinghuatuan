@@ -374,6 +374,13 @@ def uc_account(request, openid):
         return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
 
 def uc_2ticket(request, openid):
+    if User.objects.filter(weixin_id=openid, status=1).exists():
+        isValidated = 1
+    else:
+        isValidated = 0
+    return render_to_response('usercenter_2ticket.html',{'isValidated':isValidated, 'weixin_id':openid})
+
+def uc_token(request, openid):
     if request.method == 'POST':
         weixin_id = request.POST.get('openid', '')
         user = User.objects.filter(weixin_id=weixin_id, status=1)
@@ -385,14 +392,7 @@ def uc_2ticket(request, openid):
             isValidated = 1
         else:
             isValidated = 0
-        return render_to_response('usercenter_2ticket.html',{'isValidated':isValidated, 'weixin_id':openid})
-
-def uc_token(request, openid):
-    if User.objects.filter(weixin_id=openid, status=1).exists():
-        isValidated = 1
-    else:
-        isValidated = 0
-    return render_to_response('usercenter_token.html',{'isValidated':isValidated, 'weixin_id':openid})
+        return render_to_response('usercenter_token.html',{'isValidated':isValidated, 'weixin_id':openid})
 
 @csrf_exempt
 def views_seats(request, uid):
