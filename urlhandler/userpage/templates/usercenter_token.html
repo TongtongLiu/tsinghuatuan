@@ -16,10 +16,22 @@
 {% block js %}
     <script src="{% static "js/tt_token_generate.js" %}"></script>
     <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
         $("li.active").toggleClass("active");
         $("li#nav_token").addClass("active");
-        ajax_token();
+        (function ajax_token() {
+            $.post("",
+            {
+                openid: "{{ weixin_id }}",
+            },
+            function(data, status) {
+                if (status == "success") {
+                    $("token-holder").val(data.token);
+                } else {
+                    $("token-holder").val("Error token! Please refresh.");
+                }
+            });
+        })()
     });
     </script>
 {% endblock %}
