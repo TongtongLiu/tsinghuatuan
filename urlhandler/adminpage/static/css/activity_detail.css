@@ -27,6 +27,11 @@
     width: 70%;
 }
 
+#infoSet {
+    padding: 10px 5px 10px 5px;
+    width: 25%;
+}
+
 #tbody {
     line-height: 1;
     border-spacing: 5px;
