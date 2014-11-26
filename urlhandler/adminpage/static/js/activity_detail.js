@@ -548,9 +548,13 @@ $('#selectSeat').find("td").click(function(){
         }
         else if(buttonSelect == 3) {
             if($(this).hasClass("chosen")){
+                allSeat = false;
+                $('#allSelect').text("全部选择");
                 $('#selectSeat').find("td:not(.empty)").removeClass("chosen");
             }
             else{
+                allSeat = true;
+                $('#allSelect').text("取消全选");
                 $('#selectSeat').find("td:not(.empty)").addClass("chosen");
             }
         }
