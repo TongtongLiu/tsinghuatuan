@@ -23,8 +23,6 @@
     padding: 10px 5px 10px 5px;
     border-collapse: inherit;
     border-spacing: 2px;
-    float: left;
-    width: 70%;
 }
 
 #infoSet {
@@ -52,6 +50,8 @@
 
 .seatsTable {
     margin:auto;
+    float: left;
+    width: 70%;
 }
 
 #selectSeat {
