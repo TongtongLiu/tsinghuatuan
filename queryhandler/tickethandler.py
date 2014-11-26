@@ -176,8 +176,8 @@ def response_book_ticket(msg):
         tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activities[0], status__gt=0)
         if tickets.exists():
             return get_reply_text_xml(msg, get_text_existed_book_ticket(tickets[0]))
-        if user.bind_count == 0:
-            ticket = book_ticket(user, key, now)
+        if user.bind_count > 0:
+            ticket = book_double_ticket(user, key, now)
         else:
             ticket = book_double_ticket(user, key, now)
         if ticket is None:
@@ -237,18 +237,22 @@ def book_ticket(user, key, now):
             return None
 
 def book_double_ticket(user, key, now):
+    try:
+        activity = Activity.objects.get(key=key)
+    except:
+        return None
+
     error_bind = Bind.objects.filter(passive_stu_id=user.stu_id, activity=activity)
     if error_bind.exists():
         return None
-
-    bind = Bind.objects.filter(active_stu_id=user.stu_id, activity=activity)
-    if not bind.exists():
+    try:
+        bind = Bind.objects.get(active_stu_id=user.stu_id, activity=activity)
+    except:
         ticket = book_ticket(user, key, now)
         return ticket
 
     with transaction.atomic():
         activities = Activity.objects.select_for_update().filter(status=1, book_end__gte=now, book_start__lte=now, key=key)
-
         if not activities.exists():
             return None
         else:
@@ -268,7 +272,7 @@ def book_double_ticket(user, key, now):
         elif activity.seat_status == 2:
             next_seat = ''
 
-        partner = User.objects.filter(stu_id=bind.passive_stu_id)
+        partner = User.objects.get(stu_id=bind.passive_stu_id)
         tickets = Ticket.objects.select_for_update().filter(stu_id=partner.stu_id, activity=activity)
         if tickets.exists() and tickets[0].status != 0:
             return None
@@ -279,7 +283,7 @@ def book_double_ticket(user, key, now):
                 random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
             Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
             ticket = Ticket.objects.create(
-                stu_id=user.stu_id,
+                stu_id=partner.stu_id,
                 activity=activity,
                 unique_id=random_string,
                 partner_id='d '+user.stu_id,
@@ -298,6 +302,7 @@ def book_double_ticket(user, key, now):
             return None
 
 
+        tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, activity=activity)
         if not tickets.exists():
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
             while Ticket.objects.filter(unique_id=random_string).exists():
@@ -404,7 +409,10 @@ def response_book_event(msg):
         return get_reply_single_ticket(msg, tickets[0], now, get_text_existed_book_event())
     if activity.book_end < now:
         return get_reply_text_xml(msg, get_text_timeout_book_event())
-    ticket = book_ticket(user, activity.key, now)
+    if user.bind_count > 0:
+        ticket = book_double_ticket(user, activity.key, now)
+    else:
+        ticket = book_double_ticket(user, activity.key, now)
     if ticket is None:
         return get_reply_text_xml(msg, get_text_fail_book_ticket(activities[0], now))
     else:
