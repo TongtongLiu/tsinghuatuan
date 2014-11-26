@@ -59,9 +59,8 @@
 }
 
 #tableContainer {
-	height: 150px;
 	width: 80%;
-	overflow: scroll;
+	overflow: hidden;
 }
 
 #showNumToSelect {
