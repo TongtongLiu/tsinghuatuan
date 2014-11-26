@@ -18,6 +18,7 @@ urlpatterns = patterns('',
                        url(r'^ticket/(?P<openid>\S+)$', 'userpage.views.uc_ticket'),
                        url(r'^account/(?P<openid>\S+)$', 'userpage.views.uc_account'),
                        url(r'^couple/(?P<openid>\S+)$', 'userpage.views.uc_2ticket'),
+                       url(r'^couple/try/(?P<openid>\S+)$', 'userpage.views.uc_2ticket_bind'),
                        url(r'^token/(?P<openid>\S+)$', 'userpage.views.uc_token'),
                        url(r'^seat/(?P<uid>\S+)/$', 'userpage.views.views_seats'),
                        )
