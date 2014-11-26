@@ -319,6 +319,12 @@ def uc_center(request):
 
 @csrf_exempt
 def uc_ticket(request, openid):
+    if request.method == 'POST':
+        if request.POST.get('ticket_uid', ''):
+            ticket_uid = request.POST['ticket_uid']
+            ticketURL = s_reverse_ticket_detail(ticket_uid)
+            rtnJSON = {'ticketURL': ticketURL}
+            return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
     if request.is_ajax():
         try:
             if not request.POST.get('ticket_id', ''):
