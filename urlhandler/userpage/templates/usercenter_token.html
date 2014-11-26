@@ -4,7 +4,20 @@
 
 {% block content %}
 {% if isValidated %}
- <div class="input-group">
+<script>
+    $.post(window.location.pathname,
+        {
+            openid: "{{ weixin_id }}"
+        },
+        function(data, status) {
+            //if (status == "success") {
+                $("#token-holder").val(data.token);
+            //} else {
+            //    $("#token-holder").val("Error token! Please refresh.");
+            //}
+        });
+</script>
+<div class="input-group">
      <span class="input-group-addon">指令：</span>
      <input type="text" id="token-holder" class="form-control" value="token" disabled>
 </div>
@@ -18,17 +31,6 @@
     $(document).ready(function() {
         $("li.active").toggleClass("active");
         $("li#nav_token").addClass("active");
-        $.post(window.location.pathname,
-        {
-            openid: "{{ weixin_id }}"
-        },
-        function(data, status) {
-            //if (status == "success") {
-                $("#token-holder").val(data.token);
-            //} else {
-            //    $("#token-holder").val("Error token! Please refresh.");
-            //}
-        });
     });
     </script>
 {% endblock %}
