@@ -53,6 +53,7 @@ class Bind(models.Model):
     activity = models.ForeignKey(Activity)
     active_stu_id = models.CharField(max_length=255)
     passive_stu_id = models.CharField(max_length=255)
+    unique_id = models.CharField(max_length=255)
 
 '''
 class UserSession(models.Model):

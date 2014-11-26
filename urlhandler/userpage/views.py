@@ -1,9 +1,10 @@
 #-*- coding:utf-8 -*-
+from django.db.models import Q
 
 from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from urlhandler.models import User, Activity, Ticket
+from urlhandler.models import User, Activity, Ticket, Bind
 from django.views.decorators.csrf import csrf_exempt
 from urlhandler.settings import STATIC_URL
 import urllib, urllib2
@@ -374,20 +375,81 @@ def uc_account(request, openid):
     else:
         return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
 
-def uc_2ticket(request, openid):
-    if User.objects.filter(weixin_id=openid, status=1).exists():
-        isValidated = 1
-    else:
-        isValidated = 0
-    return render_to_response('usercenter_2ticket.html',{'isValidated':isValidated, 'weixin_id':openid})
+def encode_token(openid):
+    user = User.objects.filter(weixin_id=openid, status=1)
+    timestamp = int(time.time()) / 100
+    token = int(user[0].stu_id) ^ timestamp
+    return token
 
-def uc_token(request, openid):
-    print openid +'/r/n'
+def decode_token(token):
+    timestamp = int(time.time()) / 100
+    stu_id = int(token) ^ timestamp
+    return stu_id
+
+def uc_2ticket_bind(request):
+    if (not request.POST) or (not 'openid' in request.POST) or \
+            (not 'activity' in request.POST) or (not 'token' in request.POST):
+        raise Http404
+    openid = request.POST['openid']
+    activity = request.POST['activity']
+    token = request.POST['token']
+    stu_id = decode_token(token)
+    
+    validate_result = validate_through_auth(secret)
+    if validate_result['result'] == 'Accepted':
+        try:
+            User.objects.filter(stu_id=userid).update(status=0)
+            User.objects.filter(weixin_id=openid).update(status=0)
+        except:
+            return HttpResponse('Error')
+        try:
+            currentUser = User.objects.get(stu_id=userid)
+            currentUser.weixin_id = openid
+            currentUser.status = 1
+            currentUser.stu_name = validate_result['name']
+            currentUser.stu_type = validate_result['type']
+            currentUser.bind_count = 0
+            try:
+                currentUser.save()
+            except:
+                return HttpResponse('Error')
+        except:
+            try:
+                newuser = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'], stu_type=validate_result['type'], status=1)
+                newuser.save()
+            except:
+                return HttpResponse('Error')
+        return HttpResponse(s_reverse_uc_account(openid))
+    return HttpResponse(validate_result['result'])
+
+@csrf_exempt
+def uc_2ticket(request, openid):
     if request.is_ajax():
-        weixin_id = request.POST.get('openid', '')
-        user = User.objects.filter(weixin_id=weixin_id, status=1)
-        timestamp = int(time.time()) / 100
-        rtnJSON = {'token': user[0].stu_id ^ timestamp}
+        try:
+            if not request.POST.get('unique_id', ''):
+                return HttpResponse('logout error')
+            else:
+                unique_id = request.POST['unique_id']
+                Bind.objects.filter(unique_id=unique_id).delete()
+                return HttpResponse('logout error')
+        except:
+            return HttpResponse('logout error')
+    else:
+        user = User.objects.filter(weixin_id=openid, status=1)
+        if user:
+            isValidated = 1
+            binds = Bind.objects.filter(Q(active_stu_id=user[0].stu_id) | Q(passive_stu_id=user[0].stu_id))
+            aty_canBind = Activity.objects.filter(status=1)
+            return render_to_response('usercenter_2ticket.html', {'isValidated': isValidated, 'weixin_id': openid, 'stu_id': user[0].stu_id, 'aty_canBind': aty_canBind, 'binds': binds})
+        else:
+            isValidated = 0
+            return render_to_response('usercenter_2ticket.html', {'isValidated': isValidated, 'weixin_id': openid})
+
+@csrf_exempt
+def uc_token(request, openid):
+    if request.method == 'POST':
+        token = encode_token(request.POST.get('openid', ''))
+        rtnJSON = {'token': token}
         return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
     else:
         if User.objects.filter(weixin_id=openid, status=1).exists():

@@ -5,23 +5,9 @@
 {% block content %}
 {% if isValidated %}
 <div class="input-group">
-    <span class="input-group-addon">指令：</span>
-    <input type="text" id="token-holder" class="form-control" value="token" disabled>
+    <span class="input-group-addon">令牌：</span>
+    <input type="text" id="token-holder" class="form-control" placeholder="令牌加载中..." disabled>
 </div>
-<script>
-    $.post("",
-    {
-        openid: "{{ weixin_id }}"
-    },
-    function(data, status) {
-        //if (status == "success") {
-        console.info(data.token);
-        $("#token-holder").val("123");
-        //} else {
-        //    $("#token-holder").val("Error token! Please refresh.");
-        //}
-    });
-</script>
 {% else %}
     <p style="text-align: center; font-weight: bold;">请先绑定账户</p>
 {% endif %}
@@ -29,9 +15,24 @@
 
 {% block js %}
     <script>
+    function ajax_token() {
+        $.post("",
+        {
+            openid: "{{ weixin_id }}"
+        },
+        function(data, status) {
+            if (status == "success") {
+                $("#token-holder").val(data.token);
+            } else {
+                $("#token-holder").val("令牌加载失败，请刷新重试");
+            }
+        });
+    }
     $(document).ready(function() {
         $("li.active").toggleClass("active");
         $("li#nav_token").addClass("active");
+        ajax_token();
+        setInterval(ajax_token, 10000);
     });
     </script>
 {% endblock %}
