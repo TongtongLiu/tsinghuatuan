@@ -518,7 +518,7 @@ $('#allSelect').click(function(){
     $(this).siblings().removeClass("active");
 });
 $('#selectSeat').find("td").click(function(){
-    if(!this.hasClass("empty")){
+    if(!$(this).hasClass("empty")){
         if(buttonSelect == 1){
             if($(this).hasClass("chosen"))
                 $(this).removeClass("chosen")
