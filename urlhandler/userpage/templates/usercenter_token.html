@@ -15,9 +15,7 @@
 
 {% block js %}
     <script>
-    $(document).ready(function() {
-        $("li.active").toggleClass("active");
-        $("li#nav_token").addClass("active");
+    function ajax_token() {
         $.post("",
         {
             openid: "{{ weixin_id }}"
@@ -29,6 +27,12 @@
                 $("#token-holder").val("Error token! Please refresh.");
             }
         });
+    }
+    $(document).ready(function() {
+        $("li.active").toggleClass("active");
+        $("li#nav_token").addClass("active");
+        ajax_token();
+        setInterval(ajax_token, 10000);
     });
     </script>
 {% endblock %}
