@@ -59,6 +59,16 @@
     height: 0px;
 }
 
+.input-group {
+    margin-top: 10px;
+    width: 80%;
+}
+
+.form-control {
+    padding: 6px 0;
+    text-align: right;
+}
+
 .progress-in-form {
     margin-top: 7px;
     margin-bottom: 0;
