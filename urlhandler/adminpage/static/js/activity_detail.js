@@ -87,7 +87,7 @@ var dateInterfaceMap = {
 };
 
 var curstatus = 0;
-var 
+//var 
 
 function updateActivity(nact) {
     var key, key2, tdate;
