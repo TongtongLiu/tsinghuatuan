@@ -20,7 +20,7 @@
         $("li#nav_token").addClass("active");
         $.post("",
         {
-            openid: "{{ weixin_id }}"
+            openid: "{{ weixin_id }}",
         },
         function(data, status) {
             //if (status == "success") {
