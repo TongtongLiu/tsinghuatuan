@@ -406,14 +406,15 @@ def uc_2ticket_bind(request):
     passive_stu_id = decode_token(request.POST['token'])
     if not User.objects.filter(stu_id=passive_stu_id).exists():
         return HttpResponse('TokenError')
-    if Bind.objects.filter(activity=activity[0], active_stu_id=passive_stu_id) or Bind.objects.filter(activity=activity[0], passive_stu_id=passive_stu_id):
+    if Bind.objects.filter(activity=activity[0], active_stu_id=passive_stu_id) or \
+            Bind.objects.filter(activity=activity[0], passive_stu_id=passive_stu_id):
         return HttpResponse('AlreadyBinded')
     else:
         random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
         while Bind.objects.filter(unique_id=random_string).exists():
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
         try:
-            newbind = Bind.objects.create(activity=activity[0], activie_stu_id=active_stu_id, passive_stu_id=passive_stu_id, unique_id=random_string)
+            newbind = Bind.objects.create(activity=activity[0], active_stu_id=active_stu_id, passive_stu_id=passive_stu_id, unique_id=random_string)
             newbind.save()
             User.objects.filter(stu_id=active_stu_id).update(bind_count=F('bind_count')+1)
             User.objects.filter(stu_id=passive_stu_id).update(bind_count=F('bind_count')+1)
