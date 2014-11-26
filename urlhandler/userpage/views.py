@@ -373,6 +373,17 @@ def uc_account(request, openid):
     else:
         return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
 
+def encode_token(openid):
+    user = User.objects.filter(weixin_id=openid, status=1)
+    timestamp = int(time.time()) / 100
+    token = int(user[0].stu_id) ^ timestamp
+    return token
+
+def decode_token(token):
+    timestamp = int(time.time()) / 100
+    stu_id = int(token) ^ timestamp
+    return stu_id
+
 def uc_2ticket(request, openid):
     if User.objects.filter(weixin_id=openid, status=1).exists():
         isValidated = 1
@@ -383,10 +394,7 @@ def uc_2ticket(request, openid):
 @csrf_exempt
 def uc_token(request, openid):
     if request.method == 'POST':
-        weixin_id = request.POST.get('openid', '')
-        user = User.objects.filter(weixin_id=weixin_id, status=1)
-        timestamp = int(time.time()) / 100
-        token = int(user[0].stu_id) ^ timestamp
+        token = encode_token(request.POST.get('openid', ''))
         rtnJSON = {'token': token}
         return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
     else:
