@@ -15,6 +15,7 @@
 	<p id="showSelection">您选择的座位为第<span class="num" id="row"></span>行第<span class="num" id="column"></span>列</p>
 	<p id="showNumToSelect">您还需选择<span class="num" id="num">2</span>个座位</p>
 	<div class="seatsTable" align="center">
+        <div class="screen">舞台方向</div>
 		<table>
 			<tr>
 				<td class="valid"></td>
@@ -51,7 +52,7 @@
 	<form role="form" method="post" id="submitForm">
 		<input id="input" type="text" name="postSelect" style="display:none"/>
 		<input id="ticketID" type="text" name="ticketID" style="display:none" value="{{ ticketID }}" />
-		<input id="submitButton" type="submit" value="确定" disabled="disabled">
+		<input id="submitButton" class="btn btn-default" type="submit" value="确定" disabled="disabled">
 	</form>
 
 {% endblock %}
