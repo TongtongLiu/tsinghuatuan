@@ -38,19 +38,19 @@
             {% for bind in binds %}
             <script type="text/javascript">
             $( document ).ready( function() {
-                $( '#btn{{ bind.key }}' ).click( function() {
+                $( '#btn{{ bind.unique_id }}' ).click( function() {
                      $.post("",
                      {
-                        bind_key:"{{ bind.key }}"
+                        unique_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
-                       $( '#div{{ bind.key }}' ).hide();
+                       $( '#div{{ bind.unique_id }}' ).hide();
                      });
                 });
             });
             </script>
             <div class="panel-body">
-                <div class="panel panel-default" id="div{{ bind.key }}">
+                <div class="panel panel-default" id="div{{ bind.unique_id }}">
                     <div class="panel-body">
                         <p>活动名称：{{ bind.activity.name }}</p>
                         {% if stu_id == bind.active_stu_id %}
@@ -63,19 +63,19 @@
                         <p>抢票开始时间：{{ bind.activity.book_start }}</p>
                         <p>抢票结束时间：{{ bind.activity.book_end }}</p>
                         <p>当前剩余票数：{{ bind.activity.remain_tickets }}</p>
-                        <button class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#model{{ bind.key }}">解绑</button>
+                        <button class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#model{{ bind.unique_id }}">解绑</button>
                     </div>
                 </div>
             </div>
              <!-- 解绑警告信息 -->
-            <div class="modal fade" id="model{{ bind.key }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="model{{ bind.unique_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                <div class="modal-dialog">
                   <div class="modal-content">
                      <div class="modal-body">
                         确定要解绑？
                      </div>
                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-danger" id="btn{{ bind.key }}" data-dismiss="modal">确定</button>
+                        <button type="submit" class="btn btn-danger" id="btn{{ bind.unique_id }}" data-dismiss="modal">确定</button>
                         <button type="button" class="btn btn-default"
                            data-dismiss="modal">取消
                         </button>

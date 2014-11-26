@@ -390,11 +390,11 @@ def decode_token(token):
 def uc_2ticket(request, openid):
     if request.is_ajax():
         try:
-            if not request.POST.get('bind_key', ''):
+            if not request.POST.get('unique_id', ''):
                 return HttpResponse('logout error')
             else:
-                bind_key = request.POST['bind_key']
-                Bind.objects.filter(key=bind_key).delete()
+                unique_id = request.POST['unique_id']
+                Bind.objects.filter(unique_id=unique_id).delete()
                 return HttpResponse('logout error')
         except:
             return HttpResponse('logout error')
