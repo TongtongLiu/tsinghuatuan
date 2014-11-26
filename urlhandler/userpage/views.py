@@ -442,7 +442,7 @@ def uc_2ticket(request, openid):
                 bind = Bind.objects.filter(unique_id=unique_id)
                 User.objects.filter(stu_id=bind[0].active_stu_id).update(bind_count=F('bind_count')-1)
                 User.objects.filter(stu_id=bind[0].passive_stu_id).update(bind_count=F('bind_count')-1)
-                bind.delete()
+                Bind.objects.filter(unique_id=unique_id).delete()
                 return HttpResponse('logout error')
         except:
             return HttpResponse('logout error')
