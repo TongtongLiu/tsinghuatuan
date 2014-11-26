@@ -15,7 +15,7 @@
                 {% csrf_token %}
                 <div class="input-group" id="activityGroup">
                     <span class="input-group-addon">选择活动</span>
-                    <select class="form-control" id="selectActivity" name="activity_name">
+                    <select class="form-control" id="selectActivity" name="activity_name" onblur="checkActivity();">
                         {% for aty in aty_canBind %}
                         <option value ="{{ aty.name }}">{{ aty.name }}</option>
                         {% endfor %}

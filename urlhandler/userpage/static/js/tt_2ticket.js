@@ -142,7 +142,7 @@ function checkActivity() {
 }
 
 function checkToken() {
-    return checkNotEmpty('tokenGroup', 'helpToken', 'inputPassword', '对方令牌');
+    return checkNotEmpty('tokenGroup', 'helpToken', 'inputToken', '对方令牌');
 }
 
 window.setupWeixin({'optionMenu':false, 'toolbar':false});
