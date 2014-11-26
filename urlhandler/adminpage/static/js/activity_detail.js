@@ -502,6 +502,7 @@ $('#activity-form').submit(function() {
 
 
 var buttonSelect = 1;//1单个，2一行，3全部
+var allSeat = false;//非全选
 $('#singleSelect').click(function(){
     buttonSelect = 1;
     $(this).addClass("active");
@@ -516,6 +517,16 @@ $('#allSelect').click(function(){
     buttonSelect = 3;
     $(this).addClass("active");
     $(this).siblings().removeClass("active");
+    if(allSeat == false){
+        allSeat = true;
+        $('#allSelect').text("取消全选");
+        $('#selectSeat').find("td:not(.empty)").addClass("chosen");
+    }
+    else{
+        allSeat = false;
+        $('#allSelect').text("全部选择");
+        $('#selectSeat').find("td:not(.empty)").removeClass("chosen");
+    }
 });
 $('#selectSeat').find("td").click(function(){
     if(!$(this).hasClass("empty")){
@@ -531,18 +542,10 @@ $('#selectSeat').find("td").click(function(){
                 $(this).removeClass("chosen");
             }
             else{
-                $(this).siblings().addClass("chosen");
+                $(this).siblings(':not(.empty)').addClass("chosen");
                 $(this).addClass("chosen");
             }
         }
-        else if(buttonSelect == 3){
-            if($(this).hasClass("chosen")){
-                $("#selectSeat").children(".chosen").removeClass("chosen");
-            }
-            else{
-                $("#selectSeat").children().addClass("chosen");
-            }
-        }      
     }
          
 });
