@@ -23,11 +23,11 @@
             openid: "{{ weixin_id }}"
         },
         function(data, status) {
-            if (status == "success") {
+            //if (status == "success") {
                 $("#token-holder").val(data.token);
-            } else {
-                $("#token-holder").val("Error token! Please refresh.");
-            }
+            //} else {
+            //    $("#token-holder").val("Error token! Please refresh.");
+            //}
         });
     });
     </script>
