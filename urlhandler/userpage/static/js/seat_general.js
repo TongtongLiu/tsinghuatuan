@@ -1,5 +1,6 @@
 function showMsg(message){
     $('#showSelection').hide();
+    $('#showNumToSelect').hide();
     $('#alert').text(message);
     $('#alert').show();
 }

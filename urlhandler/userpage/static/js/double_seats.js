@@ -1,5 +1,9 @@
 var numToSelect = 2;
 
+document.getElementById('showSelection').style.display = 'none';
+document.getElementById('alert').style.display = 'none';
+
+
 function bind_tap(){
     var valid_list = document.getElementsByClassName('valid');
     var inputSelect = document.getElementById('input');
@@ -22,7 +26,7 @@ function bind_tap(){
             }
             function showText(seat){
                 document.getElementById('num').innerText = numToSelect;
-                document.getElementById('showSelection').style.display = 'block';
+                document.getElementById('showNumToSelect').style.display = 'block';
                 document.getElementById('alert').style.display = 'none';
                 if (numToSelect == 0)
                     document.getElementById('submitButton').disabled = false;

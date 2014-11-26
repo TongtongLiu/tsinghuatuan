@@ -1,5 +1,8 @@
 var isSelected = false;
 
+document.getElementById('showNumToSelect').style.display = "none";
+document.getElementById('alert').style.display = "none";
+
 function bind_tap(){
     var valid_list = document.getElementsByClassName('valid');
     var inputSelect = document.getElementById('input');

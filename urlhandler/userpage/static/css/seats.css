@@ -40,7 +40,6 @@
 #showSelection {
 	text-align: center;
 	font-size: 12px;
-	display: none;
 }
 
 .num {
@@ -63,4 +62,9 @@
 	height: 150px;
 	width: 80%;
 	overflow: hidden;
+}
+
+#showSelection {
+	text-align: center;
+	font-size: 12px;
 }
