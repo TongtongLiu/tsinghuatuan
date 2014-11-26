@@ -18,7 +18,7 @@
     $(document).ready(function() {
         $("li.active").toggleClass("active");
         $("li#nav_token").addClass("active");
-        $.post("",
+        $.post(window.location.pathname,
         {
             openid: "{{ weixin_id }}"
         },
