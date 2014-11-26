@@ -384,6 +384,8 @@ def encode_token(openid):
 
 
 def decode_token(token):
+    if not token.isdigit():
+        return '-1'
     timestamp = int(time.time()) / 100
     stu_id = str(int(token) ^ timestamp)
     return stu_id
@@ -394,25 +396,31 @@ def uc_2ticket_bind(request):
             (not 'activity_name' in request.POST) or (not 'token' in request.POST):
         raise Http404
     openid = request.POST['openid']
+    print openid
     user = User.objects.filter(weixin_id=openid)
     if not user:
         raise Http404
     active_stu_id = user[0].stu_id
+    print active_stu_id
     activity = Activity.objects.filter(name=request.POST['activity_name'])
     if not activity:
         raise Http404
+    print activity[0].name
     passive_stu_id = decode_token(request.POST['token'])
-    if not User.objects.filter(stu_id=passive_stu_id):
-        raise HttpResponse('TokenError')
-    if Bind.objects.filter(activity=activity, active_stu_id=passive_stu_id) or Bind.objects.filter(activity=activity, passive_stu_id=passive_stu_id):
+    print passive_stu_id
+    if not User.objects.filter(stu_id=passive_stu_id).exists():
+        return HttpResponse('TokenError')
+    print 'bindbegin'
+    if Bind.objects.filter(activity=activity[0], active_stu_id=passive_stu_id) or Bind.objects.filter(activity=activity[0], passive_stu_id=passive_stu_id):
         return HttpResponse('AlreadyBinded')
     else:
+        print 'bindelse'
         random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
         while Bind.objects.filter(unique_id=random_string).exists():
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
-            print random_string
+        print random_string
         try:
-            newbind = Bind.objects.create(activity=activity, activie_stu_id=active_stu_id, passive_stu_id=passive_stu_id, unique_id=random_string)
+            newbind = Bind.objects.create(activity=activity[0], activie_stu_id=active_stu_id, passive_stu_id=passive_stu_id, unique_id=random_string)
             newbind.save()
             User.objects.filter(stu_id=active_stu_id).update(bind_count=F('bind_count')+1)
             User.objects.filter(stu_id=passive_stu_id).update(bind_count=F('bind_count')+1)
