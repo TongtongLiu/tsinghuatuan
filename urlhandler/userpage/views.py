@@ -322,7 +322,8 @@ def uc_ticket(request, openid):
         if request.POST.get('ticket_uid', ''):
             ticket_uid = request.POST['ticket_uid']
             ticketURL = s_reverse_ticket_detail(ticket_uid)
-            rtnJSON = {'ticketURL': ticketURL}
+            seatURL = s_reverse_ticket_selection(ticket_uid)
+            rtnJSON = {'ticketURL': ticketURL, 'seatURL': seatURL}
             return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
     if request.is_ajax():
         try:
