@@ -391,7 +391,7 @@ def decode_token(token):
 
 def uc_2ticket_bind(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
-            (not 'activity' in request.POST) or (not 'token' in request.POST):
+            (not 'activity_name' in request.POST) or (not 'token' in request.POST):
         raise Http404
     openid = request.POST['openid']
     user = User.objects.filter(weixin_id=openid)
