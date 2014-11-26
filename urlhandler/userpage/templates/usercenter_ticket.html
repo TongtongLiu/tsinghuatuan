@@ -34,17 +34,18 @@
 		</script>
 		<div class="panel panel-default" id="div{{ ticket.unique_id }}">
 			<div class="panel-heading">
-				<h3 class="panel-title">活动名称：<a id="a{{ ticket.unique_id }}">{{ ticket.activity.name }}&nbsp;<span class="glyphicon glyphicon-exclamation-sign" style="color:#428bca"></span></a></h3>
+				<h3 class="panel-title">活动名称：<a id="a{{ ticket.unique_id }}" style="color:#428bca">{{ ticket.activity.name }}&nbsp;<span class="glyphicon glyphicon-exclamation-sign"></span></a></h3>
 			</div>
 			<div class="panel-body">
-				<p>活动地点：{{ ticket.activity.place }}</p>
-				<p>活动开始时间：{{ ticket.activity.start_time }}</p>
-				<p>活动结束时间：{{ ticket.activity.end_time }}</p>
+				<p>活动地点：{{ ticket.activity.place }}&nbsp;&nbsp;
 				{% if ticket.seat %}
 					<p>座位：{{ ticket.seat }}</p>
 				{% else %}
 					<a id="seat{{ ticket.unique_id }}">请选座</a>
 				{% endif %}
+				</p>
+				<p>活动开始时间：{{ ticket.activity.start_time }}</p>
+				<p>活动结束时间：{{ ticket.activity.end_time }}</p>
 				<button class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#model{{ ticket.unique_id }}">退票</button>
 			</div>
 		</div>
