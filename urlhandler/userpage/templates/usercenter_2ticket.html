@@ -4,29 +4,32 @@
 
 {% block content %}
 {% if isValidated %}
-    <ul class="list-group">
-        <li class="list-group-item">
+    <div class="panel panel-default">
+        <div class="panel-heading">
             <a href="#couple_intro" data-toggle="modal">双人抢票&nbsp;
                 <span class="glyphicon glyphicon-question-sign"></span>
             </a>
-        </li>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" role="form" action="{% url "userpage.views.uc_2ticket_bind" %}" method="post" id="validationForm" onsubmit="return false;">
+                {% csrf_token %}
+                <div class="input-group" id="activityGroup">
+                    <span class="input-group-addon">选择活动</span>
+                    <select class="form-control" id="selectActivity">
+                        {% for aty in aty_canBind %}
+                        <option value ="{{ aty.name }}">{{ aty.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="input-group" id="tokenGroup">
+                    <span class="input-group-addon">对方令牌</span>
+                    <input type="text" class="form-control" id="inputToken" placeholder="请输入对方的微信令牌">
+                </div>
+                <button onclick="ajaxForm();" class="btn btn-default btn-block" id="submitBtn" style="margin-top: 5px">绑定</button>
+            </form>
+        </div>
+    </div>
 
-       <li class="list-group-item">
-            <div class="input-group">
-                <span class="input-group-addon">选择活动</span>
-                <select class="form-control">
-                    {% for aty in aty_canBind %}
-                    <option value ="{{ aty.name }}">{{ aty.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="input-group">
-                <span class="input-group-addon">对方令牌</span>
-                <input type="text" class="form-control" placeholder="请输入对方的微信令牌">
-            </div>
-            <button class="btn btn-default btn-block" style="margin-top: 5px" type="button">确定</button>
-       </li>
-    </ul>
     <!-- 已绑定双人抢票活动的信息 -->
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -107,10 +110,14 @@
 {% endblock %}
 
 {% block js %}
-<script>
-$(document).ready(function(){
-  $("li.active").toggleClass("active");
-  $("li#nav_2ticket").addClass("active");
-});
-</script>
+    <script src="{% static "js/tt_2ticket.js" %}"></script>
+    <script>
+    function ajaxForm() {
+        uc_2ticket_bind('{{ weixin_id }}');
+    }
+    $(document).ready(function(){
+      $("li.active").toggleClass("active");
+      $("li#nav_2ticket").addClass("active");
+    });
+    </script>
 {% endblock %}
