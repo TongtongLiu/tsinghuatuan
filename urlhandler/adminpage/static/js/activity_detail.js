@@ -513,27 +513,27 @@ $('#allSelect').click(function(){
 });
 $('#selectSeat').find("td").click(function(){
     if(buttonSelect == 1){
-        if($(this).hasClass(".chosen"))
-            $(this).removeClass(".chosen")
+        if($(this).hasClass("chosen"))
+            $(this).removeClass("chosen")
         else
-            $(this).addClass(".chosen");
+            $(this).addClass("chosen");
     }
     else if (buttonSelect == 2) {
-        if($(this).hasClass(".chosen")){
-            $(this).siblings(".chosen").removeClass(".chosen");
-            $(this).removeClass(".chosen");
+        if($(this).hasClass("chosen")){
+            $(this).siblings('.chosen').removeClass("chosen");
+            $(this).removeClass("chosen");
         }
         else{
-            $(this).siblings().addClass(".chosen");
-            $(this).addClass(".chosen");
+            $(this).siblings().addClass("chosen");
+            $(this).addClass("chosen");
         }
     }
     else{
-        if($(this).hasClass(".chosen")){
-            $("#selectSeat").children(".chosen").removeClass(".chosen");
+        if($(this).hasClass("chosen")){
+            $("#selectSeat").children(".chosen").removeClass("chosen");
         }
         else{
-            $("#selectSeat").children().addClass(".chosen");
+            $("#selectSeat").children().addClass("chosen");
         }
     }           
 });
