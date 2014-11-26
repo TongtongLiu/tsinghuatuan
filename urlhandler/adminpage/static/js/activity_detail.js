@@ -504,38 +504,47 @@ $('#activity-form').submit(function() {
 var buttonSelect = 1;//1单个，2一行，3全部
 $('#singleSelect').click(function(){
     buttonSelect = 1;
+    $(this).addClass("active");
+    $(this).siblings().removeClass("active");
 });
 $('#lineSelect').click(function(){
     buttonSelect = 2;
+    $(this).addClass("active");
+    $(this).siblings().removeClass("active");
 });
 $('#allSelect').click(function(){
     buttonSelect = 3;
+    $(this).addClass("active");
+    $(this).siblings().removeClass("active");
 });
 $('#selectSeat').find("td").click(function(){
-    if(buttonSelect == 1){
-        if($(this).hasClass("chosen"))
-            $(this).removeClass("chosen")
-        else
-            $(this).addClass("chosen");
+    if(!this.hasClass("empty")){
+        if(buttonSelect == 1){
+            if($(this).hasClass("chosen"))
+                $(this).removeClass("chosen")
+            else
+                $(this).addClass("chosen");
+        }
+        else if (buttonSelect == 2) {
+            if($(this).hasClass("chosen")){
+                $(this).siblings('.chosen').removeClass("chosen");
+                $(this).removeClass("chosen");
+            }
+            else{
+                $(this).siblings().addClass("chosen");
+                $(this).addClass("chosen");
+            }
+        }
+        else if(buttonSelect == 3){
+            if($(this).hasClass("chosen")){
+                $("#selectSeat").children(".chosen").removeClass("chosen");
+            }
+            else{
+                $("#selectSeat").children().addClass("chosen");
+            }
+        }      
     }
-    else if (buttonSelect == 2) {
-        if($(this).hasClass("chosen")){
-            $(this).siblings('.chosen').removeClass("chosen");
-            $(this).removeClass("chosen");
-        }
-        else{
-            $(this).siblings().addClass("chosen");
-            $(this).addClass("chosen");
-        }
-    }
-    else{
-        if($(this).hasClass("chosen")){
-            $("#selectSeat").children(".chosen").removeClass("chosen");
-        }
-        else{
-            $("#selectSeat").children().addClass("chosen");
-        }
-    }           
+         
 });
 
 $('.form-control').on('focus', function() {var me = $(this); setTimeout(function(){me.select();}, 100)});
