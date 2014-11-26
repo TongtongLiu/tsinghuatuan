@@ -373,13 +373,20 @@
                         {% endfor %}
                     </table>
                 </div>
-                <div class="infoSet">
+                <div id="infoSet">
                     <div class="btn-group">
-                       <button type="button" class="btn btn-default">默认</button>
-                       <button type="button" class="btn btn-default dropdown-toggle" 
+                      <button class="btn btn-default btn-lg dropdown-toggle" type="button" data-toggle="    dropdown">按行选择<span class="caret"></span></button>
+                      <ul class="dropdown-menu" role="menu">
+                         <li><a href="#">单个选择</a></li>
+                         <li><a href="#">按行选择</a></li>
+                         <li class="divider"></li>
+                         <li><a href="#">全部选择</a></li>
+                      </ul>
+                    </div>
+                    <div class="btn-group">
+                       <button type="button" class="btn btn-primary dropdown-toggle btn-sm" 
                           data-toggle="dropdown">
-                          <span class="caret"></span>
-                          <span class="sr-only">切换下拉菜单</span>
+                          按行选择 <span class="caret"></span>
                        </button>
                        <ul class="dropdown-menu" role="menu">
                           <li><a href="#">单个选择</a></li>
@@ -387,9 +394,9 @@
                           <li class="divider"></li>
                           <li><a href="#">全部选择</a></li>
                        </ul>
-                    </div>
+                    </div>   
                 </div>
-            <div class="clear-float"></div>
+            <div id="clear-float"></div>
              <div class="modal-footer">
                 <button type="button" class="btn btn-default" 
                    data-dismiss="modal">关闭
