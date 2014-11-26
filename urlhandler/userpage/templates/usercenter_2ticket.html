@@ -7,13 +7,13 @@
     <ul class="list-group">
         <li class="list-group-item">
             <a href="#couple_intro" data-toggle="modal">双人抢票&nbsp;
-                <span class="glyphicon glyphicon-question-sign"></span>
+                <span class="glyphicon glyphicon-question-sign">规则</span>
             </a>
         </li>
 
        <li class="list-group-item">
             <div class="input-group">
-                <span class="input-group-addon">绑定活动</span>
+                <span class="input-group-addon">选择活动</span>
                 <select class="form-control">
                     {% for aty in aty_canBind %}
                     <option value ="{{ aty.name }}">{{ aty.name }}</option>
@@ -21,8 +21,8 @@
                 </select>
             </div>
             <div class="input-group">
-                <span class="input-group-addon">对方指令</span>
-                <input type="text" class="form-control" placeholder="请输入被绑人指令">
+                <span class="input-group-addon">对方令牌</span>
+                <input type="text" class="form-control" value="Input token">
             </div>
             <button class="btn btn-default btn-block" style="margin-top: 5px" type="button">确定</button>
        </li>
@@ -30,7 +30,7 @@
     <!-- 已绑定双人抢票活动的信息 -->
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">已绑定双人抢票的活动</h3>
+            <h3 class="panel-title">已绑定活动</h3>
         </div>
         {% if not binds %}
             <p style="text-align: center; font-weight: bold; margin-top: 5px;">暂无</p>
@@ -55,10 +55,10 @@
                         <p>活动名称：{{ bind.activity.name }}</p>
                         {% if user.stu_id == bind.active_stu_id %}
                         <p>绑定状态：主动（可抢票）</p>
-                        <p>绑定对象学号：{{ bind.passive_stu_id }}</p>
+                        <p>对方学号：{{ bind.passive_stu_id }}</p>
                         {% else %}
                         <p>绑定状态：被动（等待对方抢票）</p>
-                        <p>绑定对象学号：{{ bind.active_stu_id }}</p>
+                        <p>对方学号：{{ bind.active_stu_id }}</p>
                         {% endif %}
                         <p>抢票开始时间：{{ bind.activity.book_start }}</p>
                         <p>抢票结束时间：{{ bind.activity.book_end }}</p>
@@ -93,7 +93,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <p id="myModalLabel" style="font-weight:bold">
-                        双人抢票操作说明&nbsp;:
+                        双人抢票规则&nbsp;:
                     </p>
                     双人抢票是很复杂滴
                 </div>

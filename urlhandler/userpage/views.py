@@ -1,4 +1,5 @@
 #-*- coding:utf-8 -*-
+from django.db.models import Q
 
 from django.http import HttpResponse, Http404
 from django.template import RequestContext
@@ -11,6 +12,7 @@ import datetime, time
 import json
 from django.db import transaction
 from django.utils import timezone
+from urlhandler.urlhandler.models import Bind
 from weixinlib.weixin_urls import WEIXIN_URLS
 from weixinlib import http_get
 from django.shortcuts import redirect
