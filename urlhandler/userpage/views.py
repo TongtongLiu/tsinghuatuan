@@ -385,6 +385,42 @@ def decode_token(token):
     stu_id = int(token) ^ timestamp
     return stu_id
 
+def uc_2ticket_bind(request):
+    if (not request.POST) or (not 'openid' in request.POST) or \
+            (not 'activity' in request.POST) or (not 'token' in request.POST):
+        raise Http404
+    openid = request.POST['openid']
+    activity = request.POST['activity']
+    token = request.POST['token']
+    stu_id = decode_token(token)
+    
+    validate_result = validate_through_auth(secret)
+    if validate_result['result'] == 'Accepted':
+        try:
+            User.objects.filter(stu_id=userid).update(status=0)
+            User.objects.filter(weixin_id=openid).update(status=0)
+        except:
+            return HttpResponse('Error')
+        try:
+            currentUser = User.objects.get(stu_id=userid)
+            currentUser.weixin_id = openid
+            currentUser.status = 1
+            currentUser.stu_name = validate_result['name']
+            currentUser.stu_type = validate_result['type']
+            currentUser.bind_count = 0
+            try:
+                currentUser.save()
+            except:
+                return HttpResponse('Error')
+        except:
+            try:
+                newuser = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'], stu_type=validate_result['type'], status=1)
+                newuser.save()
+            except:
+                return HttpResponse('Error')
+        return HttpResponse(s_reverse_uc_account(openid))
+    return HttpResponse(validate_result['result'])
+
 @csrf_exempt
 def uc_2ticket(request, openid):
     if request.is_ajax():
