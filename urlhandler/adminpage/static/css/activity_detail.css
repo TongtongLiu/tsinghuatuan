@@ -5,25 +5,53 @@
     background: rgba(0,0,0,0);
 }
 
-.valid {
+.sectionA {
     margin: 1px;
     width: 15px;
     height: 15px;
     background: rgba(112,204,243,0.8);
 }
 
-.selected {
+.sectionB {
     margin: 1px;
     width: 15px;
     height: 15px;
     background: rgba(131,1,47,0.8);
 }
 
-.selectThis {
+.sectionC {
     margin: 1px;
     width: 15px;
     height: 15px;
     background: rgba(248,100,2,0.8);
+}
+
+.sectionD {
+    margin: 1px;
+    width: 15px;
+    height: 15px;
+    background: red;
+}
+
+.sectionE {
+    margin: 1px;
+    width: 15px;
+    height: 15px;
+    background: blue;
+}
+
+.sectionF {
+    margin: 1px;
+    width: 15px;
+    height: 15px;
+    background: black;
+}
+
+.sectionG {
+    margin: 1px;
+    width: 15px;
+    height: 15px;
+    background: yellow;
 }
 
 .seatsTable {

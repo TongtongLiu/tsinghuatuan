@@ -347,12 +347,32 @@
                 <div class="seatsTable" align="center">
                     <table id="tbody">
                         <tr>
-                            <td class="valid"></td>
-                            <td>学生特惠</td>
-                            <td class="selected"></td>
-                            <td>100元</td>
-                            <td class="selectThis"></td>
-                            <td>200元</td>
+                            <td class="sectionA"></td>
+                            <td>A区</td>
+                        </tr>
+                        <tr>
+                            <td class="sectionB"></td>
+                            <td>B区</td>
+                        </tr>
+                        <tr>
+                            <td class="sectionC"></td>
+                            <td>C区</td>
+                        </tr>
+                        <tr>
+                            <td class="sectionD"></td>
+                            <td>D区</td>
+                        </tr>
+                        <tr>
+                            <td class="sectionE"></td>
+                            <td>E区</td>
+                        </tr>
+                        <tr>
+                            <td class="sectionF"></td>
+                            <td>F区</td>
+                        </tr>
+                        <tr>
+                            <td class="sectionG"></td>
+                            <td>G区</td>
                         </tr>
                     </table>
                     <table id="selectSeat">
@@ -375,24 +395,47 @@
                 </div>
                 <div id="infoSet">
                     <div class="btn-group btn-group-xs">
-                      <button type="button" class="btn btn-default">单个选择</button>
-                      <button type="button" class="btn btn-default">按行选择</button>
-                      <button type="button" class="btn btn-default">全部选择</button>
+                      <button type="button" class="btn btn-default" data-toggle='collapse' data-target='#singleInfo'>单个选择</button>
+                      <div id="singleInfo" class="in collapse" style="height: auto;">您可以通过单个点击设置可购票座位</div>
+                      <button type="button" class="btn btn-default" data-toggle='collapse' data-target='#singleInfo'>按行选择</button>
+                      <div id="singleInfo" class="in collapse" style="height: auto;">您可以按行点击设置可购票座位</div>
+                      <button type="button" class="btn btn-default" data-toggle='collapse' data-target='#singleInfo'>全部选择</button>
+                      <div id="singleInfo" class="in collapse" style="height: auto;">已为您设置全部座位</div>
                     </div>
                     <form class="bs-example bs-example-form" role="form">
                        <div class="input-group input-group-sm">
                          <span class="input-group-addon">A区</span>
-                         <input type="number" class="form-control" placeholder="20">
+                         <input type="number" class="form-control" placeholder="300">
                          <span class="input-group-addon">元</span>
                        </div>
                        <div class="input-group input-group-sm">
                          <span class="input-group-addon">B区</span>
-                         <input type="number" class="form-control" placeholder="40">
+                         <input type="number" class="form-control" placeholder="200">
                          <span class="input-group-addon">元</span>
                        </div>
                        <div class="input-group input-group-sm">
                          <span class="input-group-addon">C区</span>
+                         <input type="number" class="form-control" placeholder="150">
+                         <span class="input-group-addon">元</span>
+                       </div>
+                       <div class="input-group input-group-sm">
+                         <span class="input-group-addon">D区</span>
+                         <input type="number" class="form-control" placeholder="100">
+                         <span class="input-group-addon">元</span>
+                       </div>
+                       <div class="input-group input-group-sm">
+                         <span class="input-group-addon">E区</span>
                          <input type="number" class="form-control" placeholder="60">
+                         <span class="input-group-addon">元</span>
+                       </div>
+                       <div class="input-group input-group-sm">
+                         <span class="input-group-addon">F区</span>
+                         <input type="number" class="form-control" placeholder="40">
+                         <span class="input-group-addon">元</span>
+                       </div>
+                        <div class="input-group input-group-sm">
+                         <span class="input-group-addon">G区</span>
+                         <input type="number" class="form-control" placeholder="20">
                          <span class="input-group-addon">元</span>
                        </div>
                     </form>
