@@ -424,13 +424,10 @@ def uc_2ticket_bind(request):
         while Bind.objects.filter(unique_id=random_string).exists():
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
         try:
-            print 'newbind start'
             newbind = Bind.objects.create(activity=activity[0], active_stu_id=active_stu_id, passive_stu_id=passive_stu_id, unique_id=random_string)
             newbind.save()
-            print 'newbind end bindcount start'
             User.objects.filter(stu_id=active_stu_id).update(bind_count=F('bind_count')+1)
             User.objects.filter(stu_id=passive_stu_id).update(bind_count=F('bind_count')+1)
-            print 'bindcount end'
         except:
             return HttpResponse('Error')
         return HttpResponse(s_reverse_uc_2ticket(openid))
