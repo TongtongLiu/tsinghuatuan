@@ -19,28 +19,6 @@
     background: rgba(131,1,47,0.8);
 }
 
-#selectSeat {
-    padding: 10px 5px 10px 5px;
-    border-collapse: inherit;
-    border-spacing: 2px;
-}
-
-#infoSet {
-    padding: 10px 5px 10px 5px;
-    width: 25%;
-}
-
-#tbody {
-    line-height: 1;
-    border-spacing: 5px;
-    border-collapse: separate;
-}
-
-#clear-float {
-    clear:both;
-    height: 0px;
-}
-
 .selectThis {
     margin: 1px;
     width: 15px;
@@ -56,6 +34,29 @@
 
 #selectSeat {
     padding: 10px 5px 10px 5px;
+}
+
+#selectSeat {
+    padding: 10px 5px 10px 5px;
+    border-collapse: inherit;
+    border-spacing: 2px;
+}
+
+#infoSet {
+    padding: 10px 5px 10px 5px;
+    width: 30%;
+    float: right;
+}
+
+#tbody {
+    line-height: 1;
+    border-spacing: 5px;
+    border-collapse: separate;
+}
+
+#clear-float {
+    clear:both;
+    height: 0px;
 }
 
 .progress-in-form {
