@@ -6,7 +6,7 @@
 {% if isValidated %}
 <div class="input-group">
     <span class="input-group-addon">指令：</span>
-    <input type="text" id="token-holder" class="form-control" value="token" disabled>
+    <input type="text" id="token-holder" class="form-control" value="Loading token..." disabled>
 </div>
 {% else %}
     <p style="text-align: center; font-weight: bold;">请先绑定账户</p>
@@ -24,7 +24,7 @@
             if (status == "success") {
                 $("#token-holder").val(data.token);
             } else {
-                $("#token-holder").val("Error token! Please refresh.");
+                $("#token-holder").val("Loading error! Please refresh.");
             }
         });
     }
