@@ -54,6 +54,13 @@
     background: yellow;
 }
 
+.chosen{
+    margin: 1px;
+    width: 15px;
+    height: 15px;
+    background: gray;
+}
+
 .seatsTable {
     margin:auto;
     float: left;

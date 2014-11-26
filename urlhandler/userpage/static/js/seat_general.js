@@ -69,8 +69,23 @@ touch.on(moveableDiv, 'drag', function(ev){
 });
 
 touch.on(moveableDiv, 'dragend', function(ev){
-    dx += ev.x;
-    dy += ev.y;
+    if (dx + ev.x < (1-initialScale) * $('#selectSeat').width() / 2) {
+        dx = (1-initialScale)*$('#selectSeat').width() / 2;
+    } else if (dx + ev.x > (initialScale-1) * $('#selectSeat').width() / 2) {
+        dx = (initialScale-1) * $('#selectSeat').width() / 2;
+    } else {
+        dx += ev.x
+    }
+    if (dy + ev.y < (1-initialScale) * $('#selectSeat').height() / 2) {
+        dy = (1-initialScale) * $('#selectSeat').height() / 2;
+    } else if (dy + ev.y > (initialScale-1)*$('#selectSeat').height()/2) {
+        dy = (initialScale-1) * $('#selectSeat').height() / 2;
+    } else {
+        dy += ev.y;
+    }
+    moveableDiv.style.webkitTransition = "all 0.8s ease-in-out 0s";
+    moveableDiv.style.webkitTransform = "translate3d(" + dx + "px, " + dy + "px,0)";
+    moveableDiv.style.webkitTransition = "";
 });
 
 var table = document.getElementById('selectSeat');
@@ -94,3 +109,21 @@ touch.on(table, 'pinch', function(ev){
 touch.on(table, 'pinchend', function(ev){
     initialScale = currentScale;
 });
+
+function setHeightAndWidth() {
+    var tableWidth = $('#tableContainer').width() * 0.8;
+    var tableHeight = $('#tableContainer').height() * 0.8;
+    var rows = $('#selectSeat').children('tbody').children('tr').length;
+    var columns = $('#selectSeat').children('tbody').children('tr').children('td').length / rows;
+    cellHeight = tableHeight / rows;
+    cellWidth = tableWidth / columns;
+    len = cellHeight > cellWidth ? cellHeight : cellWidth;
+    border = len * 0.1;
+    $('#selectSeat')[0].style.borderSpacing = border + "px";
+    len = len * 0.9;
+    $('#selectSeat').children('tbody').children('tr').children('td').height(len);
+    $('#selectSeat').children('tbody').children('tr').children('td').width(len);
+    //var windowHeight = $(document).height();
+    //$('#tableContainer').height(windowHeight * 0.45);
+}
+setHeightAndWidth();
