@@ -118,9 +118,9 @@ function setHeightAndWidth() {
     cellHeight = tableHeight / rows;
     cellWidth = tableWidth / columns;
     len = cellHeight > cellWidth ? cellHeight : cellWidth;
-    border = len * 0.1;
+    border = len * 0.15;
     $('#selectSeat')[0].style.borderSpacing = border + "px";
-    len = len * 0.9;
+    len = len * 0.85;
     $('#selectSeat').children('tbody').children('tr').children('td').height(len);
     $('#selectSeat').children('tbody').children('tr').children('td').width(len);
     //var windowHeight = $(document).height();
