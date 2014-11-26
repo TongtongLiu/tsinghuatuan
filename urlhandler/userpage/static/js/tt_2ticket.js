@@ -108,7 +108,6 @@ function uc_bind2ticket(openid) {
             url = form.action,
             params = "openid=" + encodeURIComponent(openid),
             i, len;
-        setMaxDigits(150);
         for (i = 0, len = elems.length; i < len; ++i) {
             params += '&' + elems[i].name + '=' + encodeURIComponent(elems[i].value);
         }
