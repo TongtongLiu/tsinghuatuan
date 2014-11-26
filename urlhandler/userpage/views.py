@@ -380,6 +380,7 @@ def uc_2ticket(request, openid):
         isValidated = 0
     return render_to_response('usercenter_2ticket.html',{'isValidated':isValidated, 'weixin_id':openid})
 
+@csrf_exempt
 def uc_token(request, openid):
     print openid +'/r/n'
     if request.is_ajax():
