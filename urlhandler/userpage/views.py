@@ -385,7 +385,7 @@ def decode_token(token):
     return stu_id
 
 @csrf_exempt
-def uc_2ticket(request, weixinid):
+def uc_2ticket(request, openid):
     if request.is_ajax():
         try:
             if not request.POST.get('bind_key', ''):
@@ -396,17 +396,16 @@ def uc_2ticket(request, weixinid):
                 return HttpResponse('logout error')
         except:
             return HttpResponse('logout error')
-    weixin_id = weixinid
-    user = User.objects.filter(weixin_id=weixinid, status=1)
-    if user:
-        isValidated = 1
-        binds = Bind.objects.filter(Q(active_stu_id=user[0].stu_id) | Q(passive_stu_id=user[0].stu_id))
-        aty_canBind = Activity.objects.filter(status=1)
-
-        return render_to_response('usercenter_2ticket.html', {'isValidated': isValidated, 'weixin_id': weixin_id, 'aty_canBind': aty_canBind, 'binds': binds, 'user': user[0]})
     else:
-        isValidated = 0
-    return render_to_response('usercenter_2ticket.html', {'isValidated': isValidated, 'weixin_id': weixin_id})
+        user = User.objects.filter(weixin_id=openid, status=1)
+        if user:
+            isValidated = 1
+            binds = Bind.objects.filter(Q(active_stu_id=user[0].stu_id) | Q(passive_stu_id=user[0].stu_id))
+            aty_canBind = Activity.objects.filter(status=1)
+            return render_to_response('usercenter_2ticket.html', {'isValidated': isValidated, 'weixin_id': openid, 'aty_canBind': aty_canBind, 'binds': binds, 'user': user[0]})
+        else:
+            isValidated = 0
+            return render_to_response('usercenter_2ticket.html', {'isValidated': isValidated, 'weixin_id': openid})
 
 @csrf_exempt
 def uc_token(request, openid):
