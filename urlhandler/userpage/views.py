@@ -407,9 +407,7 @@ def uc_2ticket_bind(request):
     if Bind.objects.filter(activity=activity, active_stu_id=passive_stu_id) or Bind.objects.filter(activity=activity, passive_stu_id=passive_stu_id):
         return HttpResponse('AlreadyBinded')
     else:
-        print '12313123'
         random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
-        print random_string
         while Bind.objects.filter(unique_id=random_string).exists():
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
             print random_string
