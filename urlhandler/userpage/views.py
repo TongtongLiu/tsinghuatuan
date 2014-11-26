@@ -408,7 +408,7 @@ def uc_2ticket_bind(request):
         return HttpResponse('AlreadyBinded')
     else:
         random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
-        while Ticket.objects.filter(unique_id=random_string).exists():
+        while Bind.objects.filter(unique_id=random_string).exists():
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
         try:
             newbind = Bind.objects.create(activity=activity, activie_stu_id=active_stu_id, passive_stu_id=passive_stu_id, unique_id=random_string)
