@@ -381,6 +381,7 @@ def uc_2ticket(request, openid):
     return render_to_response('usercenter_2ticket.html',{'isValidated':isValidated, 'weixin_id':openid})
 
 def uc_token(request, openid):
+    print openid +'/r/n'
     if request.is_ajax():
         weixin_id = request.POST.get('openid', '')
         user = User.objects.filter(weixin_id=weixin_id, status=1)
