@@ -51,14 +51,14 @@
     margin: 1px;
     width: 15px;
     height: 15px;
-    background: rgba(106,4,140,0.8);
+    background: rgba(212,120,243,0.8);
 }
 
 .chosen{
     margin: 1px;
     width: 15px;
     height: 15px;
-    background: gray;
+    background: rgba(77,77,77,1);
 }
 
 .seatsTable {
