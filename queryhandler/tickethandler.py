@@ -179,7 +179,7 @@ def response_book_ticket(msg):
         if user.bind_count > 0:
             ticket = book_double_ticket(user, key, now)
         else:
-            ticket = book_double_ticket(user, key, now)
+            ticket = book_ticket(user, key, now)
         if ticket is None:
             return get_reply_text_xml(msg, get_text_fail_book_ticket(activities[0], now))
         else:
@@ -205,7 +205,7 @@ def book_ticket(user, key, now):
         if tickets.exists() and tickets[0].status != 0:
             return None
 
-        next_seat = ''
+        next_seat = 'none'
         if activity.seat_status == 1:
             b_count = Ticket.objects.filter(activity=activity, seat='B', status__gt=0).count()
             c_count = Ticket.objects.filter(activity=activity, seat='C', status__gt=0).count()
@@ -222,6 +222,7 @@ def book_ticket(user, key, now):
                 stu_id=user.stu_id,
                 activity=activity,
                 unique_id=random_string,
+                partner_id='s'
                 status=1,
                 seat=next_seat
             )
@@ -231,6 +232,7 @@ def book_ticket(user, key, now):
             ticket = tickets[0]
             ticket.status = 1
             ticket.seat = next_seat
+            ticket.partner_id='s'
             ticket.save()
             return ticket
         else:
@@ -261,7 +263,7 @@ def book_double_ticket(user, key, now):
         if activity.remain_tickets <= 1:
             return None
 
-        next_seat = ''
+        next_seat = 'none'
         if activity.seat_status == 1:
             b_count = Ticket.objects.filter(activity=activity, seat='B', status__gt=0).count()
             c_count = Ticket.objects.filter(activity=activity, seat='C', status__gt=0).count()
@@ -286,7 +288,7 @@ def book_double_ticket(user, key, now):
                 stu_id=partner.stu_id,
                 activity=activity,
                 unique_id=random_string,
-                partner_id='d '+user.stu_id,
+                partner_id=user.stu_id,
                 status=1,
                 seat=next_seat
             )
@@ -295,7 +297,7 @@ def book_double_ticket(user, key, now):
             ticket = tickets[0]
             ticket.status = 1
             ticket.seat = next_seat
-            ticket.partner_id='d '+user.stu_id
+            ticket.partner_id=user.stu_id
             ticket.save()
             return ticket
         else:
@@ -312,7 +314,7 @@ def book_double_ticket(user, key, now):
                 stu_id=user.stu_id,
                 activity=activity,
                 unique_id=random_string,
-                partner_id='a '+partner.stu_id,
+                partner_id=partner.stu_id,
                 status=1,
                 seat=next_seat
             )
@@ -321,7 +323,7 @@ def book_double_ticket(user, key, now):
             ticket = tickets[0]
             ticket.status = 1
             ticket.seat = next_seat
-            ticket.partner_id='a '+partner.stu_id
+            ticket.partner_id=partner.stu_id
             ticket.save()
         else:
             return None
@@ -410,7 +412,7 @@ def response_book_event(msg):
     if activity.book_end < now:
         return get_reply_text_xml(msg, get_text_timeout_book_event())
     if user.bind_count > 0:
-        ticket = book_double_ticket(user, activity.key, now)
+        ticket = book_ticket(user, activity.key, now)
     else:
         ticket = book_double_ticket(user, activity.key, now)
     if ticket is None:
