@@ -380,13 +380,14 @@ def uc_2ticket(request, openid):
         isValidated = 0
     return render_to_response('usercenter_2ticket.html',{'isValidated':isValidated, 'weixin_id':openid})
 
+@csrf_exempt
 def uc_token(request, openid):
-    print openid +'/r/n'
-    if request.is_ajax():
+    if request.method == 'POST':
         weixin_id = request.POST.get('openid', '')
         user = User.objects.filter(weixin_id=weixin_id, status=1)
         timestamp = int(time.time()) / 100
-        rtnJSON = {'token': user[0].stu_id ^ timestamp}
+        # rtnJSON = {'token': user[0].stu_id ^ timestamp}
+        rtnJSON = {'token': '123'}
         return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
     else:
         if User.objects.filter(weixin_id=openid, status=1).exists():
