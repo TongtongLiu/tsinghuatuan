@@ -389,8 +389,8 @@ def decode_token(token):
     return stu_id
 
 
-@csrf_exempt
 def uc_2ticket_bind(request):
+    print "uc2ticketbind"
     if (not request.POST) or (not 'openid' in request.POST) or \
             (not 'activity' in request.POST) or (not 'token' in request.POST):
         raise Http404
