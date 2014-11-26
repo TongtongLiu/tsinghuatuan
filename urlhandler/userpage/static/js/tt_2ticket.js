@@ -73,19 +73,12 @@ function uc_readyStateChanged() {
             var result = xmlhttp.responseText;
             switch (result)
             {
-                case 'Accepted':
-                    //document.getElementById('validationHolder').setAttribute('hidden', 'hidden');
-                    hideElem('validationHolder');
-                    //document.getElementById('successHolder').removeAttribute('hidden');
-                    showElem('successHolder');
-                    return;
-
-                case 'Rejected':
-                    showError('submitGroup', 'helpSubmit', '学号或密码错误！请输入学号和info登录密码');
+                case 'AlreadyBinded':
+                    showError('submitGroup', 'helpSubmit', '对方在该活动中已经绑定，请解绑后重试。');
                     break;
 
-                case 'Timeout':
-                    showError('submitGroup', 'helpSubmit', '连接超时！请稍后重试');
+                case 'TokenError':
+                    showError('submitGroup', 'helpSubmit', '令牌不正确或者已过期，请重新输入令牌。');
                     break;
 
                 case 'Error':

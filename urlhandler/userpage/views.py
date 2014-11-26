@@ -15,8 +15,9 @@ from django.utils import timezone
 from weixinlib.weixin_urls import WEIXIN_URLS
 from weixinlib import http_get
 from django.shortcuts import redirect
-
 from userpage.safe_reverse import *
+import string
+import random
 
 def home(request):
     return render_to_response('mobile_base.html')
@@ -374,52 +375,49 @@ def uc_account(request, openid):
     else:
         return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
 
+
 def encode_token(openid):
     user = User.objects.filter(weixin_id=openid, status=1)
     timestamp = int(time.time()) / 100
     token = int(user[0].stu_id) ^ timestamp
     return token
 
+
 def decode_token(token):
     timestamp = int(time.time()) / 100
     stu_id = int(token) ^ timestamp
     return stu_id
+
 
 def uc_2ticket_bind(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
             (not 'activity' in request.POST) or (not 'token' in request.POST):
         raise Http404
     openid = request.POST['openid']
-    activity = request.POST['activity']
-    token = request.POST['token']
-    stu_id = decode_token(token)
-    
-    validate_result = validate_through_auth(secret)
-    if validate_result['result'] == 'Accepted':
+    user = User.objects.filter(weixin_id=openid)
+    if not user:
+        raise Http404
+    active_stu_id = user.stu_id
+    activity = Activity.objects.filter(name=request.POST['activity_name'])
+    if not activity:
+        raise Http404
+    passive_stu_id = decode_token(request.POST['token'])
+    if not User.objects.filter(stu_id=passive_stu_id):
+        raise HttpResponse('TokenError')
+    if Bind.objects.filter(activity=activity, active_stu_id=passive_stu_id) or Bind.objects.filter(activity=activity, passive_stu_id=passive_stu_id):
+        return HttpResponse('AlreadyBinded')
+    else:
+        random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+        while Ticket.objects.filter(unique_id=random_string).exists():
+            random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
         try:
-            User.objects.filter(stu_id=userid).update(status=0)
-            User.objects.filter(weixin_id=openid).update(status=0)
+            newbind = Bind.objects.create(activity=activity, activie_stu_id=active_stu_id, passive_stu_id=passive_stu_id, unique_id=random_string)
+            newbind.save()
+            User.objects.filter(stu_id=active_stu_id).update(bind_count=F('bind_count')+1)
+            User.objects.filter(stu_id=passive_stu_id).update(bind_count=F('bind_count')+1)
         except:
             return HttpResponse('Error')
-        try:
-            currentUser = User.objects.get(stu_id=userid)
-            currentUser.weixin_id = openid
-            currentUser.status = 1
-            currentUser.stu_name = validate_result['name']
-            currentUser.stu_type = validate_result['type']
-            currentUser.bind_count = 0
-            try:
-                currentUser.save()
-            except:
-                return HttpResponse('Error')
-        except:
-            try:
-                newuser = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'], stu_type=validate_result['type'], status=1)
-                newuser.save()
-            except:
-                return HttpResponse('Error')
-        return HttpResponse(s_reverse_uc_account(openid))
-    return HttpResponse(validate_result['result'])
+        return HttpResponse(s_reverse_uc_2ticket(openid))
 
 @csrf_exempt
 def uc_2ticket(request, openid):
@@ -429,7 +427,10 @@ def uc_2ticket(request, openid):
                 return HttpResponse('logout error')
             else:
                 unique_id = request.POST['unique_id']
-                Bind.objects.filter(unique_id=unique_id).delete()
+                bind = Bind.objects.filter(unique_id=unique_id)
+                User.objects.filter(stu_id=bind[0].active_stu_id).update(bind_count=F('bind_count')-1)
+                User.objects.filter(stu_id=bind[0].passive_stu_id).update(bind_count=F('bind_count')-1)
+                bind.delete()
                 return HttpResponse('logout error')
         except:
             return HttpResponse('logout error')
