@@ -280,7 +280,6 @@ def ticket_view(request, uid):
                                       'act_endtime':act_endtime,'act_photo':act_photo, 'ticket_status':ticket_status,
                                       'ticket_seat':ticket_seat,
                                       'act_key':act_key,
-                                      'ticket_type':ticket_type,
                                       'ticket_url':ticket_url})
     return render_to_response('activityticket.html', variables)
 
@@ -470,14 +469,12 @@ def views_seats(request, uid):
         ticketID = uid
         title = ticket[0].activity.name
         time = ticket[0].activity.start_time
-        ticket_type = ticket.partner_id
+        ticket_type = ticket[0].partner_id
         return render_to_response('seats.html', locals())
-
     else:
-
         rtnJSON = {}
         ticketID = request.POST.get('ticketID', '')
-        seats = request.POST.get('postSelect', ',')
+        postSelect = request.POST.get('postSelect', '')
 
         try:
             ticket = Ticket.objects.get(unique_id=ticketID, status=1)
@@ -485,16 +482,19 @@ def views_seats(request, uid):
             rtnJSON['msg'] = 'invalidTicket'
             return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
 
+        seats = postSelect.split(',')
         seat = seats[0]
         row = int(seat.split("-")[0]) - 1
         column = int(seat.split("-")[1]) - 1
-        if len(seats) > 1
+       
+        if len(seats) > 1:
             other_seat = seats[1]
             other_row = int(other_seat.split("-")[0]) - 1
             other_column = int(other_seat.split("-")[1]) - 1
-            other_stu_id = ticket_partner
+            other_stu_id = ticket.partner_id
 
         activityName = ticket.activity.name
+        
         with transaction.atomic():
             if len(seats) > 1:
                 activity = Activity.objects.select_for_update().filter(name = activityName)
@@ -511,7 +511,7 @@ def views_seats(request, uid):
                     seats_list = json.dumps(seatsTable)
                     activity = Activity.objects.filter(name=activityName)
                     Ticket.objects.filter(unique_id=ticketID).update(seat=seat)
-                    Ticket.objects.filter(stu_id=other_stu_id, activity=activity).update(seat=other_seat)
+                    Ticket.objects.filter(stu_id=other_stu_id, activity=activity[0]).update(seat=other_seat)
                     activity.update(seat_table=seats_list)
                     rtnJSON['seat'] = seatsTable
                     rtnJSON['msg'] = 'success'
