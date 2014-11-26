@@ -81,8 +81,16 @@ function uc_readyStateChanged() {
                     showError('submitGroup', 'helpSubmit', '令牌不正确或者已过期，请重新输入。');
                     break;
 
+                case 'HaveTicket':
+                    showError('submitGroup', 'helpSubmit', '对方在该活动中已邮票，无法绑定。');
+                    break;
+
+                case 'SameStudentID':
+                    showError('submitGroup', 'helpSubmit', '请勿与自己绑定，调戏服务器。');
+                    break;
+
                 case 'Error':
-                    showError('submitGroup', 'helpSubmit', '出现了奇怪的错误，我们已经记录下来了，请稍后重试。')
+                    showError('submitGroup', 'helpSubmit', '出现了奇怪的错误，我们已经记录下来了，请稍后重试。');
                     break;
 
                 default:
