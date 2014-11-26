@@ -39,7 +39,7 @@
 			<div class="panel-body">
 				<p>活动地点：{{ ticket.activity.place }}&nbsp;&nbsp;
 				{% if ticket.seat %}
-					<p>座位：{{ ticket.seat }}</p>
+					座位：{{ ticket.seat }}
 				{% else %}
 					<a id="seat{{ ticket.unique_id }}">请选座</a>
 				{% endif %}
