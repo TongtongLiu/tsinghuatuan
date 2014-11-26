@@ -385,7 +385,7 @@ def encode_token(openid):
 
 def decode_token(token):
     timestamp = int(time.time()) / 100
-    stu_id = int(token) ^ timestamp
+    stu_id = str(int(token) ^ timestamp)
     return stu_id
 
 
