@@ -1,7 +1,7 @@
 div.screen {
     width: 100%;
-    height: 10px;
-    background: #a9a9a9;
+    padding: 3px, 0px;
+    background: #d7d7d7;
     text-align: center;
 }
 
@@ -18,19 +18,19 @@ div.screen {
 .valid {
 	width: 15px;
 	height: 15px;
-	background: #428bca;
+	background: #3d82bc;
 }
 
 .selected {
 	width: 15px;
 	height: 15px;
-	background: #d9534f;
+	background: #cb4e4a;
 }
 
 .selectThis {
 	width: 15px;
 	height: 15px;
-	background: #5cb85c;
+	background: #55a955;
 }
 
 .activityTime {
@@ -55,7 +55,7 @@ div.screen {
 
 .num {
 	font-size: 18px;
-	color: #d9534f;
+	color: #cb4e4a;
 }
 
 #selectSeat {
