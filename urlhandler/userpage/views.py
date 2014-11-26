@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from urlhandler.models import User, Activity, Ticket
+from urlhandler.models import User, Activity, Ticket, Bind
 from django.views.decorators.csrf import csrf_exempt
 from urlhandler.settings import STATIC_URL
 import urllib, urllib2
@@ -12,7 +12,6 @@ import datetime, time
 import json
 from django.db import transaction
 from django.utils import timezone
-from urlhandler.urlhandler.models import Bind
 from weixinlib.weixin_urls import WEIXIN_URLS
 from weixinlib import http_get
 from django.shortcuts import redirect
