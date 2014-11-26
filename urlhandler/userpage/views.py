@@ -386,7 +386,7 @@ def uc_token(request, openid):
         weixin_id = request.POST.get('openid', '')
         user = User.objects.filter(weixin_id=weixin_id, status=1)
         timestamp = int(time.time()) / 100
-        token = str(user[0].stu_id ^ timestamp)
+        token = str(int(user[0].stu_id) ^ timestamp)
         rtnJSON = {'token': token}
         return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
     else:
