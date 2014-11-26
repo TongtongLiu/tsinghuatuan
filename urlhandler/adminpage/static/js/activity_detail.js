@@ -546,6 +546,14 @@ $('#selectSeat').find("td").click(function(){
                 $(this).addClass("chosen");
             }
         }
+        else if(buttonSelect == 3) {
+            if($(this).hasClass("chosen")){
+                $('#selectSeat').find("td:not(.empty)").removeClass("chosen");
+            }
+            else{
+                $('#selectSeat').find("td:not(.empty)").addClass("chosen");
+            }
+        }
     }
          
 });
