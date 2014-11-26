@@ -5,21 +5,21 @@
 {% block content %}
 {% if isValidated %}
     <ul class="list-group">
-       <li class="list-group-item">
-        <a href="#couple_intro" data-toggle="modal">双人抢票&nbsp;
-          <span class="glyphicon glyphicon-question-sign"></span>
-        </a>
-       </li>
+        <li class="list-group-item">
+            <a href="#couple_intro" data-toggle="modal">双人抢票&nbsp;
+                <span class="glyphicon glyphicon-question-sign"></span>
+            </a>
+        </li>
 
        <li class="list-group-item">
-           <div class="input-group">
+            <div class="input-group">
                 <span class="input-group-addon">绑定活动</span>
                 <select class="form-control">
                     {% for aty in aty_canBind %}
                     <option value ="{{ aty.name }}">{{ aty.name }}</option>
                     {% endfor %}
                 </select>
-           </div>
+            </div>
             <div class="input-group">
                 <span class="input-group-addon">对方指令</span>
                 <input type="text" class="form-control" placeholder="请输入被绑人指令">
@@ -28,78 +28,78 @@
        </li>
     </ul>
     <!-- 已绑定双人抢票活动的信息 -->
-        <div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">已绑定双人抢票的活动</h3>
-			</div>
-            {% if not binds %}
-                <p style="text-align: center; font-weight: bold; margin-top: 5px;">暂无</p>
-            {% else %}
-                {% for bind in binds %}
-                <script type="text/javascript">
-                $( document ).ready( function() {
-                    $( '#btn{{ bind.key }}' ).click( function() {
-                         $.post("",
-                         {
-                            bind_key:"{{ bind.key }}",
-                         },
-                         function(data, status){
-                           $( '#div{{ bind.key }}' ).hide();
-                         });
-                    });
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">已绑定双人抢票的活动</h3>
+        </div>
+        {% if not binds %}
+            <p style="text-align: center; font-weight: bold; margin-top: 5px;">暂无</p>
+        {% else %}
+            {% for bind in binds %}
+            <script type="text/javascript">
+            $( document ).ready( function() {
+                $( '#btn{{ bind.key }}' ).click( function() {
+                     $.post("",
+                     {
+                        bind_key:"{{ bind.key }}",
+                     },
+                     function(data, status){
+                       $( '#div{{ bind.key }}' ).hide();
+                     });
                 });
-                </script>
-                <div class="panel-body">
-                    <div class="panel panel-default" id="div{{ bind.key }}">
-                        <div class="panel-body">
-                            <p>活动名称：{{ bind.activity.name }}</p>
-                            {% if user.stu_id == bind.active_stu_id %}
-                            <p>绑定状态：主动（可抢票）</p>
-                            <p>绑定对象学号：{{ bind.passive_stu_id }}</p>
-                            {% else %}
-                            <p>绑定状态：被动（等待对方抢票）</p>
-                            <p>绑定对象学号：{{ bind.active_stu_id }}</p>
-                            {% endif %}
-                            <p>抢票开始时间：{{ bind.activity.book_start }}</p>
-                            <p>抢票结束时间：{{ bind.activity.book_end }}</p>
-                            <button class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#model{{ bind.key }}">解绑</button>
-                        </div>
+            });
+            </script>
+            <div class="panel-body">
+                <div class="panel panel-default" id="div{{ bind.key }}">
+                    <div class="panel-body">
+                        <p>活动名称：{{ bind.activity.name }}</p>
+                        {% if user.stu_id == bind.active_stu_id %}
+                        <p>绑定状态：主动（可抢票）</p>
+                        <p>绑定对象学号：{{ bind.passive_stu_id }}</p>
+                        {% else %}
+                        <p>绑定状态：被动（等待对方抢票）</p>
+                        <p>绑定对象学号：{{ bind.active_stu_id }}</p>
+                        {% endif %}
+                        <p>抢票开始时间：{{ bind.activity.book_start }}</p>
+                        <p>抢票结束时间：{{ bind.activity.book_end }}</p>
+                        <button class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#model{{ bind.key }}">解绑</button>
                     </div>
                 </div>
-                 <!-- 解绑警告信息 -->
-                <div class="modal fade" id="model{{ bind.key }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                   <div class="modal-dialog">
-                      <div class="modal-content">
-                         <div class="modal-body">
-                            确定要解绑？
-                         </div>
-                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-danger" id="btn{{ bind.key }}" data-dismiss="modal">确定</button>
-                            <button type="button" class="btn btn-default"
-                               data-dismiss="modal">取消
-                            </button>
-                         </div>
-                      </div>
+            </div>
+             <!-- 解绑警告信息 -->
+            <div class="modal fade" id="model{{ bind.key }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-body">
+                        确定要解绑？
+                     </div>
+                     <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger" id="btn{{ bind.key }}" data-dismiss="modal">确定</button>
+                        <button type="button" class="btn btn-default"
+                           data-dismiss="modal">取消
+                        </button>
+                     </div>
                   </div>
-                </div>
-                {% endfor %}
-            {% endif %}
-		</div>
+              </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 
 
     <div class="modal fade" id="couple_intro" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <!--模态框，提示双人抢票说明-->
         <div class="modal-dialog">
-              <div class="modal-content">
-                 <div class="modal-body">
-                  <p id="myModalLabel" style="font-weight:bold">
-                       双人抢票操作说明&nbsp;:
-                  </p>
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p id="myModalLabel" style="font-weight:bold">
+                        双人抢票操作说明&nbsp;:
+                    </p>
                     双人抢票是很复杂滴
-                 </div>
-              </div>
-          </div>
+                </div>
+            </div>
         </div>
+    </div>
 {% else %}
   <p style="text-align: center; font-weight: bold;">请先绑定账户</p>
 {% endif %}
