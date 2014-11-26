@@ -397,7 +397,7 @@ def uc_2ticket_bind(request):
     user = User.objects.filter(weixin_id=openid)
     if not user:
         raise Http404
-    active_stu_id = user.stu_id
+    active_stu_id = user[0].stu_id
     activity = Activity.objects.filter(name=request.POST['activity_name'])
     if not activity:
         raise Http404
