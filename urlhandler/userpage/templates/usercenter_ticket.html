@@ -15,6 +15,7 @@
             function(data, status){
                 if (status == "success") {
                     $('#a{{ ticket.unique_id }}').attr("href", data.ticketURL);
+                    $('#seat{{ ticket.unique_id }}').attr("href", data.seatURL);
                 }
             });
         }
@@ -33,7 +34,7 @@
 		</script>
 		<div class="panel panel-default" id="div{{ ticket.unique_id }}">
 			<div class="panel-heading">
-				<h3 class="panel-title">活动名称：{{ ticket.activity.name }}&nbsp;<a id="a{{ ticket.unique_id }}"><span class="glyphicon glyphicon-exclamation-sign" style="color:#428bca"></span></a></h3>
+				<h3 class="panel-title">活动名称：<a id="a{{ ticket.unique_id }}">{{ ticket.activity.name }}&nbsp;<span class="glyphicon glyphicon-exclamation-sign" style="color:#428bca"></span></a></h3>
 			</div>
 			<div class="panel-body">
 				<p>活动地点：{{ ticket.activity.place }}</p>
@@ -42,7 +43,7 @@
 				{% if ticket.seat %}
 					<p>座位：{{ ticket.seat }}</p>
 				{% else %}
-					<a href="#">请选座</a>
+					<a id="seat{{ ticket.unique_id }}">请选座</a>
 				{% endif %}
 				<button class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#model{{ ticket.unique_id }}">退票</button>
 			</div>
