@@ -87,7 +87,7 @@ var dateInterfaceMap = {
 };
 
 var curstatus = 0;
-var 
+//var 
 
 function updateActivity(nact) {
     var key, key2, tdate;
@@ -504,13 +504,13 @@ $('#activity-form').submit(function() {
 var buttonSelect = 1;//1单个，2一行，3全部
 $('#singleSelect').click(function(){
     buttonSelect = 1;
-}
+});
 $('#lineSelect').click(function(){
     buttonSelect = 2;
-}
+});
 $('#allSelect').click(function(){
     buttonSelect = 3;
-}
+});
 $('#selectSeat').find("td").click(function(){
     if(buttonSelect == 1){
         if($(this).hasClass(".chosen"))
