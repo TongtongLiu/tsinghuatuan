@@ -1,6 +1,5 @@
 #-*- coding:utf-8 -*-
-from django.db.models import Q
-
+from django.db.models import F, Q
 from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -438,11 +437,10 @@ def uc_2ticket(request, openid):
             if not request.POST.get('unique_id', ''):
                 return HttpResponse('logout error')
             else:
-                unique_id = request.POST['unique_id']
-                bind = Bind.objects.filter(unique_id=unique_id)
+                bind = Bind.objects.filter(unique_id=request.POST['unique_id'])
                 User.objects.filter(stu_id=bind[0].active_stu_id).update(bind_count=F('bind_count')-1)
                 User.objects.filter(stu_id=bind[0].passive_stu_id).update(bind_count=F('bind_count')-1)
-                Bind.objects.filter(unique_id=unique_id).delete()
+                bind.delete()
                 return HttpResponse('logout error')
         except:
             return HttpResponse('logout error')
