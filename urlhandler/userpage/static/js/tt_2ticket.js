@@ -74,11 +74,11 @@ function uc_readyStateChanged() {
             switch (result)
             {
                 case 'AlreadyBinded':
-                    showError('submitGroup', 'helpSubmit', '对方在该活动中已经绑定，请解绑后重试。');
+                    showError('submitGroup', 'helpSubmit', '对方在该活动中已绑定，请解绑后重试。');
                     break;
 
                 case 'TokenError':
-                    showError('submitGroup', 'helpSubmit', '令牌不正确或者已过期，请重新输入令牌。');
+                    showError('submitGroup', 'helpSubmit', '令牌不正确或者已过期，请重新输入。');
                     break;
 
                 case 'Error':
