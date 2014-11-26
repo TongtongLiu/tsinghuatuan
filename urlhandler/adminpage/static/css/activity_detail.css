@@ -29,7 +29,7 @@
 .seatsTable {
     margin:auto;
     float: left;
-    width: 70%;
+    width: 60%;
 }
 
 #selectSeat {
@@ -44,7 +44,7 @@
 
 #infoSet {
     padding: 10px 5px 10px 5px;
-    width: 30%;
+    width: 40%;
     float: right;
 }
 
