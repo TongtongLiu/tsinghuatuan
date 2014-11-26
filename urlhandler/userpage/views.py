@@ -448,13 +448,15 @@ def uc_2ticket(request, openid):
         if user:
             isValidated = 1
             binds = Bind.objects.filter(Q(active_stu_id=user[0].stu_id) | Q(passive_stu_id=user[0].stu_id))
+            tickets = Ticket.objects.filter(stu_id=user[0].stu_id)
             aty_canBind = Activity.objects.filter(status=1)
             return render_to_response('usercenter_2ticket.html', {
                 'isValidated': isValidated,
                 'weixin_id': openid,
                 'stu_id': user[0].stu_id,
                 'aty_canBind': aty_canBind,
-                'binds': binds
+                'binds': binds,
+                'tickets': tickets
             }, context_instance=RequestContext(request))
         else:
             isValidated = 0

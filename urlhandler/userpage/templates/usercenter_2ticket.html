@@ -17,9 +17,23 @@
                     <span class="input-group-addon">选择活动</span>
                     <select class="form-control" id="selectActivity" name="activity_name" onblur="checkActivity();">
                         {% for aty in aty_canBind %}
-                        <option value ="{{ aty.name }}">{{ aty.name }}</option>
+                            <option value="{{ aty.name }}" id="opt{{ aty.name }}">{{ aty.name }}</option>
                         {% endfor %}
                     </select>
+                    {% for bind in binds %}
+                    <script>
+                        var parent = document.getElementById("selectActivity");
+                        var child = document.getElementById("opt{{ bind.activity.name }}");
+                        parent.removeChild(child);
+                    </script>
+                    {% endfor %}
+                    {% for ticket in tickets %}
+                    <script>
+                        var parent = document.getElementById("selectActivity");
+                        var child = document.getElementById("opt{{ ticket.activity.name }}");
+                        parent.removeChild(child);
+                    </script>
+                    {% endfor %}
                 </div>
                 <div class="input-group" id="tokenGroup">
                     <span class="input-group-addon">对方令牌</span>
