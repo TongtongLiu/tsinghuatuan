@@ -390,7 +390,6 @@ def decode_token(token):
 
 
 def uc_2ticket_bind(request):
-    print "uc2ticketbind"
     if (not request.POST) or (not 'openid' in request.POST) or \
             (not 'activity' in request.POST) or (not 'token' in request.POST):
         raise Http404
@@ -442,10 +441,19 @@ def uc_2ticket(request, openid):
             isValidated = 1
             binds = Bind.objects.filter(Q(active_stu_id=user[0].stu_id) | Q(passive_stu_id=user[0].stu_id))
             aty_canBind = Activity.objects.filter(status=1)
-            return render_to_response('usercenter_2ticket.html', {'isValidated': isValidated, 'weixin_id': openid, 'stu_id': user[0].stu_id, 'aty_canBind': aty_canBind, 'binds': binds})
+            return render_to_response('usercenter_2ticket.html', {
+                'isValidated': isValidated,
+                'weixin_id': openid,
+                'stu_id': user[0].stu_id,
+                'aty_canBind': aty_canBind,
+                'binds': binds
+            }, context_instance=RequestContext(request))
         else:
             isValidated = 0
-            return render_to_response('usercenter_2ticket.html', {'isValidated': isValidated, 'weixin_id': openid})
+            return render_to_response('usercenter_2ticket.html', {
+                'isValidated': isValidated,
+                'weixin_id': openid
+            }, context_instance=RequestContext(request))
 
 @csrf_exempt
 def uc_token(request, openid):
