@@ -391,7 +391,7 @@
                                         <td class="sectionF" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
                                     {% endifequal %}
                                     {% ifequal seat 7 %}
-                                        <td class="sectionB" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
+                                        <td class="sectionG" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
                                     {% endifequal %}
                                 {% endfor %}
                             </tr>
@@ -400,15 +400,10 @@
                 </div>
                 <div id="infoSet">
                     <div class="btn-group btn-group-xs">
-                      <abbr title="这是提示信息" class="initialism"><button type="button" class="btn btn-default" data-toggle='collapse' data-target='#singleInfo1'>单个选择</button></abbr>
-                      <button type="button" class="btn btn-default" data-toggle='collapse' data-target='#singleInfo2'>按行选择</button>
-                      <button type="button" class="btn btn-default" data-toggle='collapse' data-target='#singleInfo3'>全部选择</button>
+                      <button id="singleSelect" type="button" class="btn btn-default" data-toggle='collapse' aria-expanded="false">单个选择</button>
+                      <button id="lineSelect" type="button" class="btn btn-default" data-toggle='collapse'>按行选择</button>
+                      <button id="allSelect" type="button" class="btn btn-default" data-toggle='collapse'>全部选择</button>
                       </div>
-                    <div>
-                      <div id="singleInfo1" class="collapse" style="height: 0px;">单个点击设置可购票座位</div>
-                      <div id="singleInfo2" class="collapse" style="height: 0px;">按行点击设置可购票座位</div>
-                      <div id="singleInfo3" class="collapse" style="height: 0px;">已为您设置全部座位</div>
-                    </div>
                     <form class="bs-example bs-example-form" role="form">
                        <div class="input-group input-group-sm">
                          <span class="input-group-addon">A区</span>
