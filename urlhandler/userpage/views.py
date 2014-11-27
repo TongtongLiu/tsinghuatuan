@@ -367,20 +367,15 @@ def uc_account(request, openid):
     if user:
         if request.method == 'POST':
             try:
-                print '0/r/n'
                 binds1 = Bind.objects.filter(active_stu_id=user[0].stu_id)
-                print '1/r/n'
                 for bind in binds1:
-                    print '2/r/n'
                     user.update(bind_count=F('bind_count')-1)
-                    User.objects.filter(stu_id=bind.passive_stu_id).update(bind_count=F('bind_count')-1)
-                print '3/r/n'
+                    User.objects.filter(stu_id=bind.passive_stu_id, status=1).update(bind_count=F('bind_count')-1)
                 binds1.delete()
-                print '4/r/n'
                 binds2 = Bind.objects.filter(passive_stu_id=user[0].stu_id)
                 for bind in binds2:
                     user.update(bind_count=F('bind_count')-1)
-                    User.objects.filter(stu_id=bind.active_stu_id).update(bind_count=F('bind_count')-1)
+                    User.objects.filter(stu_id=bind.active_stu_id, status=1).update(bind_count=F('bind_count')-1)
                 binds2.delete()
                 user.update(status=0)
             except:
