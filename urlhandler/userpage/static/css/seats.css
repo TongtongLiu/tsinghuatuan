@@ -46,6 +46,7 @@ div.screen {
 #submitForm {
 	text-align: center;
 	padding: 10px 5px 0px 5px;
+    margin-bottom: 20px;
 }
 
 .seatsTable {
@@ -74,9 +75,9 @@ div.screen {
 }
 
 #tableContainer {
-	height: 150px;
+    height: auto;
 	width: 80%;
-	overflow: scroll;
+	overflow: hidden;
 }
 
 #showNumToSelect {

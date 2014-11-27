@@ -414,7 +414,7 @@ def uc_2ticket_bind(request):
         return HttpResponse('SameStudentID')
     if not User.objects.filter(stu_id=passive_stu_id).exists():
         return HttpResponse('TokenError')
-    if Ticket.objects.filter(stu_id=passive_stu_id).exists():
+    if Ticket.objects.filter(stu_id=passive_stu_id, activity=activity[0]).exists():
         return HttpResponse('HaveTicket')
     if Bind.objects.filter(activity=activity[0], active_stu_id=passive_stu_id) or \
             Bind.objects.filter(activity=activity[0], passive_stu_id=passive_stu_id):

@@ -16,7 +16,6 @@ function bind_tap(){
                     numToSelect--;
                     showText();
                 } else {
-                    alert("you can choose only two seats");
                 }
             } else if ((this.getAttribute('class') == 'selectThis')) {
                 this.setAttribute('class', 'valid');
