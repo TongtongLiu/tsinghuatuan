@@ -60,10 +60,10 @@
 {% block js %}
 	<script src="{% static "lib/jq/jquery-1.10.2.min.js" %}"></script>
 	<script src="{% static "lib/touch/touch.min.js" %}"></script>
-    <script src="{% static "js/seat_general.js" %}"></script>
     {% if ticket_type == 's' %}
         <script src="{% static "js/single_seat.js" %}"></script>
     {% else %}
         <script src="{% static "js/double_seats.js" %}"></script>
     {% endif %}
+    <script src="{% static "js/seat_general.js" %}"></script>
 {% endblock %}
