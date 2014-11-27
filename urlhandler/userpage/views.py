@@ -368,6 +368,16 @@ def uc_account(request, openid):
         if request.method == 'POST':
             try:
                 user.update(status=0)
+                binds1 = Bind.objects.filter(active_stu_id=user[0].stu_id)
+                for bind in binds1:
+                    user.update(bind_count=F('bind_count')-1)
+                    User.objects.filter(passive_stu_id=bind.passive_stu_id).update(bind_count=F('bind_count')-1)
+                binds1.delete()
+                binds2 = Bind.objects.filter(passive_stu_id=user[0].stu_id)
+                for bind in binds2:
+                    user.update(bind_count=F('bind_count')-1)
+                    User.objects.filter(passive_stu_id=bind.active_stu_id).update(bind_count=F('bind_count')-1)
+                binds2.delete()
             except:
                 return HttpResponse('logout error')
             return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))

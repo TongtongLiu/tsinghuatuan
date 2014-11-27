@@ -82,7 +82,7 @@ function uc_readyStateChanged() {
                     break;
 
                 case 'HaveTicket':
-                    showError('submitGroup', 'helpSubmit', '对方在该活动中已邮票，无法绑定。');
+                    showError('submitGroup', 'helpSubmit', '对方在该活动中已有票，无法绑定。');
                     break;
 
                 case 'SameStudentID':
