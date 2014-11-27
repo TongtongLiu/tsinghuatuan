@@ -7,18 +7,6 @@
 	{% if tickets %}
 		{% for ticket in tickets %}
 		<script type="text/javascript">
-		function ajax_ticketURL() {
-            $.post("",
-            {
-                ticket_uid: "{{ ticket.unique_id }}",
-            },
-            function(data, status){
-                if (status == "success") {
-                    $('#a{{ ticket.unique_id }}').attr("href", data.ticketURL);
-                    $('#seat{{ ticket.unique_id }}').attr("href", data.seatURL);
-                }
-            });
-        }
 		$( document ).ready( function() {
 			$( '#btn{{ ticket.unique_id }}' ).click( function() {
 				 $.post("",
@@ -29,7 +17,18 @@
 				   $( '#div{{ ticket.unique_id }}' ).hide();
 				 });
 			});
-			ajax_ticketURL();
+            (function() {
+            $.post("",
+            {
+                ticket_uid: "{{ ticket.unique_id }}",
+            },
+            function(data, status){
+                if (status == "success") {
+                    $('#a{{ ticket.unique_id }}').attr("href", data.ticketURL);
+                    $('#seat{{ ticket.unique_id }}').attr("href", data.seatURL);
+                }
+            });
+        }());
 		});
 		</script>
 		<div class="panel panel-default" id="div{{ ticket.unique_id }}">
