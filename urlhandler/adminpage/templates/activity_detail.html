@@ -326,136 +326,137 @@
                     <button type="reset" class="btn btn-warning" id="resetBtn">重置</button>
                 </div>
             </div>
+            <!-- 模态框（Modal） -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
+               aria-labelledby="myModalLabel" aria-hidden="true">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <button type="button" class="close" 
+                           data-dismiss="modal" aria-hidden="true">
+                              &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                           这里是设置座位的页面呦！
+                        </h4>
+                     </div>
+                    <div class="modal-body">
+                        <div class="seatsTable" align="center">
+                            <table id="tbody">
+                                <tr>
+                                    <td class="sectionA"></td>
+                                    <td>A区</td>
+                                    <td class="sectionB"></td>
+                                    <td>B区</td>
+                                    <td class="sectionC"></td>
+                                    <td>C区</td>
+                                    <td class="sectionD"></td>
+                                    <td>D区</td>
+                                </tr>
+                                <tr>
+                                    <td class="sectionE"></td>
+                                    <td>E区</td>
+                                    <td class="sectionF"></td>
+                                    <td>F区</td>
+                                    <td class="sectionG"></td>
+                                    <td>G区</td>
+                                    <td class="chosen"></td>
+                                    <td>已选</td>
+                                </tr>
+                            </table>
+                            <table id="selectSeat">
+                                {% for line in seats_list %}
+                                    <tr>
+                                        {% for seat in line %}
+                                            {% ifequal seat 0 %}
+                                                <td class="empty" id="{{ forloop.parentloop.counter }}-{{ forloop.      counter }}"></td>
+                                            {% endifequal %}
+                                            {% ifequal seat 1 %}
+                                                <td class="sectionA" id="{{ forloop.parentloop.counter }}-{{ forloop.       counter }}"></td>
+                                            {% endifequal %}
+                                            {% ifequal seat 2 %}
+                                                <td class="sectionB" id="{{ forloop.parentloop.counter }}-{{ forloop.       counter }}"></td>
+                                            {% endifequal %}
+                                            {% ifequal seat 3 %}
+                                                <td class="sectionC" id="{{ forloop.parentloop.counter }}-{{ forloop.       counter }}"></td>
+                                            {% endifequal %}
+                                            {% ifequal seat 4 %}
+                                                <td class="sectionD" id="{{ forloop.parentloop.counter }}-{{ forloop.       counter }}"></td>
+                                            {% endifequal %}
+                                            {% ifequal seat 5 %}
+                                                <td class="sectionE" id="{{ forloop.parentloop.counter }}-{{ forloop.       counter }}"></td>
+                                            {% endifequal %}
+                                            {% ifequal seat 6 %}
+                                                <td class="sectionF" id="{{ forloop.parentloop.counter }}-{{ forloop.       counter }}"></td>
+                                            {% endifequal %}
+                                            {% ifequal seat 7 %}
+                                                <td class="sectionG" id="{{ forloop.parentloop.counter }}-{{ forloop.       counter }}"></td>
+                                            {% endifequal %}
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                        <div id="infoSet">
+                            <div class="btn-group btn-group-xs">
+                              <button id="singleSelect" type="button" class="btn btn-default active" data-toggle='      collapse'>单个选择</button>
+                              <button id="lineSelect" type="button" class="btn btn-default" data-toggle='collapse'>     按行选择</button>
+                              <button id="allSelect" type="button" class="btn btn-default" data-toggle='collapse'>      全部选择</button>
+                              </div>
+                            <form class="bs-example bs-example-form" role="form">
+                               <div class="input-group input-group-sm">
+                                 <span class="input-group-addon">A区</span>
+                                 <input type="number" class="form-control" placeholder="300">
+                                 <span class="input-group-addon">元</span>
+                               </div>
+                               <div class="input-group input-group-sm">
+                                 <span class="input-group-addon">B区</span>
+                                 <input type="number" class="form-control" placeholder="200">
+                                 <span class="input-group-addon">元</span>
+                               </div>
+                               <div class="input-group input-group-sm">
+                                 <span class="input-group-addon">C区</span>
+                                 <input type="number" class="form-control" placeholder="150">
+                                 <span class="input-group-addon">元</span>
+                               </div>
+                               <div class="input-group input-group-sm">
+                                 <span class="input-group-addon">D区</span>
+                                 <input type="number" class="form-control" placeholder="100">
+                                 <span class="input-group-addon">元</span>
+                               </div>
+                               <div class="input-group input-group-sm">
+                                 <span class="input-group-addon">E区</span>
+                                 <input type="number" class="form-control" placeholder="60">
+                                 <span class="input-group-addon">元</span>
+                               </div>
+                               <div class="input-group input-group-sm">
+                                 <span class="input-group-addon">F区</span>
+                                 <input type="number" class="form-control" placeholder="40">
+                                 <span class="input-group-addon">元</span>
+                               </div>
+                                <div class="input-group input-group-sm">
+                                 <span class="input-group-addon">G区</span>
+                                 <input type="number" class="form-control" placeholder="20">
+                                 <span class="input-group-addon">元</span>
+                               </div>
+                            </form>
+                        </div>
+        
+                    <div id="clear-float"></div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" 
+                           data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                           提交更改
+                        </button>
+                     </div>
+                  </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
         </form>
     </div>
 
-    <!-- 模态框（Modal） -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
-       aria-labelledby="myModalLabel" aria-hidden="true">
-       <div class="modal-dialog">
-          <div class="modal-content">
-             <div class="modal-header">
-                <button type="button" class="close" 
-                   data-dismiss="modal" aria-hidden="true">
-                      &times;
-                </button>
-                <h4 class="modal-title" id="myModalLabel">
-                   这里是设置座位的页面呦！
-                </h4>
-             </div>
-            <div class="modal-body">
-                <div class="seatsTable" align="center">
-                    <table id="tbody">
-                        <tr>
-                            <td class="sectionA"></td>
-                            <td>A区</td>
-                            <td class="sectionB"></td>
-                            <td>B区</td>
-                            <td class="sectionC"></td>
-                            <td>C区</td>
-                            <td class="sectionD"></td>
-                            <td>D区</td>
-                        </tr>
-                        <tr>
-                            <td class="sectionE"></td>
-                            <td>E区</td>
-                            <td class="sectionF"></td>
-                            <td>F区</td>
-                            <td class="sectionG"></td>
-                            <td>G区</td>
-                            <td class="chosen"></td>
-                            <td>已选</td>
-                        </tr>
-                    </table>
-                    <table id="selectSeat">
-                        {% for line in seats_list %}
-                            <tr>
-                                {% for seat in line %}
-                                    {% ifequal seat 0 %}
-                                        <td class="empty" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
-                                    {% endifequal %}
-                                    {% ifequal seat 1 %}
-                                        <td class="sectionA" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
-                                    {% endifequal %}
-                                    {% ifequal seat 2 %}
-                                        <td class="sectionB" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
-                                    {% endifequal %}
-                                    {% ifequal seat 3 %}
-                                        <td class="sectionC" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
-                                    {% endifequal %}
-                                    {% ifequal seat 4 %}
-                                        <td class="sectionD" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
-                                    {% endifequal %}
-                                    {% ifequal seat 5 %}
-                                        <td class="sectionE" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
-                                    {% endifequal %}
-                                    {% ifequal seat 6 %}
-                                        <td class="sectionF" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
-                                    {% endifequal %}
-                                    {% ifequal seat 7 %}
-                                        <td class="sectionG" id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}"></td>
-                                    {% endifequal %}
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-                <div id="infoSet">
-                    <div class="btn-group btn-group-xs">
-                      <button id="singleSelect" type="button" class="btn btn-default active" data-toggle='collapse'>单个选择</button>
-                      <button id="lineSelect" type="button" class="btn btn-default" data-toggle='collapse'>按行选择</button>
-                      <button id="allSelect" type="button" class="btn btn-default" data-toggle='collapse'>全部选择</button>
-                      </div>
-                    <form class="bs-example bs-example-form" role="form">
-                       <div class="input-group input-group-sm">
-                         <span class="input-group-addon">A区</span>
-                         <input type="number" class="form-control" placeholder="300">
-                         <span class="input-group-addon">元</span>
-                       </div>
-                       <div class="input-group input-group-sm">
-                         <span class="input-group-addon">B区</span>
-                         <input type="number" class="form-control" placeholder="200">
-                         <span class="input-group-addon">元</span>
-                       </div>
-                       <div class="input-group input-group-sm">
-                         <span class="input-group-addon">C区</span>
-                         <input type="number" class="form-control" placeholder="150">
-                         <span class="input-group-addon">元</span>
-                       </div>
-                       <div class="input-group input-group-sm">
-                         <span class="input-group-addon">D区</span>
-                         <input type="number" class="form-control" placeholder="100">
-                         <span class="input-group-addon">元</span>
-                       </div>
-                       <div class="input-group input-group-sm">
-                         <span class="input-group-addon">E区</span>
-                         <input type="number" class="form-control" placeholder="60">
-                         <span class="input-group-addon">元</span>
-                       </div>
-                       <div class="input-group input-group-sm">
-                         <span class="input-group-addon">F区</span>
-                         <input type="number" class="form-control" placeholder="40">
-                         <span class="input-group-addon">元</span>
-                       </div>
-                        <div class="input-group input-group-sm">
-                         <span class="input-group-addon">G区</span>
-                         <input type="number" class="form-control" placeholder="20">
-                         <span class="input-group-addon">元</span>
-                       </div>
-                    </form>
-                </div>
-
-            <div id="clear-float"></div>
-             <div class="modal-footer">
-                <button type="button" class="btn btn-default" 
-                   data-dismiss="modal">关闭
-                </button>
-                <button type="button" class="btn btn-primary">
-                   提交更改
-                </button>
-             </div>
-          </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
+    
 
     <div class="container" id="detail-processing" style="display: none;">
         <img src="{% static "img/loading.gif" %}">

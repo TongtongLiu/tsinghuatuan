@@ -55,6 +55,13 @@ class Bind(models.Model):
     passive_stu_id = models.CharField(max_length=255)
     unique_id = models.CharField(max_length=255)
 
+class Seat(models.Model):
+    position = models.CharField(max_length=255)
+    price = models.IntegerField()
+    seat_section = models.CharField(max_length=255)
+    is_selected = models.BooleanField()
+    
+
 '''
 class UserSession(models.Model):
     stu_id = models.CharField(max_length=255)
