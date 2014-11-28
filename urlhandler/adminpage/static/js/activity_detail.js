@@ -469,6 +469,11 @@ function getSeatPosition() {
     $('#input-seat').val(seatlist);
 }
 
+function clearSeat() {
+    $('.chosen').removeClass("chosen");
+    $('#input-seat').val("");
+}
+
 
 function publishActivity() {
     if(!$('#activity-form')[0].checkValidity || $('#activity-form')[0].checkValidity()){
