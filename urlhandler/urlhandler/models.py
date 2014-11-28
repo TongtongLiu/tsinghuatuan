@@ -56,10 +56,12 @@ class Bind(models.Model):
     unique_id = models.CharField(max_length=255)
 
 class Seat(models.Model):
-    position = models.CharField(max_length=255)
-    price = models.IntegerField()
+    position_row = models.IntegerField()
+    position_column = models.IntegerField()
     seat_section = models.CharField(max_length=255)
+    price = models.IntegerField()
     is_selected = models.BooleanField()
+    activity = models.ForeignKey(Activity)
     
 
 '''

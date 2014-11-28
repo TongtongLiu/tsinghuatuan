@@ -179,6 +179,20 @@ def activity_create(activity):
     newact = Activity.objects.create(**preDict)
     return newact
 
+def seat_create(post, activity):
+    seats = Seat.objects.filter(activity = activity)
+    seats.delete()
+    seatSet = post['seat-list'].split(',')
+    for seat in seatSet:
+        preDict = dict()
+        seatInfo = seat.split('-')
+        preDict['activity_row'] = int(seatInfo[0])
+        preDict['activity_column'] = int(seatInfo[1])
+        preDict['seat_section'] = seatInfo[2]
+        preDict['price'] = post[seatInfo[2]]
+        preDict['is_selected'] = False
+        preDict['activity'] = activity
+        newseat = Seat.objects.create(**preDict)
 
 def activity_modify(activity):
     nowact = Activity.objects.get(id=activity['id'])
@@ -186,6 +200,7 @@ def activity_modify(activity):
     if nowact.status == 0:
         keylist = ['name', 'key', 'description', 'place', 'pic_url', 'seat_status', 'total_tickets']
         timelist = ['start_time', 'end_time', 'book_start', 'book_end']
+        seat_create(activity, nowact)
     elif nowact.status == 1:
         if now >= nowact.start_time:
             keylist = ['description', 'pic_url']
@@ -196,6 +211,7 @@ def activity_modify(activity):
         else:
             keylist = ['description', 'place', 'pic_url', 'seat_status', 'total_tickets']
             timelist = ['start_time', 'end_time', 'book_end']
+            seat_create(activity, nowact)
     else:
         keylist = []
         timelist = []
@@ -293,6 +309,7 @@ def activity_post(request):
                         return HttpResponse(json.dumps(rtnJSON, cls=DatetimeJsonEncoder),
                                             content_type='application/json')
             activity = activity_create(post)
+            seat_create(post, activity)
             rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)
         rtnJSON['activity'] = wrap_activity_dict(activity)
         if 'publish' in post:
