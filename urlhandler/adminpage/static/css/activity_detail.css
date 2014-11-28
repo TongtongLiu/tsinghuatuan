@@ -98,6 +98,11 @@
 
 .form-control {
     padding: 6px 0;
+    text-align: left;
+}
+
+.form-control-money {
+    padding: 6px 0;
     text-align: right;
 }
 
