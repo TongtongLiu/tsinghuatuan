@@ -13,8 +13,8 @@
 {% block js %}
     <script src="{% static "lib/jq/form/jquery.form.min.js" %}"></script>
     <script>
-        var seat_price = {{activity.seat_price}}
-        var price = seat_price.split(',');
+        //var seat_price = {{activity.seat_price}}
+        //var price = seat_price.split(",");
         var activity = {
             'name': '{{ activity.name }}'{% if activity.id %},
             'id': {{ activity.id }},
