@@ -69,7 +69,7 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                 {
                     "type": "view",
                     "name": "个人中心",
-                    "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+                    "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
                 },
                 #{
                 #    "type": "click",
