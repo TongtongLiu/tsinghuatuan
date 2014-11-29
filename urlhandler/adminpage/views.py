@@ -174,6 +174,7 @@ def activity_create(activity):
         preDict[k] = activity[k]
     for k in ['start_time', 'end_time', 'book_start', 'book_end']:
         preDict[k] = str_to_datetime(activity[k])
+    preDict['seat_price'] = activity['A']+','+activity['B']+','+activity['C']+','+activity['D']+','+activity['E']+','+activity['F']+','+activity['G']
     preDict['status'] = 1 if ('publish' in activity) else 0
     preDict['remain_tickets'] = preDict['total_tickets']
     preDict['seat_table'] = [[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1]]
@@ -272,7 +273,6 @@ def activity_detail(request, actid):
 
     try:
         activity = Activity.objects.get(id=actid)
-
         unpublished = (activity.status == 0)
     except:
         raise Http404
@@ -311,7 +311,6 @@ def activity_post(request):
                         return HttpResponse(json.dumps(rtnJSON, cls=DatetimeJsonEncoder),
                                             content_type='application/json')
             activity = activity_create(post)
-            print "hahahaseatList: " + activity.key 
             seat_create(post, activity)
             rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)
         rtnJSON['activity'] = wrap_activity_dict(activity)
