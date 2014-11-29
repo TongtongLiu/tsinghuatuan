@@ -257,7 +257,7 @@ def wrap_activity_dict(activity):
 def wrap_seat(seats):
     rt = []
     for x in seats:
-        temp = str(x.position_row) + '-' + str(x.position_column)
+        temp = str(x.position_row).encode('utf8') + '-' + str(x.position_column).encode('utf8')
         rt.append(temp)
     return rt
 
