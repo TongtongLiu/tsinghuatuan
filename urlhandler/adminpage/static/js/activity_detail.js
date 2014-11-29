@@ -111,15 +111,15 @@ function updateActivity(nact) {
     }
 }
 
-function initializeForm(activity) {
+function initializeForm(activity,chosen_seats) {
     var key;
     //var list = ['A','B','C','D','E','F','G'];
     for (key in keyMap) {
         actionMap[keyMap[key]]($('#input-' + key), activity[key]);
     }
-    //for (var i = 0; i < list.length; i++){
-    //    actionMap[keyMap[i]]($("input[name="+list[i]+"]"), activity[i]);
-    //}
+    for (key in chosen_seats){
+        $('#' + key).addClass("chosen");
+    }
     if (!activity.id) {
         $('#input-name').val('');
         //新增活动，自动生成年份
@@ -510,7 +510,7 @@ function publishActivity() {
 }
 
 
-initializeForm(activity);
+initializeForm(activity,chosen_seats);
 showForm();
 
 $('#activity-form').submit(function() {
