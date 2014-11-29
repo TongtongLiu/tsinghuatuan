@@ -113,13 +113,13 @@ function updateActivity(nact) {
 
 function initializeForm(activity) {
     var key;
-    var list = ['A','B','C','D','E','F','G'];
+    //var list = ['A','B','C','D','E','F','G'];
     for (key in keyMap) {
         actionMap[keyMap[key]]($('#input-' + key), activity[key]);
     }
-    for (var i = 0; i < list.length; i++){
-        actionMap[keyMap[key]]($("input[name="+list[i]+"]"), activity[key]);
-    }
+    //for (var i = 0; i < list.length; i++){
+    //    actionMap[keyMap[i]]($("input[name="+list[i]+"]"), activity[i]);
+    //}
     if (!activity.id) {
         $('#input-name').val('');
         //新增活动，自动生成年份
