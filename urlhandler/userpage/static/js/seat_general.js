@@ -63,43 +63,42 @@ touch.on(moveableDiv, 'touchstart', function(ev){
 touch.on(moveableDiv, 'drag', function(ev){
     dx = dx || 0;
     dy = dy || 0;
-    if (dx + ev.x < (1-initialScale) * $('#selectSeat').width() / 2) {
-        
+    var offx, offy;
+    if (dx + ev.x < (1-initialScale)*$('#selectSeat').width()/2) {
+        offx = dx + (ev.x * 0.3) + "px";
     } else if (dx + ev.x > (initialScale-1) * $('#selectSeat').width() / 2) {
-        dx = (initialScale-1) * $('#selectSeat').width() / 2;
+        offx = dx + (ev.x * 0.3) + "px";
     } else {
-        dx += ev.x
+        offx = dx + ev.x + "px";
     }
-    if (dy + ev.y < (1-initialScale) * $('#selectSeat').height() / 2) {
-        dy = (1-initialScale) * $('#selectSeat').height() / 2;
+    if (dy + ev.y < (1-initialScale)*$('#selectSeat').height()/2) {
+        offy = dy + (ev.y * 0.3) + "px";
     } else if (dy + ev.y > (initialScale-1)*$('#selectSeat').height()/2) {
-        dy = (initialScale-1) * $('#selectSeat').height() / 2;
+        offy = dy + (ev.y * 0.3) + "px";
     } else {
-        dy += ev.y;
+        offy = dy + ev.y + "px";
     }
-    var offx = dx + ev.x + "px";
-    var offy = dy + ev.y + "px";
     moveableDiv.style.webkitTransform = "translate3d(" + offx + "," + offy + ",0)";
 });
 
 touch.on(moveableDiv, 'dragend', function(ev){
-    if (dx + ev.x < (1-initialScale) * $('#selectSeat').width() / 2) {
-        dx = (1-initialScale)*$('#selectSeat').width() / 2;
+    if (dx + ev.x < (1-initialScale)*$('#selectSeat').width()/2) {
+        dx = (1-initialScale)*$('#selectSeat').width()/2;
     } else if (dx + ev.x > (initialScale-1) * $('#selectSeat').width() / 2) {
-        dx = (initialScale-1) * $('#selectSeat').width() / 2;
+        dx = (initialScale-1) * $('#selectSeat').width()/2;
     } else {
         dx += ev.x
     }
-    if (dy + ev.y < (1-initialScale) * $('#selectSeat').height() / 2) {
-        dy = (1-initialScale) * $('#selectSeat').height() / 2;
+    if (dy + ev.y < (1-initialScale)*$('#selectSeat').height()/2) {
+        dy = (1-initialScale)*$('#selectSeat').height()/2;
     } else if (dy + ev.y > (initialScale-1)*$('#selectSeat').height()/2) {
-        dy = (initialScale-1) * $('#selectSeat').height() / 2;
+        dy = (initialScale-1)*$('#selectSeat').height()/2;
     } else {
         dy += ev.y;
     }
-    moveableDiv.style.webkitTransition = "all 0.8s ease-in-out 0s";
+    moveableDiv.style.webkitTransition = "all 0.4s ease 0s";
     moveableDiv.style.webkitTransform = "translate3d(" + dx + "px, " + dy + "px,0)";
-    moveableDiv.style.webkitTransition = "";
+    setTimeout("moveableDiv.style.webkitTransition = ''",400);
 });
 
 var table = document.getElementById('selectSeat');
