@@ -258,7 +258,8 @@ def details_view(request, activityid):
 def ticket_view(request, uid):
     ticket = Ticket.objects.filter(unique_id=uid)
     if not ticket.exists():
-        raise Http404  #current activity is invalid
+        information = "票已过期"
+        return render_to_response('404.html', {'information': information}) #current activity is invalid
     activity = Activity.objects.filter(id=ticket[0].activity_id)
     act_id = activity[0].id
     act_name = activity[0].name
