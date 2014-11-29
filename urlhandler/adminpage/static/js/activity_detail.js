@@ -66,7 +66,14 @@ var dateInterfaceMap = {
     'book_end': 'time',
     'pic_url': 'value',
     'total_tickets': 'value',
-    'seat_status': 'value'
+    'seat_status': 'value',
+    'A':'value',
+    'B':'value',
+    'C':'value',
+    'D':'value',
+    'E':'value',
+    'F':'value',
+    'G':'value'
 }, lockMap = {
     'value': function(dom, lock) {
         dom.prop('disabled', lock);
@@ -105,9 +112,11 @@ function updateActivity(nact) {
 }
 
 function initializeForm(activity) {
-    var key;
-    for (key in keyMap) {
+    for (var key in keyMap) {
         actionMap[keyMap[key]]($('#input-' + key), activity[key]);
+    }
+    for (var key in ['A','B','C','D','E','F','G']){
+        actionMap[keyMap[key]]($("input[name="+key+"]"), activity[key]);
     }
     if (!activity.id) {
         $('#input-name').val('');
