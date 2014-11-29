@@ -17,6 +17,7 @@ from django.shortcuts import redirect
 from userpage.safe_reverse import *
 import string
 import random
+from weixinlib.settings import WEIXIN_APPID
 
 def home(request):
     return render_to_response('mobile_base.html')
@@ -259,8 +260,8 @@ def ticket_view(request, uid):
     ticket = Ticket.objects.filter(unique_id=uid)
     if not ticket.exists():
         information = "票已过期"
-        user = User.objects.filter(stu_id=ticket[0].stu_id)
-        return render_to_response('404.html', {'information': information, 'weixin_id': user[0].weixin_id}) #current activity is invalid
+        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        return render_to_response('404.html', {'information': information, 'href': href}) #current activity is invalid
     activity = Activity.objects.filter(id=ticket[0].activity_id)
     act_id = activity[0].id
     act_name = activity[0].name
