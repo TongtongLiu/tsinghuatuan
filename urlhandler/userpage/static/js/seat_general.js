@@ -63,6 +63,20 @@ touch.on(moveableDiv, 'touchstart', function(ev){
 touch.on(moveableDiv, 'drag', function(ev){
     dx = dx || 0;
     dy = dy || 0;
+    if (dx + ev.x < (1-initialScale) * $('#selectSeat').width() / 2) {
+        
+    } else if (dx + ev.x > (initialScale-1) * $('#selectSeat').width() / 2) {
+        dx = (initialScale-1) * $('#selectSeat').width() / 2;
+    } else {
+        dx += ev.x
+    }
+    if (dy + ev.y < (1-initialScale) * $('#selectSeat').height() / 2) {
+        dy = (1-initialScale) * $('#selectSeat').height() / 2;
+    } else if (dy + ev.y > (initialScale-1)*$('#selectSeat').height()/2) {
+        dy = (initialScale-1) * $('#selectSeat').height() / 2;
+    } else {
+        dy += ev.y;
+    }
     var offx = dx + ev.x + "px";
     var offy = dy + ev.y + "px";
     moveableDiv.style.webkitTransform = "translate3d(" + offx + "," + offy + ",0)";

@@ -60,7 +60,7 @@ class Seat(models.Model):
     position_column = models.IntegerField()
     seat_section = models.CharField(max_length=255)
     price = models.IntegerField()
-    is_selected = models.BooleanField()
+    is_selected = models.IntegerField()
     activity = models.ForeignKey(Activity)
     
 
