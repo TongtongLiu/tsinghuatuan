@@ -259,7 +259,8 @@ def ticket_view(request, uid):
     ticket = Ticket.objects.filter(unique_id=uid)
     if not ticket.exists():
         information = "票已过期"
-        return render_to_response('404.html', {'information': information}) #current activity is invalid
+        user = User.objects.filter(stu_id=ticket[0].stu_id)
+        return render_to_response('404.html', {'information': information, 'weixin_id': user[0].weixin_id}) #current activity is invalid
     activity = Activity.objects.filter(id=ticket[0].activity_id)
     act_id = activity[0].id
     act_name = activity[0].name
