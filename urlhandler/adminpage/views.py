@@ -259,7 +259,6 @@ def wrap_seat(seats):
     for x in seats:
         temp = str(x.position_row) + '-' + str(x.position_column)
         rt.append(temp)
-    }
     return rt
 
 
