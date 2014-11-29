@@ -112,10 +112,11 @@ function updateActivity(nact) {
 }
 
 function initializeForm(activity) {
-    for (var key in keyMap) {
+    var key;
+    for (key in keyMap) {
         actionMap[keyMap[key]]($('#input-' + key), activity[key]);
     }
-    for (var key in ['A','B','C','D','E','F','G']){
+    for (key in ['A','B','C','D','E','F','G']){
         actionMap[keyMap[key]]($("input[name="+key+"]"), activity[key]);
     }
     if (!activity.id) {
