@@ -26,7 +26,6 @@ function response(data){
                 }
             }
             isSelected = false;
-            bind_tap();
         } else {
             showMsg('恭喜，选座成功啦！');
             location.href = data.next_url;

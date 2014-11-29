@@ -25,6 +25,8 @@ function bind_tap(){
                 hideText();
                 inputSelect.value = '';
                 isSelected = false;
+            } else {
+                return;
             }
 
             function showText(seat){

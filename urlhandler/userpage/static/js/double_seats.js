@@ -22,6 +22,8 @@ function bind_tap(){
                 inputSelect.value.replace(this.getAttribute('id') + ',', '');
                 numToSelect++;
                 showText();
+            } else {
+                return;
             }
             function showText(seat){
                 document.getElementById('num').innerText = numToSelect;

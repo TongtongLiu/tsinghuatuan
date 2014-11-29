@@ -177,7 +177,7 @@ def activity_create(activity):
     preDict['seat_price'] = activity['A']+','+activity['B']+','+activity['C']+','+activity['D']+','+activity['E']+','+activity['F']+','+activity['G']
     preDict['status'] = 1 if ('publish' in activity) else 0
     preDict['remain_tickets'] = preDict['total_tickets']
-    preDict['seat_table'] = [[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1]]
+    preDict['seat_table'] = [[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1]]
     newact = Activity.objects.create(**preDict)
     return newact
 
