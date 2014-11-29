@@ -28,6 +28,7 @@ class Activity(models.Model):
     pic_url = models.CharField(max_length=255)
     remain_tickets = models.IntegerField()
     menu_url = models.CharField(max_length=255, null=True)
+    seat_price = models.CharField(max_length=255)
     # Something about status:
     # -1: deleted
     # 0: saved but not published
