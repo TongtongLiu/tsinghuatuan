@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{% load staticfiles %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <link href="{% static "lib/bs/css/bootstrap.min.css"%}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{% static "lib/jq/jquery-1.11.1.min.js" %}"></script>
+    <script src="{% static "lib/bs/js/bootstrap.min.js" %}"></script>
+    <title>404</title>
+</head>
+<body>
+<div class="panel panel-default">
+   <div class="panel-heading">
+      <h3 class="panel-title" style="text-align: center">
+         404 Not Find: {{information}}
+      </h3>
+   </div>
+   <div class="panel-body">
+      <a href="../uc_ticket/{{ weixin_id }}" class="btn btn-default btn-block">个人中心</a>
+   </div>
+</div>
+</body>
