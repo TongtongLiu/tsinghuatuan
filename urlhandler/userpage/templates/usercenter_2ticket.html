@@ -65,7 +65,10 @@
                         unique_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
-                       $( '#div{{ bind.unique_id }}' ).hide();
+                       $( '#div{{ bind.unique_id }}' ).remove();
+                       if($('.panel .btn-sm').length == 0) {
+                       $('.panel-heading').eq(1).after("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                   }
                      });
                 });
             });
