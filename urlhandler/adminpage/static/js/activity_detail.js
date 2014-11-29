@@ -117,7 +117,7 @@ function initializeForm(activity) {
     for (key in keyMap) {
         actionMap[keyMap[key]]($('#input-' + key), activity[key]);
     }
-    for (var i = 0; i < length list; i++){
+    for (var i = 0; i < list.length; i++){
         actionMap[keyMap[key]]($("input[name="+list[i]+"]"), activity[key]);
     }
     if (!activity.id) {
