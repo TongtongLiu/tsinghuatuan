@@ -13,8 +13,10 @@
 {% block js %}
     <script src="{% static "lib/jq/form/jquery.form.min.js" %}"></script>
     <script>
-        //var seat_price = {{activity.seat_price}}
-        //var price = seat_price.split(",");
+        {% if activity.id %}
+        var seat_price = {{activity.seat_price}}
+        var price = seat_price.split(",");
+        {% endif %}
         var activity = {
             'name': '{{ activity.name }}'{% if activity.id %},
             'id': {{ activity.id }},
@@ -56,13 +58,14 @@
             'status': 0{% endif %}{% if activity.tickets_ready %},
             'checked_tickets': {{ activity.checked_tickets }},
             'ordered_tickets': {{ activity.ordered_tickets }}{% endif %},
+            {% if activity.id %}
             'A':price[0],
             'B':price[1],
             'C':price[2],
             'D':price[3],
             'E':price[4],
             'F':price[5],
-            'G':price[6]
+            'G':price[6]{% endif %}
         }
 
 
