@@ -349,7 +349,6 @@ def uc_ticket(request, openid):
                         seat_table[row][column] = 1
                         Activity.objects.filter(id=activity.id).update(seat_table=json.dumps(seat_table))
                     Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')+1)
-                Ticket.objects.filter(unique_id=ticket_id).delete()
                 return HttpResponse('logout error')
         except:
             return HttpResponse('logout error')
@@ -414,19 +413,19 @@ def uc_2ticket_bind(request):
             (not 'activity_name' in request.POST) or (not 'token' in request.POST):
         raise Http404
     openid = request.POST['openid']
-    user = User.objects.filter(weixin_id=openid)
+    user = User.objects.filter(weixin_id=openid, status=1)
     if not user:
         raise Http404
     active_stu_id = user[0].stu_id
-    activity = Activity.objects.filter(name=request.POST['activity_name'])
+    activity = Activity.objects.filter(name=request.POST['activity_name'], status=1)
     if not activity:
         raise Http404
     passive_stu_id = decode_token(request.POST['token'])
     if active_stu_id == passive_stu_id:
         return HttpResponse('SameStudentID')
-    if not User.objects.filter(stu_id=passive_stu_id).exists():
+    if not User.objects.filter(stu_id=passive_stu_id, status=1).exists():
         return HttpResponse('TokenError')
-    if Ticket.objects.filter(stu_id=passive_stu_id, activity=activity[0]).exists():
+    if Ticket.objects.filter(stu_id=passive_stu_id, activity=activity[0], status=1).exists():
         return HttpResponse('HaveTicket')
     if Bind.objects.filter(activity=activity[0], active_stu_id=passive_stu_id) or \
             Bind.objects.filter(activity=activity[0], passive_stu_id=passive_stu_id):
@@ -438,8 +437,8 @@ def uc_2ticket_bind(request):
         try:
             newbind = Bind.objects.create(activity=activity[0], active_stu_id=active_stu_id, passive_stu_id=passive_stu_id, unique_id=random_string)
             newbind.save()
-            User.objects.filter(stu_id=active_stu_id).update(bind_count=F('bind_count')+1)
-            User.objects.filter(stu_id=passive_stu_id).update(bind_count=F('bind_count')+1)
+            User.objects.filter(stu_id=active_stu_id, status=1).update(bind_count=F('bind_count')+1)
+            User.objects.filter(stu_id=passive_stu_id, status=1).update(bind_count=F('bind_count')+1)
         except:
             return HttpResponse('Error')
         return HttpResponse(s_reverse_uc_2ticket(openid))
@@ -449,8 +448,8 @@ def uc_2ticket(request, openid):
     if request.is_ajax():
         try:
             bind = Bind.objects.filter(unique_id=request.POST['unique_id'])
-            User.objects.filter(stu_id=bind[0].active_stu_id).update(bind_count=F('bind_count')-1)
-            User.objects.filter(stu_id=bind[0].passive_stu_id).update(bind_count=F('bind_count')-1)
+            User.objects.filter(stu_id=bind[0].active_stu_id, status=1).update(bind_count=F('bind_count')-1)
+            User.objects.filter(stu_id=bind[0].passive_stu_id, status=1).update(bind_count=F('bind_count')-1)
             bind.delete()
             return HttpResponse('Success')
         except:
@@ -460,8 +459,9 @@ def uc_2ticket(request, openid):
         if user:
             isValidated = 1
             binds = Bind.objects.filter(Q(active_stu_id=user[0].stu_id) | Q(passive_stu_id=user[0].stu_id))
-            tickets = Ticket.objects.filter(stu_id=user[0].stu_id)
-            aty_canBind = Activity.objects.filter(status=1)
+            tickets = Ticket.objects.filter(stu_id=user[0].stu_id, status=1)
+            now = datetime.datetime.now()
+            aty_canBind = Activity.objects.filter(status=1, end_time__gt=now, book_start__lt=now)
             return render_to_response('usercenter_2ticket.html', {
                 'isValidated': isValidated,
                 'weixin_id': openid,

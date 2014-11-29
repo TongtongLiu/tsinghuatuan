@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.db.models import F
 import urllib
 import urllib2
-from urlhandler.models import Activity, Ticket
+from urlhandler.models import Activity, Ticket, Seat
 from urlhandler.models import User as Booker
 from weixinlib.custom_menu import get_custom_menu, modify_custom_menu, add_new_custom_menu, auto_clear_old_menus
 from weixinlib.settings import get_custom_menu_with_book_acts, WEIXIN_BOOK_HEADER
@@ -180,17 +180,18 @@ def activity_create(activity):
     return newact
 
 def seat_create(post, activity):
-    seats = Seat.objects.filter(activity = activity)
-    seats.delete()
+    seats = Seat.objects.filter(activity=activity)
+    if seats.exists():
+        seats.delete()
     seatSet = post['seat-list'].split(',')
     for seat in seatSet:
         preDict = dict()
         seatInfo = seat.split('-')
-        preDict['activity_row'] = int(seatInfo[0])
-        preDict['activity_column'] = int(seatInfo[1])
-        preDict['seat_section'] = seatInfo[2]
-        preDict['price'] = post[seatInfo[2]]
-        preDict['is_selected'] = False
+        preDict['position_row'] = int(seatInfo[0])
+        preDict['position_column'] = int(seatInfo[1])
+        preDict['seat_section'] = seatInfo[2].encode('utf8')
+        preDict['price'] = int(post[seatInfo[2]])
+        preDict['is_selected'] = 0
         preDict['activity'] = activity
         newseat = Seat.objects.create(**preDict)
 
@@ -309,6 +310,7 @@ def activity_post(request):
                         return HttpResponse(json.dumps(rtnJSON, cls=DatetimeJsonEncoder),
                                             content_type='application/json')
             activity = activity_create(post)
+            print "hahahaseatList: " + activity.key 
             seat_create(post, activity)
             rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)
         rtnJSON['activity'] = wrap_activity_dict(activity)
