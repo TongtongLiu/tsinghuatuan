@@ -254,14 +254,20 @@ def wrap_activity_dict(activity):
         dt['checked_tickets'] = get_checked_tickets(activity)
     return dt
 
-def wrap_seat(seats):
-    rt = []
-    for x in seats:
-        dt = model_to_dict(x)
-        temp = '' + str(dt['position_row']).encode('utf8') + '-' + str(dt['position_column']).encode('utf8')
-        rt.append(temp)
-    return rt
-
+##def wrap_seat(seats):
+##    rt = []
+##    for x in seats:
+##<<<<<<< HEAD
+##        temp = str(x.position_row) + '-' + str(x.position_column)
+##        print temp
+##        rt.append(temp.encode("utf8"))
+##=======
+##        dt = model_to_dict(x)
+##        temp = '' + str(dt['position_row']).encode('utf8') + '-' + str(dt['position_column']).encode('utf8')
+##        rt.append(temp)
+##>>>>>>> e0b18219f6e8a4a588cad079079b0f97a28ab8f4
+##    return rt
+##
 
 def activity_add(request):
     if not request.user.is_authenticated():
@@ -282,15 +288,15 @@ def activity_detail(request, actid):
 
     try:
         activity = Activity.objects.get(id=actid)
-        seats = Seat.objects.filter(activity=activity)
+        #seats = Seat.objects.filter(activity=activity)
         unpublished = (activity.status == 0)
     except:
         raise Http404
     return render_to_response('activity_detail.html', {
         'activity': wrap_activity_dict(activity),
         'unpublished': unpublished,
-        'seats_list':[[0,1,1,1,1,1,1,1,1,1,1,1,1,0],[0,1,1,1,1,1,1,1,1,1,1,1,1,0],[0,2,2,2,2,2,2,2,2,2,2,2,2,0],[0,2,2,2,2,2,2,2,2,2,2,2,2,0],[0,3,3,3,3,3,3,3,3,3,3,3,3,0],[0,0,3,3,3,3,3,3,3,3,3,3,0,0],[0,0,4,4,4,4,4,4,4,4,4,4,0,0],[0,4,4,4,4,4,4,4,4,4,4,4,4,0],[0,5,5,5,5,5,5,5,5,5,5,5,5,0],[0,5,5,5,5,5,5,5,5,5,5,5,5,0],[0,6,6,6,6,6,6,6,6,6,6,6,6,0],[0,6,6,6,6,6,6,6,6,6,6,6,6,0],[0,7,7,7,7,7,7,7,7,7,7,7,7,0],[0,7,7,7,7,7,7,7,7,7,7,7,7,0]],
-        'chosen_seats': wrap_seat(seats)
+        'seats_list':[[0,1,1,1,1,1,1,1,1,1,1,1,1,0],[0,1,1,1,1,1,1,1,1,1,1,1,1,0],[0,2,2,2,2,2,2,2,2,2,2,2,2,0],[0,2,2,2,2,2,2,2,2,2,2,2,2,0],[0,3,3,3,3,3,3,3,3,3,3,3,3,0],[0,0,3,3,3,3,3,3,3,3,3,3,0,0],[0,0,4,4,4,4,4,4,4,4,4,4,0,0],[0,4,4,4,4,4,4,4,4,4,4,4,4,0],[0,5,5,5,5,5,5,5,5,5,5,5,5,0],[0,5,5,5,5,5,5,5,5,5,5,5,5,0],[0,6,6,6,6,6,6,6,6,6,6,6,6,0],[0,6,6,6,6,6,6,6,6,6,6,6,6,0],[0,7,7,7,7,7,7,7,7,7,7,7,7,0],[0,7,7,7,7,7,7,7,7,7,7,7,7,0]]
+        #'chosen_seats': wrap_seat(seats)
     }, context_instance=RequestContext(request))
 
 
