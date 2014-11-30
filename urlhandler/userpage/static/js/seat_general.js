@@ -120,6 +120,23 @@ touch.on(table, 'pinch', function(ev){
 
 touch.on(table, 'pinchend', function(ev){
     initialScale = currentScale;
+    if (dx < (1-initialScale)*$('#selectSeat').width()/2) {
+        dx = (1-initialScale)*$('#selectSeat').width()/2;
+    } else if (dx > (initialScale-1) * $('#selectSeat').width() / 2) {
+        dx = (initialScale-1) * $('#selectSeat').width()/2;
+    } else {
+        dx = dx; 
+    }
+    if (dy < (1-initialScale)*$('#selectSeat').height()/2) {
+        dy = (1-initialScale)*$('#selectSeat').height()/2;
+    } else if (dy > (initialScale-1)*$('#selectSeat').height()/2) {
+        dy = (initialScale-1)*$('#selectSeat').height()/2;
+    } else {
+        dy = dy ;
+    }
+    moveableDiv.style.webkitTransition = "all 0.4s ease 0s";
+    moveableDiv.style.webkitTransform = "translate3d(" + dx + "px, " + dy + "px,0)";
+    setTimeout("moveableDiv.style.webkitTransition = ''",400);
 });
 
 function setHeightAndWidth() {
