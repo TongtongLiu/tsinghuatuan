@@ -16,6 +16,7 @@
         {% if activity.id %}
         var seat_price = '{{activity.seat_price}}';
         var price = seat_price.split(",");
+        var chosen_seats = {{ chosen_seats }};
         {% endif %}
         var activity = {
             'name': '{{ activity.name }}'{% if activity.id %},
@@ -65,9 +66,7 @@
             'D':price[3],
             'E':price[4],
             'F':price[5],
-            'G':price[6],
-            'chosen_seats':{{chosen_seats}}{% endif %}
-
+            'G':price[6]{% endif %}
         }
 
 
