@@ -3,13 +3,10 @@ from django.db import transaction
 from django.db.models import F, Q
 from django.http import HttpResponse, Http404
 from django.template import RequestContext
-<<<<<<< HEAD
 from django.shortcuts import render_to_response
 from urlhandler.models import User, Activity, Ticket, Bind, Seat
-=======
 from django.shortcuts import render_to_response, redirect
 from django.utils import timezone
->>>>>>> 91de90534b638653ded63d71fbf42acd667a6a23
 from django.views.decorators.csrf import csrf_exempt
 import urllib
 import urllib2
@@ -618,7 +615,7 @@ def views_seats_zongti(request, uid):
         ticket_id = uid
         book_time = "this is time"
         ticket_type = ticket[0].partner_id
-        ticket_left = get_seat_left()
+        ticket_left = get_seat_left(uid)
         return render_to_response('seats_zongti.html', locals())
 
 def views_seats_zongti_post(request):
@@ -635,29 +632,36 @@ def views_seats_zongti_post(request):
         if not ticket_left.exists():
             return_json['msg'] = 'NoSeat'
             return_json['seat_left'] = json.dumps(get_seat_left())
-            return HttpResponse(json.dumps(return_json, content_type='application/json')
+            return HttpResponse(json.dumps(return_json), content_type='application/json')
         seat = seat_select(post)
         if seat == None:
             return_json['msg'] = 'error'
         else:
             return_json['msg'] = 'success'
             return_json['next_url'] = s_reverse_ticket_detail(post.ticket_id)
-        return HttpResponse(json.dumps(return_json, content_type='application/json')
+        return HttpResponse(json.dumps(return_json), content_type='application/json')
+    except Exception as e:
+        return None
 
-def get_seat_left():
+def get_seat_left(uid):
+    try:
+        ticket = Seat.objects.filter(unique_id=uid)
+    except Exception as e:
+        return None
     ticket_left = {}
-    seats_in_section_a = Seat.objects.filter(seat_section='A', is_selected=0)
+    seats_in_section_a = Seat.objects.filter(seat_section='A', is_selected=0, activity=ticket.activity)
     ticket_left['A'] = len(seats_in_section_a)
-    seats_in_section_b = Seat.objects.filter(seat_section='B', is_selected=0)
+    seats_in_section_b = Seat.objects.filter(seat_section='B', is_selected=0, activity=ticket.activity)
     ticket_left['B'] = len(seats_in_section_b)
-    seats_in_section_c = Seat.objects.filter(seat_section='C', is_selected=0)
+    seats_in_section_c = Seat.objects.filter(seat_section='C', is_selected=0, activity=ticket.activity)
     ticket_left['C'] = len(seats_in_section_c)
-    seats_in_section_d = Seat.objects.filter(seat_section='D', is_selected=0)
+    seats_in_section_d = Seat.objects.filter(seat_section='D', is_selected=0, activity=ticket.activity)
     ticket_left['D'] = len(seats_in_section_d)
     seats_in_section_e = Seat.objects.filter(seat_section='E', is_selected=0)
     ticket_left['E'] = len(seats_in_section_e)
     return ticket_left
 
+@csrf_exempt
 def seat_select(post):
     with transaction.atomic():
         try:
