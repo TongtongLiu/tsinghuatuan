@@ -490,7 +490,7 @@ def uc_2ticket(request, openid):
             binds = Bind.objects.filter(Q(active_stu_id=user[0].stu_id) | Q(passive_stu_id=user[0].stu_id))
             tickets = Ticket.objects.filter(stu_id=user[0].stu_id, status=1)
             now = datetime.datetime.now()
-            aty_can_bind = Activity.objects.filter(status=1, end_time__gt=now, book_start__lt=now)
+            aty_can_bind = Activity.objects.filter(status=1, book_end__gt=now, book_start__lt=now)
             return render_to_response('usercenter_2ticket.html', {
                 'isValidated': is_validated,
                 'weixin_id': openid,
