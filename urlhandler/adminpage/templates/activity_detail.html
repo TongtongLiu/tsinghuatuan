@@ -69,7 +69,7 @@
             'G':price[6],
             {% endif %}
         }
-        $("#front").css("background-image","url({% static "img/seat/wutai.png" %})");
+        $("#front").css("background-image","src({% static "img/seat/wutai.png" %})");
 
 
     </script>
@@ -351,7 +351,7 @@
                     <div class="modal-body">
                         <div id = "front"></div>
                         <div id = "Zongti">
-                            <div id = "block_B"></div>
+                            <img src = "{% static "img/seat/wutai.png" %}" id = "block_B" />
                             <div id = "block_A"></div>
                             <div id = "block_C"></div>
                             <div id = "Friend_block"></div>
