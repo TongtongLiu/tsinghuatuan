@@ -120,7 +120,7 @@ function submitChoice() {
 	$('#section').val($("#seat_info").html()[0]);
 	var options = {
 		dataType: 'json',
-        beforeSubmit: beforePublish,
+        beforeSubmit: beforeSubmit,
         success: submitResponse,
         error: submitError,
         complete: submitComplete

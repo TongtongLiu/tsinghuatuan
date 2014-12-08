@@ -22,6 +22,6 @@ urlpatterns = patterns('',
                        url(r'^uc_token/(?P<openid>\S+)$', 'userpage.views.uc_token'),
                        url(r'^seat/(?P<uid>\S+)/$', 'userpage.views.views_seats'),
                        url(r'^seats_zongti/(?P<uid>\S+)/$', 'userpage.views.views_seats_zongti'),
-                       url(r'^seats_zongti_post/(?P<uid>\S+)/$', 'userpage.views.views_seats_zongti_post'),
+                       url(r'^seats_zongti_post/$', 'userpage.views.views_seats_zongti_post'),
                        )
 

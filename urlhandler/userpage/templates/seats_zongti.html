@@ -1,9 +1,8 @@
-﻿<!DOCTYPE html>
 <html>
+{% load staticfiles %}
 <head>
 	<title>紫荆之声-抢票选座</title>
 	<link href="{% static "css/seats_zongti.css" %}" rel="stylesheet" type="text/css" />
-	<script src="js/jquery-2.1.1.min.js"></script>
 </head>
 <body>
 	<script>
@@ -11,8 +10,9 @@
 		var height = document.documentElement.clientHeight;
 		var windowWidth = window.outerWidth;
 	</script>
-	<div id = "front"></div>
-	<img src="{% static "img/seats_zongti/seat/wutai.png" %}">
+    <div id="front">
+       	<img src="{% static "img/seats_zongti/seat/wutai.png" %}" id = "frontPic">
+    </div>
 	<div id = "Zongti">
 		<img src = "{% static "img/seats_zongti/seat/block_B.png" %}" id = "block_B" />
         <img src = "{% static "img/seats_zongti/seat/block_A.png" %}" id = "block_A" />
@@ -43,7 +43,7 @@
 	<form role="form" action="{% url "userpage.views.views_seats_zongti_post" %}" method="post" id="submitForm">
 		<input id="section" type="text" name="section" style="display:none"/>
 		<input id="ticketID" type="text" name="ticket_id" style="display:none" value="{{ ticket_id }}" />
-		<input id="ticket_type" type="text" name="ticket_type" style="deisplay:none">
+		<input id="ticket_type" type="text" name="ticket_type" style="display:none">
 		<button id="submitButton" type="button" onclick="submitChoice();">确定</button>
 	</form>
 	<!--

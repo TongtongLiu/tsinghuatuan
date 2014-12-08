@@ -16,15 +16,18 @@ ul{
 	list-style-type:none;
 }
 
-#front
-{
-	background-image: url(../img/seat/wutai.png);
+#front {
 	background-size: contain;
 	background-repeat: no-repeat;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 30px;
 	width: 50%;
+}
+
+#frontPic {
+    width: 100%;
+    height: 100%;
 }
 /**********综体分区**************/
 #Zongti{
@@ -36,9 +39,7 @@ ul{
 	margin-bottom: 30px;
 }
 
-#block_A
-{
-	background-image: url(../img/seat/block_A.png);
+#block_A {
 	background-size: contain;
 	background-repeat: no-repeat;
 	height: 44%;
@@ -46,9 +47,7 @@ ul{
 
 }
 
-#block_B
-{
-	background-image: url(../img/seat/block_B.png);
+#block_B {
 	background-size: contain;
 	background-repeat: no-repeat;
 	height: 70%;
@@ -56,9 +55,7 @@ ul{
 }
 
 
-#block_C
-{
-	background-image: url(../img/seat/block_C.png);
+#block_C {
 	background-size: contain;
 	background-repeat: no-repeat;
 	height: 70%;
@@ -66,27 +63,21 @@ ul{
 	position: absolute;
 }
 
-#Friend_block
-{
-	background-image: url(../img/seat/block_Friend.png);
+#Friend_block {
 	background-size: contain;
 	background-repeat: no-repeat;
 	height: 6.67%;
 	position: absolute;
 }
 
-#block_D
-{
-	background-image: url(../img/seat/block_D.png);
+#block_D {
 	background-size: contain;
 	background-repeat: no-repeat;
 	height: 22%;
 	position: absolute;
 }
 
-#block_E
-{
-	background-image: url(../img/seat/block_E.png);
+#block_E {
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	width: 100%;
@@ -94,33 +85,32 @@ ul{
 }
 
 /**********购票信息**************/
-#info_Area
-{
+#info_Area {
 	width: 80%;
 	height: 200px;
 	margin-left: auto;
 	margin-right: auto;
 	font-size: 2em;
 	color: rgb(150,150,150);
-	margin-bottom: 20%;
+	margin-bottom: 8%;
 }
 
-#item, #info{
+#item, #info {
 	width: 50%;
 }
-#item{
+#item {
 	float: left;
 }
 
-#info{
+#info {
 	float: right;
 }
 
-#info ul{
+#info ul {
 	text-align: right;
 }
 
-#item ul{
+#item ul {
 	text-align: left;
 } 
 
@@ -150,4 +140,21 @@ ul{
 
 #save, #submit{
 	margin-top: 10%;
+}
+
+#submitButton {
+    margin-top: 8px;
+	background-color: #55a955;
+	color: #fff;
+	border: 1px solid #55a955;
+	width: 70%;
+    height: 80px;
+	font-size: 40px;
+	border-radius: 14px;
+    font-weight: bold;
+    letter-spacing:8px;
+}
+
+#submitForm {
+    text-align: center;
 }
