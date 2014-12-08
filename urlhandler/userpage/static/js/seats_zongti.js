@@ -57,7 +57,6 @@ $("[id^=block]").click(function(){
 		$('#' + selected).attr('src', seatSrc.replace('_selected', ''));
 	}
 	selected = $(this).attr("id");
-	$(this).css("background-image", "url(img/seat/"+selected+"_selected.png)");
 	var seatSrc = $(this).attr('src');
 	$(this).attr('src', seatSrc.replace('.png', '_selected.png'));
 	$("#seat_info").html(selected[6]+"区");
@@ -123,7 +122,6 @@ function submitChoice() {
         beforeSubmit: beforeSubmit,
         success: submitResponse,
         error: submitError,
-        complete: submitComplete
 	}
 	$('#submitForm').ajaxSubmit(options);
     return false;

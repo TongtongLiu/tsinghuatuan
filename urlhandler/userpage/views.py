@@ -613,12 +613,13 @@ def views_seats_zongti(request, uid):
         href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
         return render_to_response('404.html', {'information': information, 'href': href})
     else:
-        ticket_id = uid
+        ticket_id = str(uid)
         book_time = "this is time"
         ticket_type = ticket[0].partner_id
-        ticket_left = get_seat_left(uid)
+        ticket_left = json.dumps(get_seat_left(uid))
         return render_to_response('seats_zongti.html', locals())
 
+@csrf_exempt
 def views_seats_zongti_post(request):
     if not request.POST:
         information = "出了点莫名其妙的错误"
@@ -628,25 +629,36 @@ def views_seats_zongti_post(request):
     return_json = dict()
     try:
         section = post['section']
-        ticket = Ticket.objects.get(unique_id=post.ticket_id)
-        ticket_left = Seat.objects.filter(seat_section=section, is_selected=0, activity=ticket.activity)
+        ticket = Ticket.objects.get(unique_id=post['ticket_id'])
+        ticket_left = Seat.objects.filter(seat_section=post['section'], is_selected=0, activity=ticket.activity)
+        print "1"
         if not ticket_left.exists():
+            print "hehe"
             return_json['msg'] = 'NoSeat'
-            return_json['seat_left'] = json.dumps(get_seat_left())
+            print "hehe2"
+            return_json['seat_left'] = json.dumps(get_seat_left(post['ticket_id']))
+            print "hehe3"
             return HttpResponse(json.dumps(return_json), content_type='application/json')
+        print "2"
         seat = seat_select(post)
+        print "3"
         if seat == None:
+            print "error"
             return_json['msg'] = 'error'
         else:
+            print "success"
             return_json['msg'] = 'success'
-            return_json['next_url'] = s_reverse_ticket_detail(post.ticket_id)
+            return_json['next_url'] = s_reverse_ticket_detail(post['ticket_id'])
         return HttpResponse(json.dumps(return_json), content_type='application/json')
     except Exception as e:
-        return None
+        information = "出了点莫名其妙的错误"
+        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        return render_to_response('404.html', {'information': information, 'href': href})
 
 def get_seat_left(uid):
+    print uid
     try:
-        ticket = Seat.objects.filter(unique_id=uid)
+        ticket = Ticket.objects.get(unique_id=uid)
     except Exception as e:
         return None
     ticket_left = {}
@@ -662,19 +674,19 @@ def get_seat_left(uid):
     ticket_left['E'] = len(seats_in_section_e)
     return ticket_left
 
-@csrf_exempt
 def seat_select(post):
     with transaction.atomic():
         try:
-            ticket = Ticket.objects.get(unique_id=post.ticket_id)
+            ticket = Ticket.objects.get(unique_id=post['ticket_id'])
         except Exception as e:
             return None
-        seats = Seat.objects.select_for_update().filter(seat_section=post.section, is_selected=0, activity=ticket.activity)
+        seats = Seat.objects.select_for_update().filter(seat_section=post['section'], is_selected=0, activity=ticket.activity)
         if not seats.exists():
             return None
         else:
-            seats[0].is_selected = 1
-            seats[0].save()
-            ticket.seat = post.section
+            seat = seats[0]
+            ticket.seat = post['section']
             ticket.save()
-            return seats[0]
+            seat.is_selected = 1
+            seat.save()
+            return seat
