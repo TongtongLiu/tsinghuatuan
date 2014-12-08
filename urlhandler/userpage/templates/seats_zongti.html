@@ -12,13 +12,14 @@
 		var windowWidth = window.outerWidth;
 	</script>
 	<div id = "front"></div>
+	<img src="{% static "img/seats_zongti/seat/wutai.png" %}">
 	<div id = "Zongti">
-		<div id = "block_B"></div>
-		<div id = "block_A"></div>
-		<div id = "block_C"></div>
-		<div id = "Friend_block"></div>
-		<div id = "block_D"></div>
-		<div id = "block_E"></div>
+		<img src = "{% static "img/seats_zongti/seat/block_B.png" %}" id = "block_B" />
+        <img src = "{% static "img/seats_zongti/seat/block_A.png" %}" id = "block_A" />
+        <img src = "{% static "img/seats_zongti/seat/block_C.png" %}" id = "block_C" />
+        <img src = "{% static "img/seats_zongti/seat/block_Friend.png" %}" id = "Friend_block" />
+        <img src = "{% static "img/seats_zongti/seat/block_D.png" %}" id = "block_D" />
+        <img src = "{% static "img/seats_zongti/seat/block_E.png" %}" id = "block_E" />
 	</div>
 
 	<div id = "info_Area">
@@ -42,7 +43,6 @@
 	<form role="form" action="{% url "userpage.views.views_seats_zongti_post" %}" method="post" id="submitForm">
 		<input id="section" type="text" name="section" style="display:none"/>
 		<input id="ticketID" type="text" name="ticket_id" style="display:none" value="{{ ticket_id }}" />
-		<input id="submitButton" type="submit" value="确定" disabled="disabled">
 		<input id="ticket_type" type="text" name="ticket_type" style="deisplay:none">
 		<button id="submitButton" type="button" onclick="submitChoice();">确定</button>
 	</form>

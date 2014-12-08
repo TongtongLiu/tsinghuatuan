@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 {% block css %}
-<link href="{% static "css/validation.css" %}?_=3" rel="stylesheet" type="text/css" />
+<link href="{% static 'css/validation.css' %}?_=3" rel="stylesheet" type="text/css" />
 <style>
 #submitBtn {
   margin-top: 5px;
@@ -17,7 +17,7 @@
         <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span>&nbsp;账户状态：未绑定</h3>
     </div>
     <div class="panel-body">
-        <form class="form-horizontal" role="form" action="{% url "userpage.views.uc_validate_post_auth" %}" method="post" id="validationForm" onsubmit="return false;">
+        <form class="form-horizontal" role="form" action="{% url 'userpage.views.uc_validate_post_auth' %}" method="post" id="validationForm" onsubmit="return false;">
             {% csrf_token %}
             <div class="input-group" id="usernameGroup">
                 <span class="input-group-addon">学号</span>
@@ -29,7 +29,7 @@
             </div>
             <button onclick="ajaxForm_auth();" class="btn btn-default btn-block" id="submitBtn">绑定</button>
             <div class="input-group" id="submitGroup">
-                <p class="help-block" id="helpLoading" style="display: none"><img src="{% static "img/loading.gif" %}">正在认证，请稍候...</p>
+                <p class="help-block" id="helpLoading" style="display: none"><img src="{% static 'img/loading.gif' %}">正在认证，请稍候...</p>
                 <p class="help-block" id="helpSubmit"></p>
             </div>
         </form>
@@ -45,8 +45,8 @@
     });
     </script>
 
-    <script src="{% static "lib/RSA/RSA2.js" %}"></script>
-    <script src="{% static "js/tt_uc_validation.js" %}?_=1"></script>
+    <script src="{% static 'lib/RSA/RSA2.js' %}"></script>
+    <script src="{% static 'js/tt_uc_validation.js' %}?_=1"></script>
     <script>
     function ajaxForm_auth() {
         var time_xmlhttp = new XMLHttpRequest();

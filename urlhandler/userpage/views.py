@@ -1,54 +1,43 @@
 #-*- coding:utf-8 -*-
+from django.db import transaction
 from django.db.models import F, Q
 from django.http import HttpResponse, Http404
 from django.template import RequestContext
+<<<<<<< HEAD
 from django.shortcuts import render_to_response
 from urlhandler.models import User, Activity, Ticket, Bind, Seat
-from django.views.decorators.csrf import csrf_exempt
-from urlhandler.settings import STATIC_URL
-import urllib, urllib2
-import datetime, time
-import json
-from django.db import transaction
+=======
+from django.shortcuts import render_to_response, redirect
 from django.utils import timezone
-from weixinlib.weixin_urls import WEIXIN_URLS
-from weixinlib import http_get
-from django.shortcuts import redirect
-from userpage.safe_reverse import *
+>>>>>>> 91de90534b638653ded63d71fbf42acd667a6a23
+from django.views.decorators.csrf import csrf_exempt
+import urllib
+import urllib2
+import datetime
+import time
+import json
 import string
 import random
+from urlhandler.models import User, Activity, Ticket, Bind
+from userpage.safe_reverse import *
+from weixinlib import http_get
 from weixinlib.settings import WEIXIN_APPID
+from weixinlib.weixin_urls import WEIXIN_URLS
+
 
 def home(request):
     return render_to_response('mobile_base.html')
 
 
-###################### Validate ######################
-# request.GET['openid'] must be provided.
-def validate_view(request, openid):
-    if User.objects.filter(weixin_id=openid, status=1).exists():
-        isValidated = 1
-    else:
-        isValidated = 0
-    studentid = ''
-    if request.GET:
-        studentid = request.GET.get('studentid', '')
-    return render_to_response('tt_validation.html', {
-        'openid': openid,
-        'studentid': studentid,
-        'isValidated': isValidated,
-        'now': datetime.datetime.now() + datetime.timedelta(seconds=-5),
-    }, context_instance=RequestContext(request))
-
-
+###################### ABANDON ######################
 # Validate Format:
 # METHOD 1: learn.tsinghua
 # url: https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp
 # form: { userid:2011013236, userpass:***, submit1: 登录 }
 # success: check substring 'loginteacher_action.jsp'
 # validate: userid is number
-def validate_through_learn(userid, userpass):
-    req_data = urllib.urlencode({'userid': userid, 'userpass': userpass, 'submit1': u'登录'.encode('gb2312')})
+def validate_through_learn(user_id, user_pass):
+    req_data = urllib.urlencode({'user_id': user_id, 'user_pass': user_pass, 'submit1': u'登录'.encode('gb2312')})
     request_url = 'https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp'
     req = urllib2.Request(url=request_url, data=req_data)
     res_data = urllib2.urlopen(req)
@@ -70,6 +59,96 @@ def validate_through_learn(userid, userpass):
 # validate: username is number
 def validate_through_student(userid, userpass):
     return 'Error'
+
+
+def validate_post_auth(request):
+    if (not request.POST) or (not 'openid' in request.POST) or \
+            (not 'username' in request.POST) or (not 'password' in request.POST):
+        raise Http404
+    openid = request.POST['openid']
+    userid = request.POST['username']
+    if not userid.isdigit():
+        raise Http404
+    secret = request.POST['password']
+    validate_result = validate_through_auth(secret)
+    if validate_result['result'] == 'Accepted':
+        try:
+            User.objects.filter(stu_id=userid).update(status=0)
+            User.objects.filter(weixin_id=openid).update(status=0)
+        except:
+            return HttpResponse('Error')
+        try:
+            current_user = User.objects.get(stu_id=userid)
+            current_user.weixin_id = openid
+            current_user.status = 1
+            current_user.stu_name = validate_result['name']
+            current_user.stu_type = validate_result['type']
+            try:
+                current_user.save()
+            except:
+                return HttpResponse('Error')
+        except:
+            try:
+                new_user = User.objects.create(
+                    weixin_id=openid,
+                    stu_id=userid,
+                    stu_name=validate_result['name'],
+                    stu_type=validate_result['type'],
+                    status=1)
+                new_user.save()
+            except:
+                return HttpResponse('Error')
+    return HttpResponse(validate_result['result'])
+
+
+def validate_post(request):
+    if (not request.POST) or (not 'openid' in request.POST) or \
+            (not 'username' in request.POST) or (not 'password' in request.POST):
+        raise Http404
+    user_id = request.POST['username']
+    if not user_id.isdigit():
+        raise Http404
+    user_pass = request.POST['password'].encode('gb2312')
+    validate_result = validate_through_learn(user_id, user_pass)
+    if validate_result == 'Accepted':
+        openid = request.POST['openid']
+        try:
+            User.objects.filter(stu_id=user_id).update(status=0)
+            User.objects.filter(weixin_id=openid).update(status=0)
+        except:
+            return HttpResponse('Error')
+        try:
+            current_user = User.objects.get(stu_id=user_id)
+            current_user.weixin_id = openid
+            current_user.status = 1
+            try:
+                current_user.save()
+            except:
+                return HttpResponse('Error')
+        except:
+            try:
+                new_user = User.objects.create(weixin_id=openid, stu_id=user_id, status=1)
+                new_user.save()
+            except:
+                return HttpResponse('Error')
+    return HttpResponse(validate_result)
+###################### ABANDON ######################
+
+
+def validate_view(request, openid):
+    if User.objects.filter(weixin_id=openid, status=1).exists():
+        is_validated = 1
+    else:
+        is_validated = 0
+    student_id = ''
+    if request.GET:
+        student_id = request.GET.get('student_id', '')
+    return render_to_response('tt_validation.html', {
+        'openid': openid,
+        'student_id': student_id,
+        'isValidated': is_validated,
+        'now': datetime.datetime.now() + datetime.timedelta(seconds=-5),
+    }, context_instance=RequestContext(request))
 
 
 def validate_get_time_auth(request):
@@ -113,120 +192,57 @@ def uc_validate_post_auth(request):
             (not 'username' in request.POST) or (not 'password' in request.POST):
         raise Http404
     openid = request.POST['openid']
-    userid = request.POST['username']
-    if not userid.isdigit():
+    user_id = request.POST['username']
+    if not user_id.isdigit():
         raise Http404
     secret = request.POST['password']
     validate_result = validate_through_auth(secret)
     if validate_result['result'] == 'Accepted':
         try:
-            User.objects.filter(stu_id=userid).update(status=0)
+            User.objects.filter(stu_id=user_id).update(status=0)
             User.objects.filter(weixin_id=openid).update(status=0)
         except:
             return HttpResponse('Error')
         try:
-            currentUser = User.objects.get(stu_id=userid)
-            currentUser.weixin_id = openid
-            currentUser.status = 1
-            currentUser.stu_name = validate_result['name']
-            currentUser.stu_type = validate_result['type']
-            currentUser.bind_count = 0
+            current_user = User.objects.get(stu_id=user_id)
+            current_user.weixin_id = openid
+            current_user.status = 1
+            current_user.stu_name = validate_result['name']
+            current_user.stu_type = validate_result['type']
+            current_user.bind_count = 0
             try:
-                currentUser.save()
+                current_user.save()
             except:
                 return HttpResponse('Error')
         except:
             try:
-                newuser = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'], stu_type=validate_result['type'], status=1)
-                newuser.save()
+                new_user = User.objects.create(
+                    weixin_id=openid,
+                    stu_id=user_id,
+                    stu_name=validate_result['name'],
+                    stu_type=validate_result['type'],
+                    status=1)
+                new_user.save()
             except:
                 return HttpResponse('Error')
         return HttpResponse(s_reverse_uc_account(openid))
     return HttpResponse(validate_result['result'])
 
 
-def validate_post_auth(request):
-    if (not request.POST) or (not 'openid' in request.POST) or \
-            (not 'username' in request.POST) or (not 'password' in request.POST):
-        raise Http404
-    openid = request.POST['openid']
-    userid = request.POST['username']
-    if not userid.isdigit():
-        raise Http404
-    secret = request.POST['password']
-    validate_result = validate_through_auth(secret)
-    if validate_result['result'] == 'Accepted':
-        try:
-            User.objects.filter(stu_id=userid).update(status=0)
-            User.objects.filter(weixin_id=openid).update(status=0)
-        except:
-            return HttpResponse('Error')
-        try:
-            currentUser = User.objects.get(stu_id=userid)
-            currentUser.weixin_id = openid
-            currentUser.status = 1
-            currentUser.stu_name = validate_result['name']
-            currentUser.stu_type = validate_result['type']
-            try:
-                currentUser.save()
-            except:
-                return HttpResponse('Error')
-        except:
-            try:
-                newuser = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'], stu_type=validate_result['type'], status=1)
-                newuser.save()
-            except:
-                return HttpResponse('Error')
-    return HttpResponse(validate_result['result'])
-
-
-def validate_post(request):
-    if (not request.POST) or (not 'openid' in request.POST) or \
-            (not 'username' in request.POST) or (not 'password' in request.POST):
-        raise Http404
-    userid = request.POST['username']
-    if not userid.isdigit():
-        raise Http404
-    userpass = request.POST['password'].encode('gb2312')
-    validate_result = validate_through_learn(userid, userpass)
-    if validate_result == 'Accepted':
-        openid = request.POST['openid']
-        try:
-            User.objects.filter(stu_id=userid).update(status=0)
-            User.objects.filter(weixin_id=openid).update(status=0)
-        except:
-            return HttpResponse('Error')
-        try:
-            currentUser = User.objects.get(stu_id=userid)
-            currentUser.weixin_id = openid
-            currentUser.status = 1
-            try:
-                currentUser.save()
-            except:
-                return HttpResponse('Error')
-        except:
-            try:
-                newuser = User.objects.create(weixin_id=openid, stu_id=userid, status=1)
-                newuser.save()
-            except:
-                return HttpResponse('Error')
-    return HttpResponse(validate_result)
-
-
 ###################### Activity Detail ######################
 
-def details_view(request, activityid):
-    activity = Activity.objects.filter(id=activityid)
+def details_view(request, activity_id):
+    activity = Activity.objects.filter(id=activity_id)
     if not activity.exists():
-        raise Http404  #current activity is invalid
+        raise Http404    #current activity is invalid
     act_name = activity[0].name
     act_key = activity[0].key
     act_place = activity[0].place
-    act_bookstart = activity[0].book_start
+    act_book_start = activity[0].book_start
     act_bookend = activity[0].book_end
-    act_begintime = activity[0].start_time
-    act_endtime = activity[0].end_time
-    act_totaltickets = activity[0].total_tickets
+    act_begin_time = activity[0].start_time
+    act_end_time = activity[0].end_time
+    act_total_tickets = activity[0].total_tickets
     act_text = activity[0].description
     act_ticket_remian = activity[0].remain_tickets
     act_abstract = act_text
@@ -236,23 +252,23 @@ def details_view(request, activityid):
         act_text_status = 1
         act_abstract = act_text[0:MAX_LEN]+u'...'
     act_photo = activity[0].pic_url
-    cur_time = timezone.now() # use the setting UTC
+    cur_time = timezone.now()  # use the setting UTC
     act_seconds = 0
-    if act_bookstart <= cur_time <= act_bookend:
+    if act_book_start <= cur_time <= act_bookend:
         act_delta = act_bookend - cur_time
         act_seconds = act_delta.total_seconds()
-        act_status = 0 # during book time
-    elif cur_time < act_bookstart:
-        act_delta = act_bookstart - cur_time
+        act_status = 0  # during book time
+    elif cur_time < act_book_start:
+        act_delta = act_book_start - cur_time
         act_seconds = act_delta.total_seconds()
-        act_status = 1 # before book time
+        act_status = 1  # before book time
     else:
-        act_status = 2 # after book time
-    variables=RequestContext(request,{'act_name':act_name,'act_text':act_text, 'act_photo':act_photo,
-                                      'act_bookstart':act_bookstart,'act_bookend':act_bookend,'act_begintime':act_begintime,
-                                      'act_endtime':act_endtime,'act_totaltickets':act_totaltickets,'act_key':act_key,
-                                      'act_place':act_place, 'act_status':act_status, 'act_seconds':act_seconds,'cur_time':cur_time,
-                                      'act_abstract':act_abstract, 'act_text_status':act_text_status,'act_ticket_remian':act_ticket_remian})
+        act_status = 2  # after book time
+    variables = RequestContext(request, {'act_name': act_name, ' act_text': act_text, 'act_photo': act_photo,
+                                      'act_bookstart': act_book_start, 'act_bookend': act_bookend, ' act_begintime': act_begin_time,
+                                      'act_endtime': act_end_time, 'act_totaltickets': act_total_tickets, 'act_key': act_key,
+                                      'act_place': act_place, 'act_status': act_status, 'act_seconds': act_seconds, 'cur_time':cur_time,
+                                      'act_abstract': act_abstract, 'act_text_status': act_text_status, 'act_ticket_remian': act_ticket_remian})
     return render_to_response('activitydetails.html', variables)
 
 
@@ -260,18 +276,21 @@ def ticket_view(request, uid):
     ticket = Ticket.objects.filter(unique_id=uid)
     if not ticket.exists():
         information = "票已过期"
-        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
-        return render_to_response('404.html', {'information': information, 'href': href}) #current activity is invalid
+        href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        return render_to_response('404.html', {
+            'information': information,
+            'href': href
+        }) #current activity is invalid
     activity = Activity.objects.filter(id=ticket[0].activity_id)
     act_id = activity[0].id
     act_name = activity[0].name
     act_key = activity[0].key
-    act_begintime = activity[0].start_time
-    act_endtime = activity[0].end_time
+    act_begin_time = activity[0].start_time
+    act_end_time = activity[0].end_time
     act_place = activity[0].place
     ticket_status = ticket[0].status
     now = datetime.datetime.now()
-    if act_endtime < now:#表示活动已经结束
+    if act_end_time < now:#表示活动已经结束
         ticket_status = 3
     ticket_seat = ticket[0].seat
     if ticket_seat == '':
@@ -279,89 +298,57 @@ def ticket_view(request, uid):
     else:
         ticket_url = ''
     act_photo = "http://qr.ssast.org/fit/"+uid
-    variables=RequestContext(request,{'act_id':act_id, 'act_name':act_name,'act_place':act_place, 'act_begintime':act_begintime,
-                                      'act_endtime':act_endtime,'act_photo':act_photo, 'ticket_status':ticket_status,
-                                      'ticket_seat':ticket_seat,
-                                      'act_key':act_key,
-                                      'ticket_url':ticket_url})
+    variables = RequestContext(request, {
+        'act_id': act_id,
+        'act_name': act_name,
+        'act_place': act_place,
+        'act_begintime': act_begin_time,
+        'act_endtime': act_end_time,
+        'act_photo': act_photo,
+        'ticket_status': ticket_status,
+        'ticket_seat': ticket_seat,
+        'act_key': act_key,
+        'ticket_url': ticket_url
+    })
     return render_to_response('activityticket.html', variables)
 
+
 def help_view(request):
-    variables=RequestContext(request,{'name':u'“紫荆之声”'})
+    variables = RequestContext(request, {'name': u'“紫荆之声”'})
     return render_to_response('help.html', variables)
 
 
-def activity_menu_view(request, actid):
-    activity = Activity.objects.get(id=actid)
+def activity_menu_view(request, act_id):
+    activity = Activity.objects.get(id=act_id)
     return render_to_response('activitymenu.html', {'activity': activity})
 
+
 def helpact_view(request):
-    variables=RequestContext(request,{})
+    variables = RequestContext(request, {})
     return render_to_response('help_activity.html', variables)
 
+
 def helpclub_view(request):
-    variables=RequestContext(request,{})
+    variables = RequestContext(request, {})
     return render_to_response('help_club.html', variables)
 
+
 def helplecture_view(request):
-    variables=RequestContext(request,{})
+    variables = RequestContext(request, {})
     return render_to_response('help_lecture.html', variables)
+
 
 def uc_center(request):
     code = request.GET.get('code')
     url = WEIXIN_URLS['get_openid'](code)
     res = http_get(url)
-    rjson = json.loads(res)
-    openid = rjson['openid']
+    r_json = json.loads(res)
+    openid = r_json['openid']
     user = User.objects.filter(weixin_id=openid, status=1)
     if user:
         return redirect(s_reverse_uc_ticket(openid))
     else:
         return redirect(s_reverse_uc_account(openid))
-
-@csrf_exempt
-def uc_ticket(request, openid):
-    if request.method == 'POST':
-        if request.POST.get('ticket_uid', ''):
-            ticket_uid = request.POST['ticket_uid']
-            ticketURL = s_reverse_ticket_detail(ticket_uid)
-            seatURL = s_reverse_ticket_selection(ticket_uid)
-            rtnJSON = {'ticketURL': ticketURL, 'seatURL': seatURL}
-            return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
-    if request.is_ajax():
-        try:
-            if not request.POST.get('ticket_id', ''):
-                return HttpResponse('logout error')
-            else:
-                ticket_id = request.POST['ticket_id']
-                tickets = Ticket.objects.filter(unique_id=ticket_id)
-                if not tickets.exists():
-                    return HttpResponse('logout error')
-                else:
-                    ticket = tickets[0]
-                    ticket.status = 0
-                    ticket.save()
-                    seat = ticket.seat.split('-')
-                    activity = ticket.activity
-                    if len(seat) > 1:
-                        row = int(seat[0]) - 1
-                        column = int(seat[1]) - 1
-                        seat_table = json.loads(activity.seat_table)
-                        seat_table[row][column] = 1
-                        Activity.objects.filter(id=activity.id).update(seat_table=json.dumps(seat_table))
-                    Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')+1)
-                return HttpResponse('logout error')
-        except:
-            return HttpResponse('logout error')
-    tickets = []
-    user = User.objects.filter(weixin_id=openid, status=1)
-    if user:
-        isValidated = 1
-        tickets = Ticket.objects.filter(stu_id=user[0].stu_id, status=1)
-    else:
-        isValidated = 0
-    return render_to_response('usercenter_ticket.html', {'tickets':tickets,
-                                                         'isValidated':isValidated, 'weixin_id':openid})
 
 
 def uc_account(request, openid):
@@ -392,6 +379,51 @@ def uc_account(request, openid):
             }, context_instance=RequestContext(request))
     else:
         return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
+
+
+@csrf_exempt
+def uc_ticket(request, openid):
+    if request.method == 'POST':
+        if request.POST.get('ticket_uid', ''):
+            ticket_uid = request.POST['ticket_uid']
+            ticket_url = s_reverse_ticket_detail(ticket_uid)
+            seat_url = s_reverse_ticket_selection(ticket_uid)
+            rtn_json = {'ticketURL': ticket_url, 'seatURL': seat_url}
+            return HttpResponse(json.dumps(rtn_json), content_type='application/json')
+    if request.is_ajax():
+        try:
+            if not request.POST.get('ticket_id', ''):
+                return HttpResponse('logout error')
+            else:
+                ticket_id = request.POST['ticket_id']
+                tickets = Ticket.objects.filter(unique_id=ticket_id)
+                if not tickets.exists():
+                    return HttpResponse('logout error')
+                else:
+                    ticket = tickets[0]
+                    ticket.status = 0
+                    ticket.save()
+                    seat = ticket.seat.split('-')
+                    activity = ticket.activity
+                    if len(seat) > 1:
+                        row = int(seat[0]) - 1
+                        column = int(seat[1]) - 1
+                        seat_table = json.loads(activity.seat_table)
+                        seat_table[row][column] = 1
+                        Activity.objects.filter(id=activity.id).update(seat_table=json.dumps(seat_table))
+                    Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')+1)
+                return HttpResponse('logout error')
+        except:
+            return HttpResponse('logout error')
+    tickets = []
+    user = User.objects.filter(weixin_id=openid, status=1)
+    if user:
+        is_validated = 1
+        tickets = Ticket.objects.filter(stu_id=user[0].stu_id, status=1)
+    else:
+        is_validated = 0
+    return render_to_response('usercenter_ticket.html', {'tickets': tickets,
+                                                         'isValidated': is_validated, 'weixin_id': openid})
 
 
 def encode_token(openid):
@@ -444,6 +476,7 @@ def uc_2ticket_bind(request):
             return HttpResponse('Error')
         return HttpResponse(s_reverse_uc_2ticket(openid))
 
+
 @csrf_exempt
 def uc_2ticket(request, openid):
     if request.is_ajax():
@@ -458,68 +491,71 @@ def uc_2ticket(request, openid):
     else:
         user = User.objects.filter(weixin_id=openid, status=1)
         if user:
-            isValidated = 1
+            is_validated = 1
             binds = Bind.objects.filter(Q(active_stu_id=user[0].stu_id) | Q(passive_stu_id=user[0].stu_id))
             tickets = Ticket.objects.filter(stu_id=user[0].stu_id, status=1)
             now = datetime.datetime.now()
-            aty_canBind = Activity.objects.filter(status=1, end_time__gt=now, book_start__lt=now)
+            aty_can_bind = Activity.objects.filter(status=1, end_time__gt=now, book_start__lt=now)
             return render_to_response('usercenter_2ticket.html', {
-                'isValidated': isValidated,
+                'isValidated': is_validated,
                 'weixin_id': openid,
                 'stu_id': user[0].stu_id,
-                'aty_canBind': aty_canBind,
+                'aty_canBind': aty_can_bind,
                 'binds': binds,
                 'tickets': tickets
             }, context_instance=RequestContext(request))
         else:
-            isValidated = 0
+            is_validated = 0
             return render_to_response('usercenter_2ticket.html', {
-                'isValidated': isValidated,
+                'isValidated': is_validated,
                 'weixin_id': openid
             }, context_instance=RequestContext(request))
 
+
 @csrf_exempt
 def uc_token(request, openid):
-    if request.method == 'POST':
+    if request.is_ajax():
         token = encode_token(request.POST.get('openid', ''))
-        rtnJSON = {'token': token}
-        return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+        rtn_json = {'token': token}
+        return HttpResponse(json.dumps(rtn_json), content_type='application/json')
     else:
         if User.objects.filter(weixin_id=openid, status=1).exists():
-            isValidated = 1
+            is_validated = 1
         else:
-            isValidated = 0
-        return render_to_response('usercenter_token.html',{'isValidated':isValidated, 'weixin_id':openid})
+            is_validated = 0
+        return render_to_response('usercenter_token.html', {'isValidated': is_validated, 'weixin_id': openid})
+
+
 
 @csrf_exempt
 def views_seats(request, uid):
     if not request.POST:
-        rtnJSON = {}
+        rtn_json = {}
         ticket = Ticket.objects.filter(unique_id=uid, status=1)
         if not ticket.exists():
             seats_list = []
         else:
             seats_list = json.loads(ticket[0].activity.seat_table)
-        ticketID = uid
+        ticket_id = uid
         title = ticket[0].activity.name
         ticket_type = ticket[0].partner_id
         return render_to_response('seats.html', locals())
     else:
-        rtnJSON = {}
-        ticketID = request.POST.get('ticketID', '')
-        postSelect = request.POST.get('postSelect', '')
+        rtn_json = {}
+        ticket_id = request.POST.get('ticketID', '')
+        post_select = request.POST.get('postSelect', '')
 
         try:
-            ticket = Ticket.objects.get(unique_id=ticketID, status=1)
+            ticket = Ticket.objects.get(unique_id=ticket_id, status=1)
         except:
-            rtnJSON['msg'] = 'invalidTicket'
-            return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+            rtn_json['msg'] = 'invalidTicket'
+            return HttpResponse(json.dumps(rtn_json), content_type='application/json')
 
         if ticket.seat != '':
             rtnJSON['msg'] = 'selected'
             return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
 
-        seats = postSelect.split(',')
+        seats = post_select.split(',')
         seat = seats[0]
         row = int(seat.split("-")[0]) - 1
         column = int(seat.split("-")[1]) - 1
@@ -530,38 +566,38 @@ def views_seats(request, uid):
             other_column = int(other_seat.split("-")[1]) - 1
             other_stu_id = ticket.partner_id
 
-        activityName = ticket.activity.name
+        activity_name = ticket.activity.name
         
         with transaction.atomic():
             if len(seats) > 1:
-                activity = Activity.objects.select_for_update().filter(name = activityName)
-                seatsTable = json.loads(activity[0].seat_table)
+                activity = Activity.objects.select_for_update().filter(name=activity_name)
+                seats_table = json.loads(activity[0].seat_table)
                 ticket = Ticket.objects.select_for_update().filter(status=1, seat=seat)
                 other_ticket = Ticket.objects.filter(status=1, seat=other_seat)
                 if ticket.exists() or other_ticket.exists():
-                    rtnJSON['seat'] = seatsTable
-                    rtnJSON['msg'] = 'invalidSeat'
-                    return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+                    rtn_json['seat'] = seats_table
+                    rtn_json['msg'] = 'invalidSeat'
+                    return HttpResponse(json.dumps(rtn_json), content_type='application/json')
                 else:
-                    seatsTable[row][column] = 2
-                    seatsTable[other_row][other_column] = 2
-                    seats_list = json.dumps(seatsTable)
-                    activity = Activity.objects.filter(name=activityName)
-                    Ticket.objects.filter(unique_id=ticketID).update(seat=seat)
+                    seats_table[row][column] = 2
+                    seats_table[other_row][other_column] = 2
+                    seats_list = json.dumps(seats_table)
+                    activity = Activity.objects.filter(name=activity_name)
+                    Ticket.objects.filter(unique_id=ticket_id).update(seat=seat)
                     Ticket.objects.filter(stu_id=other_stu_id, activity=activity[0]).update(seat=other_seat)
                     activity.update(seat_table=seats_list)
-                    rtnJSON['seat'] = seatsTable
-                    rtnJSON['msg'] = 'success'
-                    rtnJSON['next_url'] = s_reverse_ticket_detail(uid)
-                    return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+                    rtn_json['seat'] = seats_table
+                    rtn_json['msg'] = 'success'
+                    rtn_json['next_url'] = s_reverse_ticket_detail(uid)
+                    return HttpResponse(json.dumps(rtn_json), content_type='application/json')
             else:
-                activity = Activity.objects.select_for_update().filter(name = activityName)
-                seatsTable = json.loads(activity[0].seat_table)
+                activity = Activity.objects.select_for_update().filter(name=activity_name)
+                seats_table = json.loads(activity[0].seat_table)
                 ticket = Ticket.objects.select_for_update().filter(status=1, seat=seat)
                 if ticket.exists():
-                    rtnJSON['seat'] = seatsTable
-                    rtnJSON['msg'] = 'invalidSeat'
-                    return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+                    rtn_json['seat'] = seats_table
+                    rtn_json['msg'] = 'invalidSeat'
+                    return HttpResponse(json.dumps(rtn_json), content_type='application/json')
                 else:
                     seatsTable[row][column] = 2
                     seats_list = json.dumps(seatsTable)
@@ -582,15 +618,58 @@ def views_seats_zongti(request, uid):
         ticket_id = uid
         book_time = "this is time"
         ticket_type = ticket[0].partner_id
-        ticket_left = {}
-        seats_in_section_a = Seat.objects.filter(seat_section='A', is_selected=0)
-        ticket_left['A'] = len(seats_in_section_a)
-        seats_in_section_b = Seat.objects.filter(seat_section='B', is_selected=0)
-        ticket_left['B'] = len(seats_in_section_b)
-        seats_in_section_c = Seat.objects.filter(seat_section='C', is_selected=0)
-        ticket_left['C'] = len(seats_in_section_c)
-        seats_in_section_d = Seat.objects.filter(seat_section='D', is_selected=0)
-        ticket_left['D'] = len(seats_in_section_d)
-        seats_in_section_e = Seat.objects.filter(seat_section='E', is_selected=0)
-        ticket_left['E'] = len(seats_in_section_e)
+        ticket_left = get_seat_left()
         return render_to_response('seats_zongti.html', locals())
+
+def views_seats_zongti_post(request):
+    if not request.POST:
+        information = "出了点莫名其妙的错误"
+        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        return render_to_response('404.html', {'information': information, 'href': href})
+    post = request.POST
+    return_json = dict()
+    try:
+        section = post['section']
+        ticket = Ticket.objects.get(unique_id=post.ticket_id)
+        ticket_left = Seat.objects.filter(seat_section=section, is_selected=0, activity=ticket.activity)
+        if not ticket_left.exists():
+            return_json['msg'] = 'NoSeat'
+            return_json['seat_left'] = json.dumps(get_seat_left())
+            return HttpResponse(json.dumps(return_json, content_type='application/json')
+        seat = seat_select(post)
+        if seat == None:
+            return_json['msg'] = 'error'
+        else:
+            return_json['msg'] = 'success'
+            return_json['next_url'] = s_reverse_ticket_detail(post.ticket_id)
+        return HttpResponse(json.dumps(return_json, content_type='application/json')
+
+def get_seat_left():
+    ticket_left = {}
+    seats_in_section_a = Seat.objects.filter(seat_section='A', is_selected=0)
+    ticket_left['A'] = len(seats_in_section_a)
+    seats_in_section_b = Seat.objects.filter(seat_section='B', is_selected=0)
+    ticket_left['B'] = len(seats_in_section_b)
+    seats_in_section_c = Seat.objects.filter(seat_section='C', is_selected=0)
+    ticket_left['C'] = len(seats_in_section_c)
+    seats_in_section_d = Seat.objects.filter(seat_section='D', is_selected=0)
+    ticket_left['D'] = len(seats_in_section_d)
+    seats_in_section_e = Seat.objects.filter(seat_section='E', is_selected=0)
+    ticket_left['E'] = len(seats_in_section_e)
+    return ticket_left
+
+def seat_select(post):
+    with transaction.atomic():
+        try:
+            ticket = Ticket.objects.get(unique_id=post.ticket_id)
+        except Exception as e:
+            return None
+        seats = Seat.objects.select_for_update().filter(seat_section=post.section, is_selected=0, activity=ticket.activity)
+        if not seats.exists():
+            return None
+        else:
+            seats[0].is_selected = 1
+            seats[0].save()
+            ticket.seat = post.section
+            ticket.save()
+            return seats[0]

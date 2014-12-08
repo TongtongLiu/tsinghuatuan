@@ -5,14 +5,14 @@
     {% block viewport %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     {% endblock %}
-    <link href="{% static "css/base.css"%}?_=4" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/base.css'%}?_=4" rel="stylesheet" type="text/css" />
     {% block css %}{% endblock %}
     <title>{% block title %}清华紫荆之声——最优秀的校园服务助手{% endblock %}</title>
 </head>
 <body>
 <div id="wrap">
     <header>{% block header %}
-        <img class="header-img" src="{% static "img/newlogo.jpg" %}" />
+        <img class="header-img" src="{% static 'img/newlogo.jpg' %}" />
     {% endblock %}</header>
 
     <div class="theme">{% block theme %}{% endblock %}</div>
@@ -29,7 +29,7 @@
     &copy; 2013
 </footer>
 
-    <script src="{% static "js/weixin_lib.js" %}?_=4"></script>
+    <script src="{% static 'js/weixin_lib.js' %}?_=4"></script>
     {% block js %}{% endblock %}
 </body>
 </html>

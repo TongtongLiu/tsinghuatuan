@@ -1,89 +1,72 @@
-.empty {
-    margin: 1px;
-    width: 15px;
-    height: 15px;
-    background: rgba(0,0,0,0);
+/**********综体分区**************/
+#front
+{
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    width: 50%;
 }
 
-.sectionA {
-    margin: 1px;
-    width: 15px;
-    height: 15px;
-    background: rgba(240,103,80,0.8);
+#Zongti{
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    position: relative;
+    margin-bottom: 30px;
 }
 
-.sectionB {
-    margin: 1px;
-    width: 15px;
-    height: 15px;
-    background: rgba(245,176,73,0.8);
+#block_A
+{
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 44%;
+    position: absolute;
+
 }
 
-.sectionC {
-    margin: 1px;
-    width: 15px;
-    height: 15px;
-    background: rgba(254,88,127,0.8);
-}
-
-.sectionD {
-    margin: 1px;
-    width: 15px;
-    height: 15px;
-    background: rgba(155,196,71,0.8);
-}
-
-.sectionE {
-    margin: 1px;
-    width: 15px;
-    height: 15px;
-    background: rgba(64,178,246,0.8);
-}
-
-.sectionF {
-    margin: 1px;
-    width: 15px;
-    height: 15px;
-    background: rgba(79,137,190,0.8);
-}
-
-.sectionG {
-    margin: 1px;
-    width: 15px;
-    height: 15px;
-    background: rgba(212,120,243,0.8);
-}
-
-.chosen{
-    margin: 1px;
-    width: 15px;
-    height: 15px;
-    background: rgba(77,77,77,1);
-}
-
-.seatsTable {
-    margin:auto;
-    float: left;
-    width: 60%;
+#block_B
+{
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 70%;
+    position: absolute;
 }
 
 
-#selectSeat {
-    padding: 10px 5px 10px 5px;
-    border-collapse: inherit;
-    border-spacing: 2px;
+#block_C
+{
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 70%;
+    right: 0;
+    position: absolute;
 }
 
-#infoSet {
-    padding: 10px 5px 10px 5px;
-    width: 40%;
-    float: right;
+#Friend_block
+{
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 6.67%;
+    position: absolute;
 }
 
-#tbody {
-    line-height: 1;
-    border-spacing: 5px;
-    border-collapse: separate;
+#block_D
+{
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 22%;
+    position: absolute;
+}
+
+#block_E
+{
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    width: 100%;
+    position: absolute;
 }
 
 #clear-float {

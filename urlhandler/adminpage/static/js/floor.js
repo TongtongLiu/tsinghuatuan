@@ -40,7 +40,7 @@ a = $('#bottom');
 a.height(a.width()/5.5);
 
 var selected = 0;
-/*
+
 $("[id^=f1],[id^=f2]").click(function(){
 	if (selected != 0)
 		$('#' + selected).css("background-image", "url(/staticcccccccc/img/seat/"+selected+".png)");
@@ -50,16 +50,12 @@ $("[id^=f1],[id^=f2]").click(function(){
 		$("#seat_info").html("一层"+selected[3]+"区");
 	else $("#seat_info").html("二层"+selected[3]+"区");
 })
-*/
+
 $("[id^=block]").click(function(){
-	if (selected != 0) {
-		var seatSrc = $('#' + selected).attr('src');
-		$('#' + selected).attr('src', seatSrc.replace('_selected', ''));
-	}
+	if (selected != 0)
+		$('#' + selected).css("background-image", "url(img/seat/"+selected+".png)");
 	selected = $(this).attr("id");
 	$(this).css("background-image", "url(img/seat/"+selected+"_selected.png)");
-	var seatSrc = $(this).attr('src');
-	$(this).attr('src', seatSrc.replace('.png', '_selected.png'));
 	$("#seat_info").html(selected[6]+"区");
 	var avaiNumber;
 	switch(selected[6]){
@@ -72,59 +68,40 @@ $("[id^=block]").click(function(){
 	$("#avaiNumber").html(avaiNumber);
 })
 
+$("#save").mousedown(function(){
+	$("#bottom").css("background-image", "url(img/seat/bottom_save.png)");
+})
+
+$("#save").mouseup(function(){
+	setTimeout(function(){
+		$("#bottom").css("background-image", "url(img/seat/bottom.png)");
+		if (selected != 0)
+			alert("成功保存预选座位信息。");
+		else
+			alert("你还未选择任何座位。");
+		
+	}, 100);
+})
+
 $("#submit").mousedown(function(){
 	$("#bottom").css("background-image", "url(img/seat/bottom_submit.png)");
 })
 
 $("#submit").mouseup(function(){
 	setTimeout(function(){
-		//$("#bottom").css("background-image", "url(img/seat/bottom.png)");
-		//var url = window.location.href;
+		$("#bottom").css("background-image", "url(img/seat/bottom.png)");
+		var url = window.location.href;
 		if (selected != 0){
-			document.write('<form name=myForm '+ url + '><input type=hidden name=ticket_id><input type=hidden name=seat></form>');
-		    var myForm=document.forms['myForm'];
-		    myForm.action='index.jsp';
-		    myForm.method='POST';
-		    myForm.ticket_id.value=ticket_id;
-		    myForm.seat.value=$("#seat_info").html();
+			document.write('<form name=myForm '+ url + '><input type=hidden name=ticket_id><input type=hidden name=seat></form>');  
+		    var myForm=document.forms['myForm'];  
+		    myForm.action='index.jsp';  
+		    myForm.method='POST';  
+		    myForm.ticket_id.value=ticket_id;  
+		    myForm.seat.value=$("#seat_info").html();  
 		    myForm.submit();
 		}
 		else
 			alert("你还未选择任何座位。");
+		
 	}, 100);
-});
-
-function beforeSubmit(formData, jqForm, options) {
-	if(selected == 0){
-		alert("你还未选择任何座位");
-		return false;
-	} else if(parseInt($('#avaiNumber').html()) == 0) {
-		alert("该区内票已售空");
-	}
-	return true;
-}
-
-function submitResponse() {
-	alert('submitResponse');
-}
-
-function submitError() {
-	alert('submitError');
-}
-
-function submitComplete() {
-	alert('submitComplete');
-}
-
-function submitChoice() {
-	$('#section').val($("#seat_info").html()[0]);
-	var options = {
-		dataType: 'json',
-        beforeSubmit: beforePublish,
-        success: submitResponse,
-        error: submitError,
-        complete: submitComplete
-	}
-	$('#submitForm').ajaxSubmit(options);
-    return false;
-}
+})

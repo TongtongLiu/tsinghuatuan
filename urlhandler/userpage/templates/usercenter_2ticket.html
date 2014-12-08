@@ -11,7 +11,7 @@
             </a>
         </div>
         <div class="panel-body">
-            <form class="form-horizontal" role="form" action="{% url "userpage.views.uc_2ticket_bind" %}" method="post" id="bindForm" onsubmit="return false;">
+            <form class="form-horizontal" role="form" action="{% url 'userpage.views.uc_2ticket_bind'' %}" method="post" id="bindForm" onsubmit="return false;">
                 {% csrf_token %}
                 <div class="input-group" id="activityGroup">
                     <span class="input-group-addon">选择活动</span>
@@ -41,7 +41,7 @@
                 </div>
                 <button onclick="ajaxForm();" class="btn btn-default btn-block" id="submitBtn" style="margin-top: 5px">绑定</button>
                 <div class="input-group" id="submitGroup">
-                    <p class="help-block" id="helpLoading" style="display: none"><img src="{% static "img/loading.gif" %}">正在认证，请稍候...</p>
+                    <p class="help-block" id="helpLoading" style="display: none"><img src="{% static 'img/loading.gif' %}">正在认证，请稍候...</p>
                     <p class="help-block" id="helpSubmit"></p>
                 </div>
             </form>
@@ -137,7 +137,7 @@
 {% endblock %}
 
 {% block js %}
-    <script src="{% static "js/tt_2ticket.js" %}"></script>
+    <script src="{% static 'js/tt_2ticket.js' %}"></script>
     <script>
     function ajaxForm() {
         uc_bind2ticket('{{ weixin_id }}');
