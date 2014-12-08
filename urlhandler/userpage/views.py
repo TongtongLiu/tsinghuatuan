@@ -16,7 +16,7 @@ import random
 from urlhandler.models import User, Activity, Ticket, Bind
 from userpage.safe_reverse import *
 from weixinlib import http_get
-from weixinlib.settings import WEIXIN_APPID
+from weixinlib.settings import WEIXIN_OAUTH2_URL
 from weixinlib.weixin_urls import WEIXIN_URLS
 
 
@@ -271,7 +271,7 @@ def ticket_view(request, uid):
     ticket = Ticket.objects.filter(unique_id=uid)
     if not ticket.exists():
         information = "票已过期"
-        href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {
             'information': information,
             'href': href
