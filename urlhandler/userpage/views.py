@@ -84,8 +84,12 @@ def validate_post_auth(request):
                 return HttpResponse('Error')
         except:
             try:
-                new_user = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'],
-                                               stu_type=validate_result['type'], status=1)
+                new_user = User.objects.create(
+                    weixin_id=openid,
+                    stu_id=userid,
+                    stu_name=validate_result['name'],
+                    stu_type=validate_result['type'],
+                    status=1)
                 new_user.save()
             except:
                 return HttpResponse('Error')
