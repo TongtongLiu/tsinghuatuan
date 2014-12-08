@@ -20,6 +20,12 @@ WEIXIN_EVENT_KEYS = {
     'modern_figure': 'V1001_MODERN_FIGURE',
 }
 
+WEIXIN_USERCENTER_URL = "http://wx2.igeek.asia/u/uc_center"
+
+WEIXIN_OAUTH2_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+\
+                        "&redirect_uri="+WEIXIN_USERCENTER_URL+\
+                        "&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+
 WEIXIN_CUSTOM_MENU_TEMPLATE = {
     "button": [
         {
@@ -69,7 +75,7 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                 {
                     "type": "view",
                     "name": "个人中心",
-                    "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+                    "url": WEIXIN_OAUTH2_URL
                 },
                 #{
                 #    "type": "click",

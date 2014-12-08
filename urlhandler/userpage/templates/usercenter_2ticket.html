@@ -11,7 +11,7 @@
             </a>
         </div>
         <div class="panel-body">
-            <form class="form-horizontal" role="form" action="{% url 'userpage.views.uc_2ticket_bind'' %}" method="post" id="bindForm" onsubmit="return false;">
+            <form class="form-horizontal" role="form" action="{% url 'userpage.views.uc_2ticket_bind' %}" method="post" id="bindForm" onsubmit="return false;">
                 {% csrf_token %}
                 <div class="input-group" id="activityGroup">
                     <span class="input-group-addon">选择活动</span>
