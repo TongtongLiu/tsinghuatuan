@@ -3,7 +3,7 @@ from django.db.models import F, Q
 from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from urlhandler.models import User, Activity, Ticket, Bind
+from urlhandler.models import User, Activity, Ticket, Bind, Seat
 from django.views.decorators.csrf import csrf_exempt
 from urlhandler.settings import STATIC_URL
 import urllib, urllib2
@@ -515,6 +515,10 @@ def views_seats(request, uid):
             rtnJSON['msg'] = 'invalidTicket'
             return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
 
+        if ticket.seat != '':
+            rtnJSON['msg'] = 'selected'
+            return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+
         seats = postSelect.split(',')
         seat = seats[0]
         row = int(seat.split("-")[0]) - 1
@@ -567,3 +571,26 @@ def views_seats(request, uid):
                     rtnJSON['msg'] = 'success'
                     rtnJSON['next_url'] = s_reverse_ticket_detail(uid)
                     return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+
+def views_seats_zongti(request, uid):
+    ticket = Ticket.objects.filter(unique_id=uid, status=1)
+    if not ticket.exists():
+        information = "该票无效"
+        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        return render_to_response('404.html', {'information': information, 'href': href})
+    else:
+        ticket_id = uid
+        book_time = "this is time"
+        ticket_type = ticket[0].partner_id
+        ticket_left = {}
+        seats_in_section_a = Seat.objects.filter(seat_section='A', is_selected=0)
+        ticket_left['A'] = len(seats_in_section_a)
+        seats_in_section_b = Seat.objects.filter(seat_section='B', is_selected=0)
+        ticket_left['B'] = len(seats_in_section_b)
+        seats_in_section_c = Seat.objects.filter(seat_section='C', is_selected=0)
+        ticket_left['C'] = len(seats_in_section_c)
+        seats_in_section_d = Seat.objects.filter(seat_section='D', is_selected=0)
+        ticket_left['D'] = len(seats_in_section_d)
+        seats_in_section_e = Seat.objects.filter(seat_section='E', is_selected=0)
+        ticket_left['E'] = len(seats_in_section_e)
+        return render_to_response('seats_zongti.html', locals())
