@@ -20,7 +20,7 @@
         time_xmlhttp.send();
         submit2auththu('{{ openid }}', time_xmlhttp.responseText);
     }
-    window.addEventListener('load', function() {showValidation({{ is_validated }});}, false);
+    window.addEventListener('load', function() {showValidation({{ isValidated }});}, false);
     </script>
 {% endblock %}
 

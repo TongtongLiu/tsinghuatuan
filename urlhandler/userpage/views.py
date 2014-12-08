@@ -137,7 +137,7 @@ def validate_view(request, openid):
     return render_to_response('tt_validation.html', {
         'openid': openid,
         'student_id': student_id,
-        'is_validated': is_validated,
+        'isValidated': is_validated,
         'now': datetime.datetime.now() + datetime.timedelta(seconds=-5),
     }, context_instance=RequestContext(request))
 
