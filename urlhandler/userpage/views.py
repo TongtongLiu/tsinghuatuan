@@ -13,8 +13,8 @@ import time
 import json
 import string
 import random
-from urlhandler.urlhandler.models import User, Activity, Ticket, Bind
-from urlhandler.userpage.safe_reverse import *
+from urlhandler.models import User, Activity, Ticket, Bind
+from userpage.safe_reverse import *
 from weixinlib import http_get
 from weixinlib.settings import WEIXIN_APPID
 from weixinlib.weixin_urls import WEIXIN_URLS
@@ -84,8 +84,12 @@ def validate_post_auth(request):
                 return HttpResponse('Error')
         except:
             try:
-                new_user = User.objects.create(weixin_id=openid, stu_id=userid, stu_name=validate_result['name'],
-                                               stu_type=validate_result['type'], status=1)
+                new_user = User.objects.create(
+                    weixin_id=openid,
+                    stu_id=userid,
+                    stu_name=validate_result['name'],
+                    stu_type=validate_result['type'],
+                    status=1)
                 new_user.save()
             except:
                 return HttpResponse('Error')
@@ -505,7 +509,7 @@ def uc_2ticket(request, openid):
 
 @csrf_exempt
 def uc_token(request, openid):
-    if request.method == 'POST':
+    if request.is_ajax():
         token = encode_token(request.POST.get('openid', ''))
         rtn_json = {'token': token}
         return HttpResponse(json.dumps(rtn_json), content_type='application/json')

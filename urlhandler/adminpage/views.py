@@ -11,7 +11,6 @@ from django.shortcuts import render_to_response
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
-from django.db.models import F
 import urllib
 import urllib2
 from urlhandler.models import Activity, Ticket, Seat
