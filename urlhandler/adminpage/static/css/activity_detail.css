@@ -1,4 +1,14 @@
 /**********综体分区**************/
+#front
+{
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    width: 50%;
+}
+
 #Zongti{
     width: 80%;
     margin-left: auto;
@@ -10,7 +20,6 @@
 
 #block_A
 {
-    background-image: url(../../static/img/seat/block_A.png);
     background-size: contain;
     background-repeat: no-repeat;
     height: 44%;
@@ -20,7 +29,6 @@
 
 #block_B
 {
-    background-image: url(../../static/img/seat/block_B.png);
     background-size: contain;
     background-repeat: no-repeat;
     height: 70%;
@@ -30,7 +38,6 @@
 
 #block_C
 {
-    background-image: url(../../static/img/seat/block_C.png);
     background-size: contain;
     background-repeat: no-repeat;
     height: 70%;
@@ -40,7 +47,6 @@
 
 #Friend_block
 {
-    background-image: url(../../static/img/seat/block_Friend.png);
     background-size: contain;
     background-repeat: no-repeat;
     height: 6.67%;
@@ -49,7 +55,6 @@
 
 #block_D
 {
-    background-image: url(../../static/img/seat/block_D.png);
     background-size: contain;
     background-repeat: no-repeat;
     height: 22%;
@@ -58,7 +63,6 @@
 
 #block_E
 {
-    background-image: url(../../static/img/seat/block_E.png);
     background-size: 100% 100%;
     background-repeat: no-repeat;
     width: 100%;
