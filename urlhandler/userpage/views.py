@@ -505,7 +505,7 @@ def uc_2ticket(request, openid):
 
 @csrf_exempt
 def uc_token(request, openid):
-    if request.method == 'POST':
+    if request.is_ajax():
         token = encode_token(request.POST.get('openid', ''))
         rtn_json = {'token': token}
         return HttpResponse(json.dumps(rtn_json), content_type='application/json')
