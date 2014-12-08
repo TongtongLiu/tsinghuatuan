@@ -291,7 +291,8 @@ def ticket_view(request, uid):
         ticket_status = 3
     ticket_seat = ticket[0].seat
     if ticket_seat == '':
-        ticket_url = s_reverse_ticket_selection(uid)
+        #ticket_url = s_reverse_ticket_selection(uid)
+        ticket_url = s_reverse_ticket_select_zongti(uid)
     else:
         ticket_url = ''
     act_photo = "http://qr.ssast.org/fit/"+uid

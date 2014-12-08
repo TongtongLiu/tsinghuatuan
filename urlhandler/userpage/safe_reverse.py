@@ -36,3 +36,6 @@ def s_reverse_uc_2ticket(openid):
 
 def s_reverse_ticket_selection(uid):
     return SITE_DOMAIN + reverse('userpage.views.views_seats', kwargs={'uid': uid})
+
+def s_reverse_ticket_select_zongti(uid):
+    return SITE_DOMAIN + reverse('userpage.views.views_seats_zongti', kwargs={'uid': uid})
