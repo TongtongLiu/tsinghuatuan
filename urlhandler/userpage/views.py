@@ -182,6 +182,17 @@ def validate_through_auth(secret):
         }
 
 
+def drop_exist_user_through_stu_id(stu_id):
+    User.objects.filter(stu_id=stu_id).update(status=0)
+
+
+def drop_exist_user_through_openid(openid):
+    User.objects.filter(weixin_id=openid).update(status=0)
+
+
+
+
+
 def uc_validate_post_auth(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
             (not 'username' in request.POST) or (not 'password' in request.POST):
@@ -194,8 +205,7 @@ def uc_validate_post_auth(request):
     validate_result = validate_through_auth(secret)
     if validate_result['result'] == 'Accepted':
         try:
-            User.objects.filter(stu_id=user_id).update(status=0)
-            User.objects.filter(weixin_id=openid).update(status=0)
+
         except:
             return HttpResponse('Error')
         try:
