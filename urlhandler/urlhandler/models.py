@@ -1,6 +1,5 @@
 #-*- coding: UTF-8 -*-
 from django.db import models
-import uuid
 
 
 class User(models.Model):
@@ -11,6 +10,7 @@ class User(models.Model):
     bind_count = models.IntegerField(default=0)
     status = models.IntegerField()
     seed = models.FloatField(default=1024)
+
 
 class Activity(models.Model):
     name = models.CharField(max_length=255)
@@ -38,6 +38,7 @@ class Activity(models.Model):
     # 1: seat B and seat C
     # 2: select seat
 
+
 class Ticket(models.Model):
     stu_id = models.CharField(max_length=255)
     unique_id = models.CharField(max_length=255)
@@ -50,11 +51,13 @@ class Ticket(models.Model):
     # 1: ticket order is valid
     # 2: ticket is used
 
+
 class Bind(models.Model):
     activity = models.ForeignKey(Activity)
     active_stu_id = models.CharField(max_length=255)
     passive_stu_id = models.CharField(max_length=255)
     unique_id = models.CharField(max_length=255)
+
 
 class Seat(models.Model):
     position_row = models.IntegerField()
