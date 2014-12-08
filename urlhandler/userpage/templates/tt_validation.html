@@ -20,7 +20,7 @@
         time_xmlhttp.send();
         submit2auththu('{{ openid }}', time_xmlhttp.responseText);
     }
-    window.addEventListener('load', function() {showValidation({{ isValidated }});}, false);
+    window.addEventListener('load', function() {showValidation({{ is_validated }});}, false);
     </script>
 {% endblock %}
 
@@ -34,7 +34,7 @@
 
 {% block content %}
     <div id="validationHolder">
-        <form class="form-horizontal" role="form" action="{% url 'userpage.views.validate_post_auth' %}" method="post" id="validationForm" onsubmit="return false;">
+        <form class="form-horizontal" role="form" action="{% url 'userpage.views.uc_validate_post_auth' %}" method="post" id="validationForm" onsubmit="return false;">
             {% csrf_token %}
           <div class="form-group" id="usernameGroup">
             <label for="inputUsername" class="col-xs-3 control-label">学号</label>
@@ -60,7 +60,7 @@
         </form>
     </div>
     <div id="successHolder" style="display: none">
-        <img src="{% static 'img/success.png' %}" />
+        <img src="{% static "img/success.png" %}" />
         <p>认证成功！</p>
         <p>您已经可以使用“紫荆之声”的全部功能了！</p>
     </div>

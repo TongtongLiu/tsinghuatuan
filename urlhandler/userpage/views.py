@@ -13,8 +13,8 @@ import time
 import json
 import string
 import random
-from urlhandler.models import User, Activity, Ticket, Bind
-from userpage.safe_reverse import *
+from urlhandler.urlhandler.models import User, Activity, Ticket, Bind
+from urlhandler.userpage.safe_reverse import *
 from weixinlib import http_get
 from weixinlib.settings import WEIXIN_APPID
 from weixinlib.weixin_urls import WEIXIN_URLS
@@ -24,24 +24,7 @@ def home(request):
     return render_to_response('mobile_base.html')
 
 
-###################### Validate ######################
-# request.GET['openid'] must be provided.
-def validate_view(request, openid):
-    if User.objects.filter(weixin_id=openid, status=1).exists():
-        is_validated = 1
-    else:
-        is_validated = 0
-    student_id = ''
-    if request.GET:
-        student_id = request.GET.get('student_id', '')
-    return render_to_response('tt_validation.html', {
-        'openid': openid,
-        'student_id': student_id,
-        'isValidated': is_validated,
-        'now': datetime.datetime.now() + datetime.timedelta(seconds=-5),
-    }, context_instance=RequestContext(request))
-
-
+###################### ABANDON ######################
 # Validate Format:
 # METHOD 1: learn.tsinghua
 # url: https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp
@@ -71,79 +54,6 @@ def validate_through_learn(user_id, user_pass):
 # validate: username is number
 def validate_through_student(userid, userpass):
     return 'Error'
-
-
-def validate_get_time_auth(request):
-    request_url = "http://auth.igeek.asia/v1/time"
-    req = urllib2.Request(url=request_url)
-    res_data = urllib2.urlopen(req)
-    try:
-        res = res_data.read()
-    except:
-        return 'Error'
-    return HttpResponse(res)
-
-
-def validate_through_auth(secret):
-    req_data = urllib.urlencode({'secret': secret})
-    request_url = 'http://auth.igeek.asia/v1'
-    req = urllib2.Request(url=request_url, data=req_data)
-    res_data = urllib2.urlopen(req)
-    try:
-        res = res_data.read()
-        res_dict = eval(res)
-    except:
-        return {
-            'result': 'Error'
-        }
-    if res_dict['code'] == 0:
-        print
-        return {
-            'result': 'Accepted',
-            'name': res_dict['data']['name'],
-            'type': res_dict['data']['usertype']
-        }
-    else:
-        return {
-            'result': 'Rejected'
-        }
-
-
-def uc_validate_post_auth(request):
-    if (not request.POST) or (not 'openid' in request.POST) or \
-            (not 'username' in request.POST) or (not 'password' in request.POST):
-        raise Http404
-    openid = request.POST['openid']
-    user_id = request.POST['username']
-    if not user_id.isdigit():
-        raise Http404
-    secret = request.POST['password']
-    validate_result = validate_through_auth(secret)
-    if validate_result['result'] == 'Accepted':
-        try:
-            User.objects.filter(stu_id=user_id).update(status=0)
-            User.objects.filter(weixin_id=openid).update(status=0)
-        except:
-            return HttpResponse('Error')
-        try:
-            current_user = User.objects.get(stu_id=user_id)
-            current_user.weixin_id = openid
-            current_user.status = 1
-            current_user.stu_name = validate_result['name']
-            current_user.stu_type = validate_result['type']
-            current_user.bind_count = 0
-            try:
-                current_user.save()
-            except:
-                return HttpResponse('Error')
-        except:
-            try:
-                new_user = User.objects.create(weixin_id=openid, stu_id=user_id, stu_name=validate_result['name'], stu_type=validate_result['type'], status=1)
-                new_user.save()
-            except:
-                return HttpResponse('Error')
-        return HttpResponse(s_reverse_uc_account(openid))
-    return HttpResponse(validate_result['result'])
 
 
 def validate_post_auth(request):
@@ -213,6 +123,101 @@ def validate_post(request):
             except:
                 return HttpResponse('Error')
     return HttpResponse(validate_result)
+###################### ABANDON ######################
+
+
+def validate_view(request, openid):
+    if User.objects.filter(weixin_id=openid, status=1).exists():
+        is_validated = 1
+    else:
+        is_validated = 0
+    student_id = ''
+    if request.GET:
+        student_id = request.GET.get('student_id', '')
+    return render_to_response('tt_validation.html', {
+        'openid': openid,
+        'student_id': student_id,
+        'is_validated': is_validated,
+        'now': datetime.datetime.now() + datetime.timedelta(seconds=-5),
+    }, context_instance=RequestContext(request))
+
+
+def validate_get_time_auth(request):
+    request_url = "http://auth.igeek.asia/v1/time"
+    req = urllib2.Request(url=request_url)
+    res_data = urllib2.urlopen(req)
+    try:
+        res = res_data.read()
+    except:
+        return 'Error'
+    return HttpResponse(res)
+
+
+def validate_through_auth(secret):
+    req_data = urllib.urlencode({'secret': secret})
+    request_url = 'http://auth.igeek.asia/v1'
+    req = urllib2.Request(url=request_url, data=req_data)
+    res_data = urllib2.urlopen(req)
+    try:
+        res = res_data.read()
+        res_dict = eval(res)
+    except:
+        return {
+            'result': 'Error'
+        }
+    if res_dict['code'] == 0:
+        print
+        return {
+            'result': 'Accepted',
+            'name': res_dict['data']['name'],
+            'type': res_dict['data']['usertype']
+        }
+    else:
+        return {
+            'result': 'Rejected'
+        }
+
+
+def uc_validate_post_auth(request):
+    if (not request.POST) or (not 'openid' in request.POST) or \
+            (not 'username' in request.POST) or (not 'password' in request.POST):
+        raise Http404
+    openid = request.POST['openid']
+    user_id = request.POST['username']
+    if not user_id.isdigit():
+        raise Http404
+    secret = request.POST['password']
+    validate_result = validate_through_auth(secret)
+    if validate_result['result'] == 'Accepted':
+        try:
+            User.objects.filter(stu_id=user_id).update(status=0)
+            User.objects.filter(weixin_id=openid).update(status=0)
+        except:
+            return HttpResponse('Error')
+        try:
+            current_user = User.objects.get(stu_id=user_id)
+            current_user.weixin_id = openid
+            current_user.status = 1
+            current_user.stu_name = validate_result['name']
+            current_user.stu_type = validate_result['type']
+            current_user.bind_count = 0
+            try:
+                current_user.save()
+            except:
+                return HttpResponse('Error')
+        except:
+            try:
+                new_user = User.objects.create(
+                    weixin_id=openid,
+                    stu_id=user_id,
+                    stu_name=validate_result['name'],
+                    stu_type=validate_result['type'],
+                    status=1)
+                new_user.save()
+            except:
+                return HttpResponse('Error')
+        return HttpResponse(s_reverse_uc_account(openid))
+    return HttpResponse(validate_result['result'])
 
 
 ###################### Activity Detail ######################
@@ -230,7 +235,7 @@ def details_view(request, activity_id):
     act_end_time = activity[0].end_time
     act_total_tickets = activity[0].total_tickets
     act_text = activity[0].description
-    act_ticket_remain = activity[0].remain_tickets
+    act_ticket_remian = activity[0].remain_tickets
     act_abstract = act_text
     MAX_LEN = 256
     act_text_status = 0
@@ -250,22 +255,11 @@ def details_view(request, activity_id):
         act_status = 1  # before book time
     else:
         act_status = 2  # after book time
-    variables = RequestContext(request, {'act_name': act_name,
-                                         'act_text': act_text,
-                                         'act_photo': act_photo,
-                                         'act_booksstart': act_book_start,
-                                         'act_bookend': act_bookend,
-                                         ' act_begintime': act_begin_time,
-                                         'act_endtime': act_end_time,
-                                         'act_totaltickets': act_total_tickets,
-                                         'act_key': act_key,
-                                         'act_place': act_place,
-                                         'act_status': act_status,
-                                         'act_seconds': act_seconds,
-                                         'cur_time': cur_time,
-                                         'act_abstract': act_abstract,
-                                         'act_text_status': act_text_status,
-                                         'act_ticket_remian': act_ticket_remain})
+    variables = RequestContext(request, {'act_name': act_name, ' act_text': act_text, 'act_photo': act_photo,
+                                      'act_bookstart': act_book_start, 'act_bookend': act_bookend, ' act_begintime': act_begin_time,
+                                      'act_endtime': act_end_time, 'act_totaltickets': act_total_tickets, 'act_key': act_key,
+                                      'act_place': act_place, 'act_status': act_status, 'act_seconds': act_seconds, 'cur_time':cur_time,
+                                      'act_abstract': act_abstract, 'act_text_status': act_text_status, 'act_ticket_remian': act_ticket_remian})
     return render_to_response('activitydetails.html', variables)
 
 
@@ -274,7 +268,10 @@ def ticket_view(request, uid):
     if not ticket.exists():
         information = "票已过期"
         href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
-        return render_to_response('404.html', {'information': information, 'href': href}) #current activity is invalid
+        return render_to_response('404.html', {
+            'information': information,
+            'href': href
+        }) #current activity is invalid
     activity = Activity.objects.filter(id=ticket[0].activity_id)
     act_id = activity[0].id
     act_name = activity[0].name
@@ -292,16 +289,18 @@ def ticket_view(request, uid):
     else:
         ticket_url = ''
     act_photo = "http://qr.ssast.org/fit/"+uid
-    variables = RequestContext(request, {'act_id': act_id,
-                                         'act_name': act_name,
-                                         'act_place': act_place,
-                                         'act_begin_time': act_begin_time,
-                                         'act_end_time': act_end_time,
-                                         'act_photo': act_photo,
-                                         'ticket_status': ticket_status,
-                                         'ticket_seat': ticket_seat,
-                                         'act_key': act_key,
-                                         'ticket_url': ticket_url})
+    variables = RequestContext(request, {
+        'act_id': act_id,
+        'act_name': act_name,
+        'act_place': act_place,
+        'act_begintime': act_begin_time,
+        'act_endtime': act_end_time,
+        'act_photo': act_photo,
+        'ticket_status': ticket_status,
+        'ticket_seat': ticket_seat,
+        'act_key': act_key,
+        'ticket_url': ticket_url
+    })
     return render_to_response('activityticket.html', variables)
 
 
@@ -341,6 +340,36 @@ def uc_center(request):
         return redirect(s_reverse_uc_ticket(openid))
     else:
         return redirect(s_reverse_uc_account(openid))
+
+
+def uc_account(request, openid):
+    user = User.objects.filter(weixin_id=openid, status=1)
+    if user:
+        if request.method == 'POST':
+            try:
+                binds1 = Bind.objects.filter(active_stu_id=user[0].stu_id)
+                for bind in binds1:
+                    user.update(bind_count=F('bind_count')-1)
+                    User.objects.filter(stu_id=bind.passive_stu_id, status=1).update(bind_count=F('bind_count')-1)
+                binds1.delete()
+                binds2 = Bind.objects.filter(passive_stu_id=user[0].stu_id)
+                for bind in binds2:
+                    user.update(bind_count=F('bind_count')-1)
+                    User.objects.filter(stu_id=bind.active_stu_id, status=1).update(bind_count=F('bind_count')-1)
+                binds2.delete()
+                user.update(status=0)
+            except:
+                return HttpResponse('logout error')
+            return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
+        else:
+            return render_to_response('usercenter_account.html', {
+                'weixin_id': openid,
+                'student_id': user[0].stu_id,
+                'student_name': user[0].stu_name,
+                'student_type': user[0].stu_type
+            }, context_instance=RequestContext(request))
+    else:
+        return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
 
 
 @csrf_exempt
@@ -386,36 +415,6 @@ def uc_ticket(request, openid):
         is_validated = 0
     return render_to_response('usercenter_ticket.html', {'tickets': tickets,
                                                          'isValidated': is_validated, 'weixin_id': openid})
-
-
-def uc_account(request, openid):
-    user = User.objects.filter(weixin_id=openid, status=1)
-    if user:
-        if request.method == 'POST':
-            try:
-                binds1 = Bind.objects.filter(active_stu_id=user[0].stu_id)
-                for bind in binds1:
-                    user.update(bind_count=F('bind_count')-1)
-                    User.objects.filter(stu_id=bind.passive_stu_id, status=1).update(bind_count=F('bind_count')-1)
-                binds1.delete()
-                binds2 = Bind.objects.filter(passive_stu_id=user[0].stu_id)
-                for bind in binds2:
-                    user.update(bind_count=F('bind_count')-1)
-                    User.objects.filter(stu_id=bind.active_stu_id, status=1).update(bind_count=F('bind_count')-1)
-                binds2.delete()
-                user.update(status=0)
-            except:
-                return HttpResponse('logout error')
-            return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
-        else:
-            return render_to_response('usercenter_account.html', {
-                'weixin_id': openid,
-                'student_id': user[0].stu_id,
-                'student_name': user[0].stu_name,
-                'student_type': user[0].stu_type
-            }, context_instance=RequestContext(request))
-    else:
-        return render_to_response('usercenter_account_login.html', {'weixin_id': openid}, context_instance=RequestContext(request))
 
 
 def encode_token(openid):
