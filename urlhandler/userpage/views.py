@@ -20,7 +20,6 @@ from weixinlib.settings import WEIXIN_APPID
 from weixinlib.weixin_urls import WEIXIN_URLS
 
 
-
 def home(request):
     return render_to_response('mobile_base.html')
 
@@ -37,7 +36,7 @@ def validate_view(request, openid):
         student_id = request.GET.get('student_id', '')
     return render_to_response('tt_validation.html', {
         'openid': openid,
-        'studentid': student_id,
+        'student_id': student_id,
         'isValidated': is_validated,
         'now': datetime.datetime.now() + datetime.timedelta(seconds=-5),
     }, context_instance=RequestContext(request))
@@ -231,7 +230,7 @@ def details_view(request, activity_id):
     act_end_time = activity[0].end_time
     act_total_tickets = activity[0].total_tickets
     act_text = activity[0].description
-    act_ticket_remian = activity[0].remain_tickets
+    act_ticket_remain = activity[0].remain_tickets
     act_abstract = act_text
     MAX_LEN = 256
     act_text_status = 0
@@ -251,11 +250,22 @@ def details_view(request, activity_id):
         act_status = 1  # before book time
     else:
         act_status = 2  # after book time
-    variables = RequestContext(request, {'act_name': act_name, ' act_text': act_text, 'act_photo': act_photo,
-                                      'act_bookstart': act_book_start, 'act_bookend': act_bookend, ' act_begintime': act_begin_time,
-                                      'act_endtime': act_end_time, 'act_totaltickets': act_total_tickets, 'act_key': act_key,
-                                      'act_place': act_place, 'act_status': act_status, 'act_seconds': act_seconds, 'cur_time':cur_time,
-                                      'act_abstract': act_abstract, 'act_text_status': act_text_status, 'act_ticket_remian': act_ticket_remian})
+    variables = RequestContext(request, {'act_name': act_name,
+                                         'act_text': act_text,
+                                         'act_photo': act_photo,
+                                         'act_booksstart': act_book_start,
+                                         'act_bookend': act_bookend,
+                                         ' act_begintime': act_begin_time,
+                                         'act_endtime': act_end_time,
+                                         'act_totaltickets': act_total_tickets,
+                                         'act_key': act_key,
+                                         'act_place': act_place,
+                                         'act_status': act_status,
+                                         'act_seconds': act_seconds,
+                                         'cur_time': cur_time,
+                                         'act_abstract': act_abstract,
+                                         'act_text_status': act_text_status,
+                                         'act_ticket_remian': act_ticket_remain})
     return render_to_response('activitydetails.html', variables)
 
 
@@ -285,8 +295,8 @@ def ticket_view(request, uid):
     variables = RequestContext(request, {'act_id': act_id,
                                          'act_name': act_name,
                                          'act_place': act_place,
-                                         'act_begintime': act_begin_time,
-                                         'act_endtime': act_end_time,
+                                         'act_begin_time': act_begin_time,
+                                         'act_end_time': act_end_time,
                                          'act_photo': act_photo,
                                          'ticket_status': ticket_status,
                                          'ticket_seat': ticket_seat,
