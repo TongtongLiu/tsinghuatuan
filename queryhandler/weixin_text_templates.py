@@ -1,5 +1,5 @@
 #-*- coding:utf-8 -*-
-from urlhandler.userpage.safe_reverse import *
+from userpage.safe_reverse import *
 from queryhandler.settings import QRCODE_URL
 
 

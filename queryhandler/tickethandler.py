@@ -8,7 +8,7 @@ from queryhandler.settings import QRCODE_URL
 from django.db.models import F
 from django.db import transaction
 
-from urlhandler.userpage.safe_reverse import *
+from userpage.safe_reverse import *
 from queryhandler.weixin_reply_templates import *
 from queryhandler.weixin_text_templates import *
 from queryhandler.handler_check_templates import *

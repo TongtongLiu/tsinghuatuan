@@ -13,8 +13,8 @@ import time
 import json
 import string
 import random
-from urlhandler.urlhandler.models import User, Activity, Ticket, Bind
-from urlhandler.userpage.safe_reverse import *
+from urlhandler.models import User, Activity, Ticket, Bind
+from userpage.safe_reverse import *
 from weixinlib import http_get
 from weixinlib.settings import WEIXIN_APPID
 from weixinlib.weixin_urls import WEIXIN_URLS
