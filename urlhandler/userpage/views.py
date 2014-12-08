@@ -130,6 +130,7 @@ def validate_post(request):
 ###################### ABANDON ######################
 
 
+
 def validate_view(request, openid):
     if User.objects.filter(weixin_id=openid, status=1).exists():
         is_validated = 1
@@ -182,15 +183,12 @@ def validate_through_auth(secret):
         }
 
 
-def drop_exist_user_through_stu_id(stu_id):
+def disable_exist_user_through_stu_id(stu_id):
     User.objects.filter(stu_id=stu_id).update(status=0)
 
 
-def drop_exist_user_through_openid(openid):
+def disable_exist_user_through_openid(openid):
     User.objects.filter(weixin_id=openid).update(status=0)
-
-
-
 
 
 def uc_validate_post_auth(request):
@@ -205,7 +203,8 @@ def uc_validate_post_auth(request):
     validate_result = validate_through_auth(secret)
     if validate_result['result'] == 'Accepted':
         try:
-
+            disable_exist_user_through_stu_id(user_id)
+            disable_exist_user_through_openid(openid)
         except:
             return HttpResponse('Error')
         try:
