@@ -7,12 +7,12 @@
 {% endblock %}
 
 {% block css %}
-<link href="{% static "css/validation.css" %}?_=3" rel="stylesheet" type="text/css" />
+<link href="{% static 'css/validation.css' %}?_=3" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block js %}
-    <script src="{% static "lib/RSA/RSA2.js" %}"></script>
-    <script src="{% static "js/tt_validation.js" %}?_=1"></script>
+    <script src="{% static 'lib/RSA/RSA2.js' %}"></script>
+    <script src="{% static 'js/tt_validation.js' %}?_=1"></script>
     <script>
     function ajaxForm_auth() {
         var time_xmlhttp = new XMLHttpRequest();
@@ -25,7 +25,7 @@
 {% endblock %}
 
 {% block header %}
-<img class="header-img" src="{% static "img/logo.png" %}" />
+<img class="header-img" src="{% static 'img/logo.png' %}" />
 {% endblock %}
 
 {% block theme %}
@@ -53,7 +53,7 @@
           <div class="form-group" id="submitGroup">
             <div class="col-xs-offset-3 col-xs-9">
               <button onclick="ajaxForm_auth();" class="btn btn-default" id="submitBtn">认证</button>
-              <p class="help-block" id="helpLoading" style="display: none"><img src="{% static "img/loading.gif" %}">正在认证，请稍候...</p>
+              <p class="help-block" id="helpLoading" style="display: none"><img src="{% static 'img/loading.gif' %}">正在认证，请稍候...</p>
               <p class="help-block" id="helpSubmit"></p>
             </div>
           </div>

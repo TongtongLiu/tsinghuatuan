@@ -17,7 +17,7 @@
         <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span>&nbsp;账户状态：未绑定</h3>
     </div>
     <div class="panel-body">
-        <form class="form-horizontal" role="form" action="{% url "userpage.views.uc_validate_post_auth" %}" method="post" id="validationForm" onsubmit="return false;">
+        <form class="form-horizontal" role="form" action="{% url 'userpage.views.uc_validate_post_auth' %}" method="post" id="validationForm" onsubmit="return false;">
             {% csrf_token %}
             <div class="input-group" id="usernameGroup">
                 <span class="input-group-addon">学号</span>
