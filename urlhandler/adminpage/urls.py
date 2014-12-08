@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url, include
 urlpatterns = patterns('',
                        url(r'^$', 'adminpage.views.home'),
                        url(r'^list/$', 'adminpage.views.activity_list'),
-                       url(r'^detail/(?P<actid>\d+)/$', 'adminpage.views.activity_detail_2'),
+                       url(r'^detail/(?P<actid>\d+)/$', 'adminpage.views.activity_detail'),
                        url(r'^checkin/(?P<actid>\d+)/$', 'adminpage.views.activity_checkin'),
                        url(r'^checkin/(?P<actid>\d+)/check/', 'adminpage.views.activity_checkin_post'),
                        url(r'^export/(?P<actid>\d+)/$', 'adminpage.views.activity_export_stunum'),
