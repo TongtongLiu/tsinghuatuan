@@ -12,6 +12,7 @@
 
 {% block js %}
     <script src="{% static "lib/jq/form/jquery.form.min.js" %}"></script>
+    <script src="{% static "js/floor.js" %}"></script>
     <script>
         {% if activity.id %}
         var seat_price = '{{activity.seat_price}}';
