@@ -35,7 +35,7 @@ function disableDatetimePicker(dom) {
 //**************页面适配*******************
 var windowHeight = $(window).height();//浏览器高度
 
-a = $('.model-body');
+a = $('.modal-body');
 a.height(0.45*windowHeight);
 
 //****************************************
