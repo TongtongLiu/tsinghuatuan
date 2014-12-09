@@ -33,18 +33,7 @@ function disableDatetimePicker(dom) {
 */
 
 //**************页面适配*******************
-var windowHeight = $(window).height();//浏览器高度
 
-a = $('.modal-body');
-a.height(0.45*windowHeight);
-
-a = $('#Zongti');
-a.height(a.width());
-
-a = $('#block_A');
-a.width(a.height()/0.76);
-left = 0.5*a.parent().width() - 0.5*a.width();
-a.css("left", left);
 //****************************************
 
 var dateInterfaceMap = {
