@@ -12,7 +12,6 @@
 
 {% block js %}
     <script src="{% static "lib/jq/form/jquery.form.min.js" %}"></script>
-    <script src="{% static "js/floor.js" %}"></script>
     <script>
         {% if activity.id %}
         var seat_price = '{{activity.seat_price}}';
@@ -71,7 +70,6 @@
             {% endif %}
         }
         //var width = document.documentElement.clientWidth;//屏幕宽度高度
-        var height = $(window).height();//浏览器高度
         //var windowWidth = window.outerWidth;
     </script>
     <script src="{% static "js/activity_detail.js" %}"></script>

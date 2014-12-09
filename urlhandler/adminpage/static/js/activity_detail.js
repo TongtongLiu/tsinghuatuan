@@ -31,6 +31,15 @@ function disableDatetimePicker(dom) {
     dom.children('.input-group-addon').css('cursor', 'no-drop').children().css('cursor', 'no-drop');
 }
 */
+
+//**************页面适配*******************
+var windowHeight = $(window).height();//浏览器高度
+
+a = $('.model-body');
+a.height(0.45*windowHeight);
+
+//****************************************
+
 var dateInterfaceMap = {
     'year': 'getFullYear',
     'month': 'getMonth',
