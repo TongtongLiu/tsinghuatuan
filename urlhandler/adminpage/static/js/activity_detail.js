@@ -35,50 +35,6 @@ function disableDatetimePicker(dom) {
 //**************页面适配*******************
 //var windowHeight = $(window).height();//浏览器高度
 
-a = $('.modal-body');
-a.height(0.45*windowHeight);
-
-a = $('#front');
-a.height(0.25*a.width());
-
-a = $('#Zongti');
-a.height(a.width());
-
-a = $('#block_A');
-a.width(a.height()/0.76);
-left = 0.5*a.parent().width() - 0.5*a.width();
-a.css("left", left);
-
-a = $('#block_B');
-//left = 30;
-//a.css("left",left);
-a.width(0.44*a.height());
-
-a = $('#block_C');
-//right = 30;
-//a.css("right", right);
-a.width(0.45*a.height());
-
-a = $('#Friend_block');
-a.width(4.45*a.height());
-left = 0.5*a.parent().width() - 0.5*a.width();
-topTemp = $('#block_A').height()+0.5*a.height();
-a.css("left", left);
-a.css("top", topTemp);
-
-a = $('#block_D');
-a.width(2.5*a.height());
-left = 0.5*a.parent().width() - 0.5*a.width();
-topTemp = $('#block_A').height() + 2 * $('#Friend_block').height();
-a.css("left", left);
-a.css("top", topTemp);
-
-a = $('#block_E');
-a.height(a.width()/7);
-left = 0.5*a.parent().width() - 0.5*a.width();
-topTemp = $('#block_A').height() + 2.5 * $('#Friend_block').height() + $('#block_D').height();
-a.css("left", left);
-a.css("top", topTemp);
 //****************************************
 
 var dateInterfaceMap = {
