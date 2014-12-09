@@ -70,9 +70,9 @@
             'G':price[6],
             {% endif %}
         }
-        $("#front").css("background-image","src({% static "img/seat/wutai.png" %})");
-
-
+        //var width = document.documentElement.clientWidth;//屏幕宽度高度
+        var height = $(window).height();//浏览器高度
+        //var windowWidth = window.outerWidth;
     </script>
     <script src="{% static "js/activity_detail.js" %}"></script>
 {% endblock %}
