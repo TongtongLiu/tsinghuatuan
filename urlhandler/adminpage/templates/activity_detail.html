@@ -317,7 +317,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">座位分配设置</label>
                 <div class="col-sm-10">
-                    <select name="seat_status" id="input-seat_status" class="form-control" required>
+                    <select name="seat_status" id="input-seat_status" class="form-control" required onchange="changePlace()">
                         <option value="0">不分配座位</option>
                         <option value="1">综体：分配B、C两入口</option>
                         <option value="2">新清华学堂</option>
@@ -333,8 +333,30 @@
                     <button type="reset" class="btn btn-warning" id="resetBtn" onclick="clearSeat();">重置</button>
                 </div>
             </div>
-            <!-- 模态框（Modal） -->
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
+            <!-- 不选座模态框（Modal） -->
+            <div class="modal fade" id="modal_none" tabindex="-1" role="dialog" 
+               aria-labelledby="myModalLabel" aria-hidden="true">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <button type="button" class="close" 
+                           data-dismiss="modal" aria-hidden="true">
+                              &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                           提示
+                        </h4>
+                     </div>
+                    <div class="modal-body">您不需要选座哦~</div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="getSeatPosition();" class="btn btn-primary" data-dismiss="modal">
+                           关闭
+                        </button>
+                     </div>
+                  </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+            <!-- 综体模态框（Modal） -->
+            <div class="modal fade" id="modal_zongti" tabindex="-1" role="dialog" 
                aria-labelledby="myModalLabel" aria-hidden="true">
                <div class="modal-dialog">
                   <div class="modal-content">
@@ -349,15 +371,7 @@
                      </div>
                     <div class="modal-body">
                         <div id="front">
-                            <img src="{% static "img/seats_zongti/seat/wutai.png" %}" id = "frontPic">
-                        </div>
-                        <div id = "Zongti">
-                            <img src = "{% static "img/seat/block_B.png" %}" id = "block_B" />
-                            <img src = "{% static "img/seat/block_A.png" %}" id = "block_A" />
-                            <img src = "{% static "img/seat/block_C.png" %}" id = "block_C" />
-                            <img src = "{% static "img/seat/block_Friend.png" %}" id = "Friend_block" />
-                            <img src = "{% static "img/seat/block_D.png" %}" id = "block_D" />
-                            <img src = "{% static "img/seat/block_E.png" %}" id = "block_E" />
+                            <img src="{% static "img/zongti.png" %}" id = "zongtiPic">
                         </div>
                     </div>
         

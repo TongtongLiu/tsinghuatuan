@@ -33,7 +33,7 @@ function disableDatetimePicker(dom) {
 */
 
 //**************页面适配*******************
-var windowHeight = $(window).height();//浏览器高度
+//var windowHeight = $(window).height();//浏览器高度
 
 a = $('.modal-body');
 a.height(0.45*windowHeight);
@@ -558,7 +558,16 @@ function publishActivity() {
     }
     return false;
 }
-
+//根据不同场地打开不同模态框
+function changePlace() {
+    a = $('#input-seat_status');
+    if(a.val() == "1")//综体
+        a.attr("data-target","#modal_zongti");
+    else if(a.val() == "2")//新清华学堂
+        a.attr("data-target","#modal_xinqing");
+    else if(a.val() == "0")
+        a.attr("data-target","#modal_none");
+}
 
 initializeForm(activity);
 showForm();
