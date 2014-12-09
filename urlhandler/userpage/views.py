@@ -631,13 +631,11 @@ def views_seats_zongti_post(request):
         section = post['section']
         ticket = Ticket.objects.get(unique_id=post['ticket_id'])
         ticket_left = Seat.objects.filter(seat_section=post['section'], is_selected=0, activity=ticket.activity)
-        if not ticket_left.exists():
+        if (not ticket_left.exists() and ticket.partner_id == 's') or (ticket.partner_id != "s" and len(ticket_left) < 2):
             return_json['msg'] = 'NoSeat'
             return_json['seat_left'] = json.dumps(get_seat_left(post['ticket_id']))
             return HttpResponse(json.dumps(return_json), content_type='application/json')
-        print "2"
         seat = seat_select(post)
-        print "3"
         if seat == None:
             print "error"
             return_json['msg'] = 'error'
@@ -678,10 +676,22 @@ def seat_select(post):
         seats = Seat.objects.select_for_update().filter(seat_section=post['section'], is_selected=0, activity=ticket.activity)
         if not seats.exists():
             return None
-        else:
-            seat = seats[0]
-            ticket.seat = post['section']
-            ticket.save()
-            seat.is_selected = 1
-            seat.save()
-            return seat
+        if ticket.partner_id != "s":
+            if len(seats) < 2:
+                return None
+            try:
+                partner_ticket = Ticket.objects.get(stu_id=ticket.partner_id, activity=ticket.activity)
+            except Exception as e:
+                return None
+        seat = seats[0]
+        ticket.seat = post['section']
+        ticket.save()
+        seat.is_selected = 1
+        seat.save()
+        if ticket.partner_id != "s":
+            partner_ticket.seat = post['section']
+            partner_ticket.save()
+            partner_seat = seats[1]
+            partner_seat.is_selected = 1
+            partner_seat.save()
+        return seat

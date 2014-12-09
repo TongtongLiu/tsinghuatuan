@@ -1,4 +1,4 @@
-<html>
+﻿<html>
 {% load staticfiles %}
 <head>
 	<title>紫荆之声-抢票选座</title>
@@ -63,6 +63,7 @@
 		var ticket_left_string = "{{ ticket_left }}";
         var temp = ticket_left_string.replace(/&#39;/g, "'");
         var ticketLeft = eval("("+temp+")");
+        var ticketType = "{{ ticket_type }}"
 
 		/*
 		ticketLeft.A = 5;

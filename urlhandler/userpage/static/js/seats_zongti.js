@@ -97,8 +97,10 @@ function beforeSubmit(formData, jqForm, options) {
 	if(selected == 0){
 		alert("你还未选择任何座位");
 		return false;
-	} else if(parseInt($('#avaiNumber').html()) == 0) {
+	} else if(ticketType == "s" && parseInt($('#avaiNumber').html()) == 0) {
 		alert("该区内票已售空");
+	} else if (ticketType != "s" && parseInt($('#avaiNumber').html()) < 2) {
+		alert("该区余票不足");
 	}
 	return true;
 }
