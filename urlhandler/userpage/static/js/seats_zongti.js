@@ -103,15 +103,18 @@ function beforeSubmit(formData, jqForm, options) {
 	return true;
 }
 
-function submitResponse() {
+function submitResponse(data) {
 	alert('submitResponse');
+    if(data.msg == 'success') {
+        location.href = data.next_url;
+    }
 }
 
-function submitError() {
+function submitError(data) {
 	alert('submitError');
 }
 
-function submitComplete() {
+function submitComplete(data) {
 	alert('submitComplete');
 }
 

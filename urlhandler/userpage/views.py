@@ -616,7 +616,7 @@ def views_seats_zongti(request, uid):
         ticket_id = str(uid)
         book_time = "this is time"
         ticket_type = ticket[0].partner_id
-        ticket_left = json.dumps(get_seat_left(uid))
+        ticket_left = get_seat_left(uid)
         return render_to_response('seats_zongti.html', locals())
 
 @csrf_exempt
@@ -631,13 +631,9 @@ def views_seats_zongti_post(request):
         section = post['section']
         ticket = Ticket.objects.get(unique_id=post['ticket_id'])
         ticket_left = Seat.objects.filter(seat_section=post['section'], is_selected=0, activity=ticket.activity)
-        print "1"
         if not ticket_left.exists():
-            print "hehe"
             return_json['msg'] = 'NoSeat'
-            print "hehe2"
             return_json['seat_left'] = json.dumps(get_seat_left(post['ticket_id']))
-            print "hehe3"
             return HttpResponse(json.dumps(return_json), content_type='application/json')
         print "2"
         seat = seat_select(post)
@@ -656,12 +652,11 @@ def views_seats_zongti_post(request):
         return render_to_response('404.html', {'information': information, 'href': href})
 
 def get_seat_left(uid):
-    print uid
     try:
         ticket = Ticket.objects.get(unique_id=uid)
     except Exception as e:
         return None
-    ticket_left = {}
+    ticket_left = dict() 
     seats_in_section_a = Seat.objects.filter(seat_section='A', is_selected=0, activity=ticket.activity)
     ticket_left['A'] = len(seats_in_section_a)
     seats_in_section_b = Seat.objects.filter(seat_section='B', is_selected=0, activity=ticket.activity)

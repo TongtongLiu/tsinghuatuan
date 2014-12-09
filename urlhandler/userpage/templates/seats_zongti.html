@@ -58,9 +58,12 @@
 	-->
 
 	<script>
-		var ticket_id = "{{ ticket_id }}"
-		var book_time = "{{ book_time }};"
-		var ticketLeft = "{{ ticket_left }}"
+		var ticket_id = "{{ ticket_id }}";
+		var book_time = "{{ book_time }}";
+		var ticket_left_string = "{{ ticket_left }}";
+        var temp = ticket_left_string.replace(/&#39;/g, "'");
+        var ticketLeft = eval("("+temp+")");
+
 		/*
 		ticketLeft.A = 5;
 		ticketLeft.B = 6;
