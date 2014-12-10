@@ -4,11 +4,9 @@
     float: left;
     background-size: contain;
     background-repeat: no-repeat;
-    margin-left: auto;
-    margin-right: 20px;
-    margin-top: auto;
-    margin-bottom: auto;
+    margin: auto auto 20px auto;
     width: 60%;
+    height: 100%
 }
 #zongtiPic{
     width: 100%;
