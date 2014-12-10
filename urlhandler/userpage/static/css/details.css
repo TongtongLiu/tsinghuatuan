@@ -1,18 +1,19 @@
 .details-text{
     text-align:left;
-    font-weight: bold;
-    font-size: 1.5em;
-    margin: 5px;
 }
 .actName {
     text-align: center;
-
+    font-family:"微软雅黑","黑体","宋体";
+    font-size: 1.5em;
+    padding: 5px;
+    font-weight: bold;
+    background: #428bca;
+    color: #ffffff;
 }
 .details-wrapper{
     text-align:center;
     padding-right: 10px;
     padding-left: 10px;
-    background-color: #428bca;
 }
 .img-wrapper{
     padding-top: 10px;
