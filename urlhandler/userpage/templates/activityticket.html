@@ -40,13 +40,7 @@
                         {% if ticket_seat == '' %}
                             <a class="clickToSelect" href="{{ ticket_url }}"> 请选座</a>
                         {% else %}
-                            {% if ticket_seat == 'B' %}
-                                    <span class="status-size ticket-used">您的座位在B区 请从二楼北侧进入</span>
-                            {% elif ticket_seat == 'C' %}
-                                    <span class="status-size ticket-used">您的座位在C区 请从二楼南侧进入</span>
-                            {% else %}
-                                    <span class="status-size ticket-used">您的座位在{{ ticket_seat }}</span>
-                            {% endif %}
+                            <span class="status-size ticket-used">您的座位在{{ ticket_seat }}</span>
                         {% endif %}
                     {% endif %}
                 </p>
