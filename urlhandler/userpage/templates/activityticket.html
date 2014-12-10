@@ -54,10 +54,12 @@
 				<p>活动开始时间：<b>{{ act_begin_time|date:"Y年m月d日 H:i" }}</b></p>
 				<p>活动结束时间：<b>{{ act_end_time|date:"Y年m月d日 H:i" }}</b></p>
                 {% if ticket_status == 1 %}
-				    <p>说明：活动开始前45分钟凭本电子票入场,回复<span class="emphasize">“退票 {{ act_key }}”</span>即可退票</p>
+				    <p>说明：<br/>
+                        活动开始前45分钟凭本电子票入场<br/>
+                        回复<span class="emphasize">“退票 {{ act_key }}”</span>即可退票</p>
                 {% endif %}
 
-				<a class="btn btn-default btn-sm btn-block" href="{{href}}" >返回个人中心</a>
+				<a class="linkbtn btn btn-default btn-block" href="{{href}}" >返回个人中心</a>
 			</div>
     </div>
 
