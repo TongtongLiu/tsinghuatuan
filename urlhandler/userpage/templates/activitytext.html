@@ -111,24 +111,24 @@
     <div class="details-wrapper">
         <div class="panel panel-default">
             <div class="panel-body">
-            {% if act_begintime.year != act_endtime.year %}
+            {% if act_begin_time.year != act_end_time.year %}
             <div class="trigger" >
-                <h7>开始时间：{{ act_begintime|date:"Y年m月d日 H:i" }}</h7>
+                <h7>开始时间：{{ act_begin_time|date:"Y年m月d日 H:i" }}</h7>
             </div>
             <div class="trigger">
-                <h7>结束时间：{{ act_endtime|date:"Y年m月d日 H:i" }}</h7>
+                <h7>结束时间：{{ act_end_time|date:"Y年m月d日 H:i" }}</h7>
             </div>
-            {% elif act_begintime.month != act_endtime.month %}
+            {% elif act_begin_time.month != act_end_time.month %}
             <div class="trigger">
-                <h9>{{ act_begintime|date:"Y年m月d日 H:i" }} 至 {{ act_endtime|date:"m月d日H:i" }}</h9>
+                <h9>{{ act_begin_time|date:"Y年m月d日 H:i" }} 至 {{ act_end_time|date:"m月d日H:i" }}</h9>
             </div>
-            {% elif act_begintime.day != act_endtime.day %}
+            {% elif act_begin_time.day != act_end_time.day %}
             <div class="trigger">
-                <h8>{{ act_begintime|date:"Y年m月d日 H:i" }} 至 {{ act_endtime|date:"d日H:i" }}</h8>
+                <h8>{{ act_begin_time|date:"Y年m月d日 H:i" }} 至 {{ act_end_time|date:"d日H:i" }}</h8>
             </div>
             {% else %}
             <div class="trigger">
-                <h7>{{ act_begintime|date:"Y年m月d日 H:i" }} 至 {{ act_endtime|date:"H:i" }}</h7>
+                <h7>{{ act_begin_time|date:"Y年m月d日 H:i" }} 至 {{ act_end_time|date:"H:i" }}</h7>
             </div>
             {% endif %}
             </div>

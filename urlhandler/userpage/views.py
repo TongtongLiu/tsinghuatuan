@@ -260,10 +260,12 @@ def details_view(request, activityid):
     else:
         act_status = 2  # after book time
     variables = RequestContext(request, {'act_name': act_name, ' act_text': act_text, 'act_photo': act_photo,
-                                      'act_book_start': act_book_start, 'act_book_end': act_book_end, ' act_begin_time': act_begin_time,
-                                      'act_end_time': act_end_time, 'act_totaltickets': act_total_tickets, 'act_key': act_key,
-                                      'act_place': act_place, 'act_status': act_status, 'act_seconds': act_seconds, 'cur_time':cur_time,
-                                      'act_abstract': act_abstract, 'act_text_status': act_text_status, 'act_ticket_remain': act_ticket_remain})
+                                         'act_book_start': act_book_start, 'act_book_end': act_book_end,
+                                         'act_begin_time': act_begin_time, 'act_end_time': act_end_time,
+                                         'act_totaltickets': act_total_tickets, 'act_key': act_key,
+                                         'act_place': act_place, 'act_status': act_status, 'act_seconds': act_seconds,
+                                         'cur_time': cur_time, 'act_abstract': act_abstract,
+                                         'act_text_status': act_text_status, 'act_ticket_remain': act_ticket_remain})
     return render_to_response('activitydetails.html', variables)
 
 
