@@ -31,6 +31,8 @@
             <h7>当前余票：(截至{{ cur_time|date:"Y年m月d日H:i:s" }})</h7>
             </div>
         <div class="details-divider"></div>
+
+        <div class="details-wrapper">
         <div class="panel panel-default">
    		    <div class="panel-body">
                 <div style="text-align: center;">
@@ -38,6 +40,8 @@
                 </div>
             </div>
         </div>
+        </div>
+            
         <div class="details-divider"></div>
     {% elif act_status == 1 %}
         <div  id="ticket-before-book">
