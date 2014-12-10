@@ -42,7 +42,7 @@ function pageSuit(){
     topimg=0.5*a.height()-0.5*b.height();
     b.css("top", topimg);
     b = $('#ticket-number');
-    b.css("top", topimg);
+    b.css("top", topimg-10);
 }
 window.onload=pageSuit;
 
