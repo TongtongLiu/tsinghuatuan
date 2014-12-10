@@ -475,18 +475,18 @@ function submitComplete(xhr) {
     showResult();
 }
 
-function getSeatPosition() {
-    var list = $('.chosen');
-    var seatlist = [];
-    var temp = "";
-    for(var i = 1; i < list.length; i++){
-        temp = list[i].getAttribute('class').split(" ")[0];
-        seatlist += list[i].id + "-" + temp[temp.length - 1];
-        if(i < list.length - 1)
-            seatlist += ",";
-    }
-    $('#input-seat').val(seatlist);
-}
+//function getSeatPosition() {
+//    var list = $('.chosen');
+//    var seatlist = [];
+//    var temp = "";
+//    for(var i = 1; i < list.length; i++){
+//        temp = list[i].getAttribute('class').split(" ")[0];
+//        seatlist += list[i].id + "-" + temp[temp.length - 1];
+//        if(i < list.length - 1)
+//            seatlist += ",";
+//    }
+//    $('#input-seat').val(seatlist);
+//}
 
 function clearSeat() {
     $('.chosen').removeClass("chosen");

@@ -374,12 +374,36 @@
                         <div id="front">
                             <img src="{% static "img/zongti.png" %}" id = "zongtiPic">
                         </div>
+                        <div id="ticket-number">
+                            <div class="input-group">
+                               <span class="input-group-addon">A区</span>
+                               <input type="text" class="form-control" value="0">
+                               <span class="input-group-addon">张</span>
+                            
+                               <span class="input-group-addon">B区</span>
+                               <input type="text" class="form-control" value="0">
+                               <span class="input-group-addon">张</span>
+                            
+                               <span class="input-group-addon">C区</span>
+                               <input type="text" class="form-control" value="0">
+                               <span class="input-group-addon">张</span>
+                            
+                               <span class="input-group-addon">D区</span>
+                               <input type="text" class="form-control" value="0">
+                               <span class="input-group-addon">张</span>
+                            
+                               <span class="input-group-addon">E区</span>
+                               <input type="text" class="form-control" value="0">
+                               <span class="input-group-addon">张</span>
+                            </div>
+                            <br>
+                        </div>
                     </div>
         
                     <div id="clear-float"></div>
                     <input id="input-seat" type="text" name="seat-list" style="display:none"/>
                      <div class="modal-footer">
-                        <button type="button" onclick="getSeatPosition();" class="btn btn-primary" data-dismiss="modal">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">
                            提交更改
                         </button>
                      </div>
