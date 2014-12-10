@@ -72,6 +72,7 @@
         //var width = document.documentElement.clientWidth;//屏幕宽度高度
         //var windowWidth = window.outerWidth;
     </script>
+    <script src="{% static "js/activity_detail.js" %}"></script>
 {% endblock %}
 
 {% block activity-list-active %}{% endblock %}
@@ -429,5 +430,13 @@
             <a class="btn btn-success" href="{% url "adminpage.views.activity_list" %}">返回列表</a>
         </div>
     </div>
-    <script src="{% static "js/activity_detail.js" %}"></script>
+    <script type="text/javascript">
+    var windowHeight = $(window).height();//浏览器高度
+    a = $('.modal-body');
+    a.height(0.4*windowHeight);
+    a =$('#front');
+    b = $('#zongtiPic');
+    top=0.5*a.height()-0.5*b.height();
+    b.css("top", top);
+    </script>
 {% endblock %}
