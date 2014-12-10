@@ -106,9 +106,10 @@ function beforeSubmit(formData, jqForm, options) {
 }
 
 function submitResponse(data) {
-	alert('submitResponse');
     if(data.msg == 'success') {
         location.href = data.next_url;
+    } else {
+        alert(data.msg)
     }
 }
 
