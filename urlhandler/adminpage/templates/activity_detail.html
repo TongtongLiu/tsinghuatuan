@@ -71,20 +71,6 @@
         }
     </script>
     <script src="{% static "js/activity_detail.js" %}"></script>
-    <script type="text/javascript">
-        var windowHeight = $(window).height();//浏览器高度
-        a = $('.modal-body');
-        a.height(0.4*windowHeight);
-        a =$('#front');
-        b = $('#zongtiPic');
-        topimg=0.5*a.height()-0.5*b.height();
-        b.css("top", topimg);
-
-        a =$('#middle');
-        b = $('#ticket-number');
-        topticket=0.5*a.height()-0.5*b.height();
-        b.css("top", topticket);
-    </script>
 {% endblock %}
 
 {% block activity-list-active %}{% endblock %}
@@ -337,7 +323,7 @@
                 </div>
             </div>
 
-                <div class="form-group">
+            <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="chooseSeat">选座</button>
                     <button type="button" onclick="publishActivity();" class="btn btn-primary" id="publishBtn">发布</button>
@@ -387,33 +373,33 @@
                             <img src="{% static "img/zongti.png" %}" id = "zongtiPic">
                         </div>
                         <div id="middle">
-                        <div id="ticket-number">
-                            <div class="input-group">
-                               <span class="input-group-addon">A区</span>
-                               <input type="text" class="form-control right" value="0">
-                               <span class="input-group-addon">张</span>
+                            <div id="ticket-number">
+                                <div class="input-group">
+                                   <span class="input-group-addon">A区</span>
+                                   <input type="text" class="form-control right" value="0">
+                                   <span class="input-group-addon">张</span>
+                                </div>
+                                <div class="input-group">
+                                   <span class="input-group-addon">B区</span>
+                                   <input type="text" class="form-control right" value="0">
+                                   <span class="input-group-addon">张</span>
+                                </div>
+                                <div class="input-group">
+                                   <span class="input-group-addon">C区</span>
+                                   <input type="text" class="form-control right" value="0">
+                                   <span class="input-group-addon">张</span>
+                                </div>
+                                <div class="input-group">
+                                   <span class="input-group-addon">D区</span>
+                                   <input type="text" class="form-control right" value="0">
+                                   <span class="input-group-addon">张</span>
+                                </div>
+                                <div class="input-group">
+                                   <span class="input-group-addon">E区</span>
+                                   <input type="text" class="form-control right" value="0">
+                                   <span class="input-group-addon">张</span>
+                                </div>
                             </div>
-                            <div class="input-group">
-                               <span class="input-group-addon">B区</span>
-                               <input type="text" class="form-control right" value="0">
-                               <span class="input-group-addon">张</span>
-                            </div>
-                            <div class="input-group">
-                               <span class="input-group-addon">C区</span>
-                               <input type="text" class="form-control right" value="0">
-                               <span class="input-group-addon">张</span>
-                            </div>
-                            <div class="input-group">
-                               <span class="input-group-addon">D区</span>
-                               <input type="text" class="form-control right" value="0">
-                               <span class="input-group-addon">张</span>
-                            </div>
-                            <div class="input-group">
-                               <span class="input-group-addon">E区</span>
-                               <input type="text" class="form-control right" value="0">
-                               <span class="input-group-addon">张</span>
-                            </div>
-                        </div>
                         </div>
                     </div>
         
