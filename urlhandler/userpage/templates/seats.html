@@ -9,11 +9,12 @@
 <body>
 	<div class="seatHeader">
 		<div class="act_info">
-			<div class="act_title"> {{ title }} </div>
+			<div class="act_title"> {{ act_title }} </div>
 			<div class="act_place"> {{ act_place }} </div>
-			<div class="act_time"> {{ time }} </div>
+			<div class="act_time"> {{ act_time }} </div>
+            <div class-"act_time">{{ act_begin_time|date:"Y年m月d日 H:i"}}</div>
 		</div>
-		<button id="submit_btn">OK</button>
+		<button id="submit_btn" disabled="disabled">OK</button>
 	</div>
 	<div class="clear_float"></div>
 	<hr>
@@ -60,9 +61,14 @@
 		<input id="input" type="text" name="postSelect" style="display:none"/>
 		<input id="ticketID" type="text" name="ticketID" style="display:none" value="{{ ticketID }}" />
 	</form>
-
-	<script src="{% static "lib/jq/jquery-1.10.2.min.js" %}"></script>
-	<script src="{% static "lib/touch/touch.min.js" %}"></script>
-    <script src="{% static "js/seats.js" %}"></script>
+    
+    <script src="{% static 'lib/jq/jquery-1.10.2.min.js' %}"></script>
+	<script src="{% static 'lib/touch/touch.min.js' %}"></script>
+    {% if ticket_type == 's' %}
+        <script src="{% static 'js/single_seat.js' %}"></script>
+    {% else %}
+        <script src="{% static 'js/double_seats.js' %}"></script>
+    {% endif %}
+    <script src="{% static 'js/seat_general.js' %}"></script>
 </body>
 <html>

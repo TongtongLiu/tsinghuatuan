@@ -535,7 +535,9 @@ def views_seats(request, uid):
         else:
             seats_list = json.loads(ticket[0].activity.seat_table)
         ticket_id = uid
-        title = ticket[0].activity.name
+        act_title = ticket[0].activity.name
+        act_place = ticket[0].activity.place
+        act_time = ticket[0].activity.start_time
         ticket_type = ticket[0].partner_id
         return render_to_response('seats.html', locals())
     else:
