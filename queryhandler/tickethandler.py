@@ -216,6 +216,7 @@ def book_ticket(user, key, now):
         elif activity.seat_status == 2:
             next_seat = ''
 
+        next_seat = ''
         if not tickets.exists():
             Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
             ticket = Ticket.objects.create(
@@ -274,6 +275,7 @@ def book_double_ticket(user, key, now):
         elif activity.seat_status == 2:
             next_seat = ''
 
+        next_seat = ''
         partner = User.objects.get(stu_id=bind.passive_stu_id)
         tickets = Ticket.objects.select_for_update().filter(stu_id=partner.stu_id, activity=activity)
         if tickets.exists() and tickets[0].status != 0:

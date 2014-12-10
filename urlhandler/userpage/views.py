@@ -13,7 +13,7 @@ import time
 import json
 import string
 import random
-from urlhandler.models import User, Activity, Ticket, Bind
+from urlhandler.models import User, Activity, Ticket, Bind, Seat
 from userpage.safe_reverse import *
 from weixinlib import http_get
 from weixinlib.settings import WEIXIN_APPID
@@ -290,8 +290,8 @@ def ticket_view(request, uid):
     if act_end_time < now:#表示活动已经结束
         ticket_status = 3
     ticket_seat = ticket[0].seat
-    if activity[0].seat_status == '1':
-        ticket_url = s_reverse_select_zongti(uid)
+    if activity[0].seat_status == 1:
+        ticket_url = s_reverse_ticket_select_zongti(uid)
     else:
         ticket_url = s_reverse_ticket_selection(uid)
     act_photo = "http://qr.ssast.org/fit/"+uid
