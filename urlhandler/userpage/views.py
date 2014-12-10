@@ -290,10 +290,10 @@ def ticket_view(request, uid):
     if act_end_time < now:#表示活动已经结束
         ticket_status = 3
     ticket_seat = ticket[0].seat
-    if ticket_seat == '':
-        ticket_url = s_reverse_ticket_selection(uid)
+    if activity[0].seat_status == '1':
+        ticket_url = s_reverse_select_zongti(uid)
     else:
-        ticket_url = ''
+        ticket_url = s_reverse_ticket_selection(uid)
     act_photo = "http://qr.ssast.org/fit/"+uid
     href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
     variables = RequestContext(request, {
