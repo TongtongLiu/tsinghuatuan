@@ -72,7 +72,6 @@
         //var width = document.documentElement.clientWidth;//屏幕宽度高度
         //var windowWidth = window.outerWidth;
     </script>
-    <script src="{% static "js/activity_detail.js" %}"></script>
 {% endblock %}
 
 {% block activity-list-active %}{% endblock %}
@@ -375,29 +374,29 @@
                             <img src="{% static "img/zongti.png" %}" id = "zongtiPic">
                         </div>
                         <div id="ticket-number">
-                            <div class="input-group right">
+                            <div class="input-group">
                                <span class="input-group-addon">A区</span>
-                               <input type="text" class="form-control" value="0">
+                               <input type="text" class="form-control right" value="0">
                                <span class="input-group-addon">张</span>
                             </div>
-                            <div class="input-group right">
+                            <div class="input-group">
                                <span class="input-group-addon">B区</span>
-                               <input type="text" class="form-control" value="0">
+                               <input type="text" class="form-control right" value="0">
                                <span class="input-group-addon">张</span>
                             </div>
-                            <div class="input-group right">
+                            <div class="input-group">
                                <span class="input-group-addon">C区</span>
-                               <input type="text" class="form-control" value="0">
+                               <input type="text" class="form-control right" value="0">
                                <span class="input-group-addon">张</span>
                             </div>
-                            <div class="input-group right">
+                            <div class="input-group">
                                <span class="input-group-addon">D区</span>
-                               <input type="text" class="form-control" value="0">
+                               <input type="text" class="form-control right" value="0">
                                <span class="input-group-addon">张</span>
                             </div>
-                            <div class="input-group right">
+                            <div class="input-group">
                                <span class="input-group-addon">E区</span>
-                               <input type="text" class="form-control" value="0">
+                               <input type="text" class="form-control right" value="0">
                                <span class="input-group-addon">张</span>
                             </div>
                         </div>
@@ -430,5 +429,5 @@
             <a class="btn btn-success" href="{% url "adminpage.views.activity_list" %}">返回列表</a>
         </div>
     </div>
-
+    <script src="{% static "js/activity_detail.js" %}"></script>
 {% endblock %}
