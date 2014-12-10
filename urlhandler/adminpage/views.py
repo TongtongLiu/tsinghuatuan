@@ -173,7 +173,7 @@ def activity_create(activity):
         preDict[k] = activity[k]
     for k in ['start_time', 'end_time', 'book_start', 'book_end']:
         preDict[k] = str_to_datetime(activity[k])
-    preDict['seat_price'] = activity['A']+','+activity['B']+','+activity['C']+','+activity['D']+','+activity['E']+','+activity['F']+','+activity['G']
+    #preDict['seat_price'] = activity['A']+','+activity['B']+','+activity['C']+','+activity['D']+','+activity['E']+','+activity['F']+','+activity['G']
     preDict['status'] = 1 if ('publish' in activity) else 0
     preDict['remain_tickets'] = preDict['total_tickets']
     preDict['seat_table'] = [[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1]]
@@ -184,20 +184,20 @@ def seat_create(post, activity):
     seats = Seat.objects.filter(activity=activity)
     if seats.exists():
         seats.delete()
-    if post['seat_status'] == 1:
+    preDict = dict()
+    if post['seat_status'] == '1':
         for k in ['zongtiA', 'zongtiB', 'zongtiC', 'zongtiD', 'zongtiE']:
             for i in range(int(post[k])):
                 preDict['position_row'] = 0
                 preDict['position_column'] = 0
                 preDict['seat_section'] = k[-1]
-                preDict['price'] = 
+                preDict['price'] = 0
                 preDict['is_selected'] = 0
                 preDict['activity'] = activity
                 newseat = Seat.objects.create(**preDict)
-    elif post['seat_status'] == 3:
+    elif post['seat_status'] == '3':
         seatSet = post['seat-list'].split(',')
         for seat in seatSet:
-            preDict = dict()
             seatInfo = seat.split('-')
             preDict['position_row'] = int(seatInfo[0])
             preDict['position_column'] = int(seatInfo[1])
