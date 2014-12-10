@@ -300,6 +300,7 @@ def ticket_view(request, uid):
     else:
         ticket_url = ''
     act_photo = "http://qr.ssast.org/fit/"+uid
+    href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
     variables = RequestContext(request, {
         'act_id': act_id,
         'act_name': act_name,
@@ -310,7 +311,8 @@ def ticket_view(request, uid):
         'ticket_status': ticket_status,
         'ticket_seat': ticket_seat,
         'act_key': act_key,
-        'ticket_url': ticket_url
+        'ticket_url': ticket_url,
+        'href': href
     })
     return render_to_response('activityticket.html', variables)
 
