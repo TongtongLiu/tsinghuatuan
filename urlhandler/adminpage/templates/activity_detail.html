@@ -77,8 +77,13 @@
         a.height(0.4*windowHeight);
         a =$('#front');
         b = $('#zongtiPic');
-        top=0.5*a.height()-0.5*b.height();
-        b.css("top", top);
+        topimg=0.5*a.height()-0.5*b.height();
+        b.css("top", topimg);
+
+        a =$('#middle');
+        b = $('#ticket-number');
+        topticket=0.5*a.height()-0.5*b.height();
+        b.css("top", topticket);
     </script>
 {% endblock %}
 
@@ -381,6 +386,7 @@
                         <div id="front">
                             <img src="{% static "img/zongti.png" %}" id = "zongtiPic">
                         </div>
+                        <div id="middle">
                         <div id="ticket-number">
                             <div class="input-group">
                                <span class="input-group-addon">A区</span>
@@ -407,6 +413,7 @@
                                <input type="text" class="form-control right" value="0">
                                <span class="input-group-addon">张</span>
                             </div>
+                        </div>
                         </div>
                     </div>
         
