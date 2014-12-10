@@ -376,37 +376,43 @@
                             <div id="ticket-number">
                                 <div class="input-group">
                                    <span class="input-group-addon">A区</span>
-                                   <input type="text" class="form-control right" value="0">
+                                   <input type="text" class="form-control right" value="0" name="zongtiA">
                                    <span class="input-group-addon">张</span>
                                 </div>
                                 <div class="input-group">
                                    <span class="input-group-addon">B区</span>
-                                   <input type="text" class="form-control right" value="0">
+                                   <input type="text" class="form-control right" value="0" name="zongtiB">
                                    <span class="input-group-addon">张</span>
                                 </div>
                                 <div class="input-group">
                                    <span class="input-group-addon">C区</span>
-                                   <input type="text" class="form-control right" value="0">
+                                   <input type="text" class="form-control right" value="0" name="zongtiC">
                                    <span class="input-group-addon">张</span>
                                 </div>
                                 <div class="input-group">
                                    <span class="input-group-addon">D区</span>
-                                   <input type="text" class="form-control right" value="0">
+                                   <input type="text" class="form-control right" value="0" name="zongtiD">
                                    <span class="input-group-addon">张</span>
                                 </div>
                                 <div class="input-group">
                                    <span class="input-group-addon">E区</span>
-                                   <input type="text" class="form-control right" value="0">
+                                   <input type="text" class="form-control right" value="0" name="zongtiE">
                                    <span class="input-group-addon">张</span>
                                 </div>
+                                <div class="input-group">
+                                   <p id="totalTicketsNumber">共计选择：<span id="count">0</span>张票</p>
+                                   <input id="totalTicketsNumber" type="text" name="total_tickets" style="display:none"/>
+                                </div>
                             </div>
+                        </div>
+                        <div id="bottom">
+                            <
                         </div>
                     </div>
         
                     <div id="clear-float"></div>
-                    <input id="input-seat" type="text" name="seat-list" style="display:none"/>
                      <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="calculateTickets">
                            提交更改
                         </button>
                      </div>

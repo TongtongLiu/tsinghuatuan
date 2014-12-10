@@ -43,6 +43,7 @@ function pageSuit(){
     b.css("top", topimg);
     b = $('#ticket-number');
     b.css("top", topimg-10);
+    $('#ticket-number').find('input').onChange(calculateTickets);
 }
 window.onload=pageSuit;
 
@@ -499,6 +500,15 @@ function submitComplete(xhr) {
 //    }
 //    $('#input-seat').val(seatlist);
 //}
+
+function calculateTickets(){
+    var inputList = $('#ticket-number').find('input');
+    var num = 0;
+    for(var i = 0; i < inputList.length; i++){
+        num += a[i].value - "0";
+    }
+    $('#count').text(num+'');
+}
 
 function clearSeat() {
     $('.chosen').removeClass("chosen");
