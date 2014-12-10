@@ -33,8 +33,15 @@ function disableDatetimePicker(dom) {
 */
 
 //**************页面适配*******************
-//var windowHeight = $(window).height();//浏览器高度
+var windowHeight = $(window).height();//浏览器高度
 
+a = $('.modal-body');
+a.height(0.4*windowHeight);
+
+a =$('#front');
+b = $('#zongtiPic');
+top=0.5*a.height()-0.5*b.height();
+b.css("top", top);
 //****************************************
 
 var dateInterfaceMap = {
@@ -475,18 +482,18 @@ function submitComplete(xhr) {
     showResult();
 }
 
-function getSeatPosition() {
-    var list = $('.chosen');
-    var seatlist = [];
-    var temp = "";
-    for(var i = 1; i < list.length; i++){
-        temp = list[i].getAttribute('class').split(" ")[0];
-        seatlist += list[i].id + "-" + temp[temp.length - 1];
-        if(i < list.length - 1)
-            seatlist += ",";
-    }
-    $('#input-seat').val(seatlist);
-}
+//function getSeatPosition() {
+//    var list = $('.chosen');
+//    var seatlist = [];
+//    var temp = "";
+//    for(var i = 1; i < list.length; i++){
+//        temp = list[i].getAttribute('class').split(" ")[0];
+//        seatlist += list[i].id + "-" + temp[temp.length - 1];
+//        if(i < list.length - 1)
+//            seatlist += ",";
+//    }
+//    $('#input-seat').val(seatlist);
+//}
 
 function clearSeat() {
     $('.chosen').removeClass("chosen");
@@ -517,12 +524,13 @@ function publishActivity() {
 //根据不同场地打开不同模态框
 function changePlace() {
     a = $('#input-seat_status');
+    b = $('#chooseSeat');
     if(a.val() == "1")//综体
-        a.attr("data-target","#modal_zongti");
+        b.attr("data-target","#modal_zongti");
     else if(a.val() == "2")//新清华学堂
-        a.attr("data-target","#modal_xinqing");
+        b.attr("data-target","#modal_xinqing");
     else if(a.val() == "0")
-        a.attr("data-target","#modal_none");
+        b.attr("data-target","#modal_none");
 }
 
 initializeForm(activity);
