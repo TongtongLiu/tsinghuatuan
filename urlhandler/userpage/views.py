@@ -226,8 +226,8 @@ def uc_validate_post_auth(request):
 
 ###################### Activity Detail ######################
 
-def details_view(request, activity_id):
-    activity = Activity.objects.filter(id=activity_id)
+def details_view(request, activityid):
+    activity = Activity.objects.filter(id=activityid)
     if not activity.exists():
         raise Http404    #current activity is invalid
     act_name = activity[0].name
