@@ -510,6 +510,11 @@ function calculateTickets(){
     $('#count').text(num+'');
 }
 
+function recordTicketsCount(){
+    var count = $('#count').text();
+    $('#total_tickets').val(count);
+}
+
 function clearSeat() {
     $('.chosen').removeClass("chosen");
     $('#input-seat').val("");
