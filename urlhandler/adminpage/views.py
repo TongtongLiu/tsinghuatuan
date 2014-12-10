@@ -184,17 +184,28 @@ def seat_create(post, activity):
     seats = Seat.objects.filter(activity=activity)
     if seats.exists():
         seats.delete()
-    seatSet = post['seat-list'].split(',')
-    for seat in seatSet:
-        preDict = dict()
-        seatInfo = seat.split('-')
-        preDict['position_row'] = int(seatInfo[0])
-        preDict['position_column'] = int(seatInfo[1])
-        preDict['seat_section'] = seatInfo[2].encode('utf8')
-        preDict['price'] = int(post[seatInfo[2]])
-        preDict['is_selected'] = 0
-        preDict['activity'] = activity
-        newseat = Seat.objects.create(**preDict)
+    if post['seat_status'] == 1:
+        for k in ['zongtiA', 'zongtiB', 'zongtiC', 'zongtiD', 'zongtiE']:
+            for i in range(int(post[k])):
+                preDict['position_row'] = 0
+                preDict['position_column'] = 0
+                preDict['seat_section'] = k[-1]
+                preDict['price'] = 
+                preDict['is_selected'] = 0
+                preDict['activity'] = activity
+                newseat = Seat.objects.create(**preDict)
+    elif post['seat_status'] == 3:
+        seatSet = post['seat-list'].split(',')
+        for seat in seatSet:
+            preDict = dict()
+            seatInfo = seat.split('-')
+            preDict['position_row'] = int(seatInfo[0])
+            preDict['position_column'] = int(seatInfo[1])
+            preDict['seat_section'] = seatInfo[2].encode('utf8')
+            preDict['price'] = int(post[seatInfo[2]])
+            preDict['is_selected'] = 0
+            preDict['activity'] = activity
+            newseat = Seat.objects.create(**preDict)
 
 def activity_modify(activity):
     nowact = Activity.objects.get(id=activity['id'])
