@@ -1,16 +1,24 @@
-{% extends "mobile_base.html" %}
-
+<!DOCTYPE html>
+<html lang="zh-CN">
 {% load staticfiles %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="{% static "css/seats.css" %}" rel="stylesheet" type="text/css" />
+    <title>{% block title %}清华紫荆之声——最优秀的校园服务助手{% endblock %}</title>
+</head>
+<body>
+	<div class="seatHeader">
+		<div class="act_info">
+			<div class="act_title"> {{ act_title }} </div>
+			<div class="act_place"> {{ act_place }} </div>
+			<div class="act_time"> {{ act_time }} </div>
+            <div class-"act_time">{{ act_begin_time|date:"Y年m月d日 H:i"}}</div>
+		</div>
+		<button id="submit_btn" disabled="disabled">OK</button>
+	</div>
+	<div class="clear_float"></div>
+	<hr>
 
-	{% block css %}
-	<link href="{% static 'css/seats.css' %}" rel="stylesheet" type="text/css" />
-	{% endblock %}
-
-	{% block theme %}
-		{{ title }}
-	{% endblock %}
-
-	{% block content %}
 	<div id="alert">请选择您的座位</div>
 	<p id="showSelection">您选择的座位为第<span class="num" id="row"></span>行第<span class="num" id="column"></span>列</p>
 	<p id="showNumToSelect">您还需选择<span class="num" id="num">2</span>个座位</p>
@@ -52,13 +60,9 @@
 	<form role="form" method="post" id="submitForm">
 		<input id="input" type="text" name="postSelect" style="display:none"/>
 		<input id="ticketID" type="text" name="ticketID" style="display:none" value="{{ ticketID }}" />
-		<input class="ok" id="submitButton"  type="submit" value="确定" disabled="disabled">
 	</form>
-
-{% endblock %}
-
-{% block js %}
-	<script src="{% static 'lib/jq/jquery-1.10.2.min.js' %}"></script>
+    
+    <script src="{% static 'lib/jq/jquery-1.10.2.min.js' %}"></script>
 	<script src="{% static 'lib/touch/touch.min.js' %}"></script>
     {% if ticket_type == 's' %}
         <script src="{% static 'js/single_seat.js' %}"></script>
@@ -66,4 +70,5 @@
         <script src="{% static 'js/double_seats.js' %}"></script>
     {% endif %}
     <script src="{% static 'js/seat_general.js' %}"></script>
-{% endblock %}
+</body>
+<html>

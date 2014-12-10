@@ -1,13 +1,18 @@
 div.screen {
     margin-top: 16px;
-    margin-bottom: 10px;
-    width: 75%;
-    padding: 12px, 0px;
+    width: 86%;
+    padding: 5px 0px;
     text-align: center;
-    border: 2px solid #d7d7d7;
-    border-radius: 5px;
+    background-color: #a6a6a6;
+    color: white;
+    font-weight: bold;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
 }
 
+#moveableDiv {
+    position: relative;
+}
 
 .seatsTable td {
     border-radius: 3px;
@@ -22,7 +27,7 @@ div.screen {
 .valid {
 	width: 15px;
 	height: 15px;
-	background: #3d82bc;
+    border: 1px solid #3d82bc;
 }
 
 .selected {
@@ -76,8 +81,11 @@ div.screen {
 
 #tableContainer {
     height: auto;
-	width: 80%;
+	width: 86%;
 	overflow: hidden;
+    background-color: #f5f5f5;
+    border-bottom-right-radius: 3px;
+    border-bottom-right-radius: 3px;
 }
 
 #showNumToSelect {
@@ -98,15 +106,54 @@ input[type="submit"] {
     letter-spacing:8px;
 }
 
-input:disabled {
-    margin-top: 8px;
+
+.seatHeader {
+	padding: 5%;
+}
+
+.act_info {
+	float: left;
+}
+
+.act_title {
+	font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    word-break: break-all;
+}
+
+#submit_btn {
+	float: right;
+    margin-top: 6%;
+	margin-right: 4%;
+	background-color: #55a955;
+	color: #fff;
+	border: 1px solid #55a955;
+	width: 20%;
+    height: 30px;
+	font-size: 16px;
+	border-radius: 6px;
+    font-weight: bold;
+}
+
+.act_place, .act_time {
+    font-size: 12px;
+}
+
+#submit_btn:disabled {
+    float: right;
+    margin-right: 4%;
+    margin-top: 6%;
 	background-color: #a6a6a6;
 	color: #fff;
 	border: 1px solid #a6a6a6;
-	width: 70%;
-    height: 28px;
-	font-size: 14px;
+	width: 20%;
+    height: 30px;
+	font-size: 16px;
 	border-radius: 6px;
     font-weight: bold;
-    letter-spacing:8px;
+}
+.clear_float {
+    clear:both;
+    height: 0px;
 }

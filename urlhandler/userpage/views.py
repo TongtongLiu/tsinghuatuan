@@ -182,14 +182,6 @@ def validate_through_auth(secret):
         }
 
 
-def disable_exist_user_through_stu_id(stu_id):
-    User.objects.filter(stu_id=stu_id).update(status=0)
-
-
-def disable_exist_user_through_openid(openid):
-    User.objects.filter(weixin_id=openid).update(status=0)
-
-
 def uc_validate_post_auth(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
             (not 'username' in request.POST) or (not 'password' in request.POST):
@@ -202,7 +194,8 @@ def uc_validate_post_auth(request):
     validate_result = validate_through_auth(secret)
     if validate_result['result'] == 'Accepted':
         try:
-
+    		User.objects.filter(stu_id=user_id).update(status=0)
+    		User.objects.filter(weixin_id=openid).update(status=0)
         except:
             return HttpResponse('Error')
         try:
@@ -233,20 +226,20 @@ def uc_validate_post_auth(request):
 
 ###################### Activity Detail ######################
 
-def details_view(request, activity_id):
-    activity = Activity.objects.filter(id=activity_id)
+def details_view(request, activityid):
+    activity = Activity.objects.filter(id=activityid)
     if not activity.exists():
         raise Http404    #current activity is invalid
     act_name = activity[0].name
     act_key = activity[0].key
     act_place = activity[0].place
     act_book_start = activity[0].book_start
-    act_bookend = activity[0].book_end
+    act_book_end = activity[0].book_end
     act_begin_time = activity[0].start_time
     act_end_time = activity[0].end_time
     act_total_tickets = activity[0].total_tickets
     act_text = activity[0].description
-    act_ticket_remian = activity[0].remain_tickets
+    act_ticket_remain = activity[0].remain_tickets
     act_abstract = act_text
     MAX_LEN = 256
     act_text_status = 0
@@ -256,8 +249,8 @@ def details_view(request, activity_id):
     act_photo = activity[0].pic_url
     cur_time = timezone.now()  # use the setting UTC
     act_seconds = 0
-    if act_book_start <= cur_time <= act_bookend:
-        act_delta = act_bookend - cur_time
+    if act_book_start <= cur_time <= act_book_end:
+        act_delta = act_book_end - cur_time
         act_seconds = act_delta.total_seconds()
         act_status = 0  # during book time
     elif cur_time < act_book_start:
@@ -267,10 +260,12 @@ def details_view(request, activity_id):
     else:
         act_status = 2  # after book time
     variables = RequestContext(request, {'act_name': act_name, ' act_text': act_text, 'act_photo': act_photo,
-                                      'act_bookstart': act_book_start, 'act_bookend': act_bookend, ' act_begintime': act_begin_time,
-                                      'act_endtime': act_end_time, 'act_totaltickets': act_total_tickets, 'act_key': act_key,
-                                      'act_place': act_place, 'act_status': act_status, 'act_seconds': act_seconds, 'cur_time':cur_time,
-                                      'act_abstract': act_abstract, 'act_text_status': act_text_status, 'act_ticket_remian': act_ticket_remian})
+                                         'act_book_start': act_book_start, 'act_book_end': act_book_end,
+                                         'act_begin_time': act_begin_time, 'act_end_time': act_end_time,
+                                         'act_totaltickets': act_total_tickets, 'act_key': act_key,
+                                         'act_place': act_place, 'act_status': act_status, 'act_seconds': act_seconds,
+                                         'cur_time': cur_time, 'act_abstract': act_abstract,
+                                         'act_text_status': act_text_status, 'act_ticket_remain': act_ticket_remain})
     return render_to_response('activitydetails.html', variables)
 
 
@@ -305,8 +300,8 @@ def ticket_view(request, uid):
         'act_id': act_id,
         'act_name': act_name,
         'act_place': act_place,
-        'act_begintime': act_begin_time,
-        'act_endtime': act_end_time,
+        'act_begin_time': act_begin_time,
+        'act_end_time': act_end_time,
         'act_photo': act_photo,
         'ticket_status': ticket_status,
         'ticket_seat': ticket_seat,
@@ -540,7 +535,9 @@ def views_seats(request, uid):
         else:
             seats_list = json.loads(ticket[0].activity.seat_table)
         ticket_id = uid
-        title = ticket[0].activity.name
+        act_title = ticket[0].activity.name
+        act_place = ticket[0].activity.place
+        act_time = ticket[0].activity.start_time
         ticket_type = ticket[0].partner_id
         return render_to_response('seats.html', locals())
     else:
@@ -558,7 +555,7 @@ def views_seats(request, uid):
         seat = seats[0]
         row = int(seat.split("-")[0]) - 1
         column = int(seat.split("-")[1]) - 1
-       
+
         if len(seats) > 1:
             other_seat = seats[1]
             other_row = int(other_seat.split("-")[0]) - 1
@@ -566,7 +563,7 @@ def views_seats(request, uid):
             other_stu_id = ticket.partner_id
 
         activity_name = ticket.activity.name
-        
+
         with transaction.atomic():
             if len(seats) > 1:
                 activity = Activity.objects.select_for_update().filter(name=activity_name)
@@ -606,3 +603,170 @@ def views_seats(request, uid):
                     rtn_json['msg'] = 'success'
                     rtn_json['next_url'] = s_reverse_ticket_detail(uid)
                     return HttpResponse(json.dumps(rtn_json), content_type='application/json')
+
+def views_seats_zongti(request, uid):
+    ticket = Ticket.objects.filter(unique_id=uid, status=1)
+    if not ticket.exists():
+        information = "该票无效"
+        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        return render_to_response('404.html', {'information': information, 'href': href})
+    else:
+        ticket_id = str(uid)
+        book_time = "this is time"
+        ticket_type = ticket[0].partner_id
+        ticket_left = get_seat_left(uid)
+        return render_to_response('seats_zongti.html', locals())
+
+@csrf_exempt
+def views_seats_zongti_post(request):
+    if not request.POST:
+        information = "出了点莫名其妙的错误"
+        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        return render_to_response('404.html', {'information': information, 'href': href})
+    post = request.POST
+    return_json = dict()
+    try:
+        section = post['section']
+        ticket = Ticket.objects.get(unique_id=post['ticket_id'])
+        ticket_left = Seat.objects.filter(seat_section=post['section'], is_selected=0, activity=ticket.activity)
+        if (not ticket_left.exists() and ticket.partner_id == 's') or (ticket.partner_id != "s" and len(ticket_left) < 2):
+            return_json['msg'] = 'NoSeat'
+            return_json['seat_left'] = json.dumps(get_seat_left(post['ticket_id']))
+            return HttpResponse(json.dumps(return_json), content_type='application/json')
+        seat = section_select(post)
+        if seat == None:
+            print "error"
+            return_json['msg'] = 'error'
+        else:
+            print "success"
+            return_json['msg'] = 'success'
+            return_json['next_url'] = s_reverse_ticket_detail(post['ticket_id'])
+        return HttpResponse(json.dumps(return_json), content_type='application/json')
+    except Exception as e:
+        information = "出了点莫名其妙的错误"
+        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        return render_to_response('404.html', {'information': information, 'href': href})
+
+def get_seat_left(uid):
+    try:
+        ticket = Ticket.objects.get(unique_id=uid)
+    except Exception as e:
+        return None
+    ticket_left = dict()
+    seats_in_section_a = Seat.objects.filter(seat_section='A', is_selected=0, activity=ticket.activity)
+    ticket_left['A'] = len(seats_in_section_a)
+    seats_in_section_b = Seat.objects.filter(seat_section='B', is_selected=0, activity=ticket.activity)
+    ticket_left['B'] = len(seats_in_section_b)
+    seats_in_section_c = Seat.objects.filter(seat_section='C', is_selected=0, activity=ticket.activity)
+    ticket_left['C'] = len(seats_in_section_c)
+    seats_in_section_d = Seat.objects.filter(seat_section='D', is_selected=0, activity=ticket.activity)
+    ticket_left['D'] = len(seats_in_section_d)
+    seats_in_section_e = Seat.objects.filter(seat_section='E', is_selected=0)
+    ticket_left['E'] = len(seats_in_section_e)
+    return ticket_left
+
+def section_select(post):
+    with transaction.atomic():
+        try:
+            ticket = Ticket.objects.get(unique_id=post['ticket_id'])
+        except Exception as e:
+            return None
+        seats = Seat.objects.select_for_update().filter(seat_section=post['section'], is_selected=0, activity=ticket.activity)
+        if not seats.exists():
+            return None
+        if ticket.partner_id != "s":
+            if len(seats) < 2:
+                return None
+            try:
+                partner_ticket = Ticket.objects.get(stu_id=ticket.partner_id, activity=ticket.activity)
+            except Exception as e:
+                return None
+        seat = seats[0]
+        ticket.seat = post['section']
+        ticket.save()
+        seat.is_selected = 1
+        seat.save()
+        if ticket.partner_id != "s":
+            partner_ticket.seat = post['section']
+            partner_ticket.save()
+            partner_seat = seats[1]
+            partner_seat.is_selected = 1
+            partner_seat.save()
+        return seat
+
+def views_xinqing_post(request):
+    if not request.POST:
+        information = "出了点莫名其妙的错误"
+        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        return render_to_response('404.html', {'information': information, 'href': href})
+    post = request.POST
+    return_json = dict()
+    #seat info format: "section1-row1-column1,[section2-row2-column2,]"
+    try:
+        seats_selected = post['seat'].split(',')
+        ticket = Ticket.objects.get(unique_id=post['ticket_id'])
+        activity = ticket.activity
+        now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
+        if activity.start_time < now or activity.status != 1:
+            return_json['msg'] = 'WrongActivity'
+            return_json['seat_left'] = json.dumps(get_valid_seat(post['ticket_id']))
+            return HttpResponse(json.dumps(return_json), content_type='application/json')
+        seat = seats_select(seats_selected, ticket, activity)
+        if seat == None:
+            print "error"
+            return_json['msg'] = 'error'
+        else:
+            print "success"
+            return_json['msg'] = 'success'
+            return_json['next_url'] = s_reverse_ticket_detail(post['ticket_id'])
+        return HttpResponse(json.dumps(return_json), content_type='application/json')
+    except Exception as e:
+        information = "出了点莫名其妙的错误"
+        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        return render_to_response('404.html', {'information': information, 'href': href})
+
+def get_valid_seat(uid):
+    valid_seat_list = []
+    try:
+        ticket = Ticket.objects.get(unique_id=uid)
+    except Exception as e:
+        return valid_seat_list
+    seats = Seat.objects.get(activity=ticket.activity)
+    for seat in seats:
+        seat_info = seat.seat_section + '-' + seat.position_row + "-" + seat.position_column
+        valid_seat_list.append(seat_info)
+    return valid_seat_list
+
+def seats_select(seats_selected, ticket, activity):
+    with transaction.atomic():
+        seat_1 = seats_selected[0].split('-')
+        section_1 = seat_1[0]
+        row_1 = seat_1[1]
+        column_1 = seat_1[2]
+        seat_1_db = Seat.objects.select_for_update().filter(position_row=row_1, position_column=column_1, seat_section=section_1, is_selected=0, activity=activity)
+        if not seat_1_db.exists():
+            return None
+        if len(seats_selected) > 2:
+            try:
+                partner_ticket = Ticket.objects.get(stu_id=ticket.partner_id, activity=ticket.activity)
+            except Exception as e:
+                return None
+            seat_2 = seats_selected[2].split('-')
+            section_2 = seat_2[0]
+            row_2 = seat_2[1]
+            column_2 = seat_2[2]
+            seat_2_db = Seat.objects.filter(position_row=row_2, position_column=column_2, seat_section=section_2, is_selected=0, activity=activity)
+            if not seat_2_db.exists():
+                return_json['msg'] = 'NoSeat'
+                return_json['seat_left'] = json.dumps(get_valid_seat(post['ticket_id']))
+                return None
+            seat = seat_2_db[0]
+            seat.save()
+            partner_ticket.seat = seat_2
+            partner_ticket.save()
+        seat = seat_1_db[0]
+        seat.is_selected = 1
+        seat.save()
+        ticket.seat = seat_1
+        ticket.save()
+        return seat

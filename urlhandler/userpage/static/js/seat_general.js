@@ -152,7 +152,9 @@ function setHeightAndWidth() {
     len = len * 0.85;
     $('#selectSeat').children('tbody').children('tr').children('td').height(len);
     $('#selectSeat').children('tbody').children('tr').children('td').width(len);
-    //var windowHeight = $(document).height();
-    //$('#tableContainer').height(windowHeight * 0.45);
+    var windowHeight = $(document).height();
+    var divHeight = $('#moveableDiv').height();
+    $('#tableContainer').height(windowHeight * 0.6);
+    $('#moveableDiv').css('top', (windowHeight*0.6 - divHeight) / 2  + 'px')
 }
 setHeightAndWidth();

@@ -1,5 +1,6 @@
-<div class="details-text">
+<div class="actName"><h3>{{ act_name }}</h3></div>
 
+<div class="details-text">
     {% if act_status == 0 %}
         <div class="timer-wrapper" id="duringbook">
         <h7>抢票正在进行中，距抢票结束还有：</h7>
@@ -13,14 +14,16 @@
         <h7>抢票已结束，感谢您的关注！</h7>
         </div>
     {% endif %}
-    <div class="panel panel-default">
-   		<div class="panel-body">
-            <div class="details-divider"></div>
-            <div style="text-align: center;min-width: 300px">
-                <div id="activitytimer"></div>
+    <div class="details-divider"></div>
+    <div class="details-wrapper">
+        <div class="panel panel-default">
+            <div class="panel-body" style="padding-left:0;padding-bottom:0">
+                <div style="text-align: center;min-width: 300px">
+                    <div id="activitytimer"></div>
+                </div>
+                <div class="details-divider"></div>
+                <div class="details-divider"></div>
             </div>
-            <div class="details-divider"></div>
-            <div class="details-divider"></div>
         </div>
     </div>
     {% if act_status == 0 %}
@@ -28,26 +31,32 @@
             <div class="timer-wrapper">
             <h7>当前余票：(截至{{ cur_time|date:"Y年m月d日H:i:s" }})</h7>
             </div>
-            <div class="details-divider"></div>
+        <div class="details-divider"></div>
+
+        <div class="details-wrapper">
         <div class="panel panel-default">
    		    <div class="panel-body">
                 <div style="text-align: center;">
-                    <span class="ticket">{{ act_ticket_remian }}</span>张
+                    <span class="ticket">{{ act_ticket_remain }}</span>张
                 </div>
             </div>
         </div>
+        </div>
+
         <div class="details-divider"></div>
     {% elif act_status == 1 %}
         <div  id="ticket-before-book">
             <div class="timer-wrapper">
             <h7>活动预计发票：</h7>
             </div>
+            <div class="details-wrapper">
             <div class="panel panel-default">
    		        <div class="panel-body">
                     <div style="text-align: center;">
                         <span class="ticket">{{ act_totaltickets }}</span>张
                     </div>
                 </div>
+            </div>
             </div>
         <div class="details-divider"></div>
     {% else %}
@@ -61,24 +70,24 @@
     <div class="details-wrapper">
         <div class="panel panel-default">
    		    <div class="panel-body">
-            {% if act_bookstart.year != act_bookend.year %}
+            {% if act_book_start.year != act_book_end.year %}
             <div class="trigger" >
-                <h7>开始时间：{{ act_bookstart|date:"Y年m月d日 H:i" }}</h7>
+                <h7>开始时间：{{ act_book_start|date:"Y年m月d日 H:i" }}</h7>
             </div>
             <div class="trigger">
-                <h7>结束时间：{{ act_bookend|date:"Y年m月d日 H:i" }}</h7>
+                <h7>结束时间：{{ act_book_end|date:"Y年m月d日 H:i" }}</h7>
             </div>
-            {% elif act_bookstart.month != act_bookend.month %}
+            {% elif act_book_start.month != act_book_end.month %}
             <div class="trigger">
-                <h9>{{ act_bookstart|date:"Y年m月d日 H:i" }} 至 {{ act_bookend|date:"m月d日 H:i" }}</h9>
+                <h9>{{ act_book_start|date:"Y年m月d日 H:i" }} 至 {{ act_book_end|date:"m月d日 H:i" }}</h9>
             </div>
-            {% elif act_bookstart.day != act_bookend.day %}
+            {% elif act_book_start.day != act_book_end.day %}
             <div class="trigger">
-                <h8>{{ act_bookstart|date:"Y年m月d日 H:i" }} 至 {{ act_bookend|date:"d日 H:i" }}</h8>
+                <h8>{{ act_book_start|date:"Y年m月d日 H:i" }} 至 {{ act_book_end|date:"d日 H:i" }}</h8>
             </div>
             {% else %}
             <div class="trigger">
-                <h7>{{ act_bookstart|date:"Y年m月d日 H:i" }} 至 {{ act_bookend|date:"H:i" }}</h7>
+                <h7>{{ act_book_start|date:"Y年m月d日 H:i" }} 至 {{ act_book_end|date:"H:i" }}</h7>
             </div>
             {% endif %}
             </div>
@@ -102,24 +111,24 @@
     <div class="details-wrapper">
         <div class="panel panel-default">
             <div class="panel-body">
-            {% if act_begintime.year != act_endtime.year %}
+            {% if act_begin_time.year != act_end_time.year %}
             <div class="trigger" >
-                <h7>开始时间：{{ act_begintime|date:"Y年m月d日 H:i" }}</h7>
+                <h7>开始时间：{{ act_begin_time|date:"Y年m月d日 H:i" }}</h7>
             </div>
             <div class="trigger">
-                <h7>结束时间：{{ act_endtime|date:"Y年m月d日 H:i" }}</h7>
+                <h7>结束时间：{{ act_end_time|date:"Y年m月d日 H:i" }}</h7>
             </div>
-            {% elif act_begintime.month != act_endtime.month %}
+            {% elif act_begin_time.month != act_end_time.month %}
             <div class="trigger">
-                <h9>{{ act_begintime|date:"Y年m月d日 H:i" }} 至 {{ act_endtime|date:"m月d日H:i" }}</h9>
+                <h9>{{ act_begin_time|date:"Y年m月d日 H:i" }} 至 {{ act_end_time|date:"m月d日H:i" }}</h9>
             </div>
-            {% elif act_begintime.day != act_endtime.day %}
+            {% elif act_begin_time.day != act_end_time.day %}
             <div class="trigger">
-                <h8>{{ act_begintime|date:"Y年m月d日 H:i" }} 至 {{ act_endtime|date:"d日H:i" }}</h8>
+                <h8>{{ act_begin_time|date:"Y年m月d日 H:i" }} 至 {{ act_end_time|date:"d日H:i" }}</h8>
             </div>
             {% else %}
             <div class="trigger">
-                <h7>{{ act_begintime|date:"Y年m月d日 H:i" }} 至 {{ act_endtime|date:"H:i" }}</h7>
+                <h7>{{ act_begin_time|date:"Y年m月d日 H:i" }} 至 {{ act_end_time|date:"H:i" }}</h7>
             </div>
             {% endif %}
             </div>

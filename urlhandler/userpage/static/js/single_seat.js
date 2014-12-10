@@ -34,7 +34,7 @@ function bind_tap(){
                 document.getElementById('row').innerText = location[0];
                 document.getElementById('column').innerText = location[1];
                 document.getElementById('showSelection').style.display = 'block';
-                document.getElementById('submitButton').disabled = false;
+                document.getElementById('submit_btn').disabled = false;
                 document.getElementById('alert').style.display = 'none';
             }
 
@@ -42,7 +42,7 @@ function bind_tap(){
                 document.getElementById('showSelection').style.display = 'none';
                 document.getElementById('alert').innerText = '请选择您的座位';
                 document.getElementById('alert').style.display = 'block';
-                document.getElementById('submitButton').disabled = true;
+                document.getElementById('submit_btn').disabled = true;
             }
         });
     }
