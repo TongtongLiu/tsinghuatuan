@@ -33,15 +33,20 @@ function disableDatetimePicker(dom) {
 */
 
 //**************页面适配*******************
-var windowHeight = $(window).height();//浏览器高度
-a = $('.modal-body');
-a.height(0.4*windowHeight);
-a =$('#front');
-b = $('#zongtiPic');
-topimg=0.5*a.height()-0.5*b.height();
-b.css("top", topimg);
-b = $('#ticket-number');
-b.css("top", topimg);
+function pageSuit(){
+    var windowHeight = $(window).height();//浏览器高度
+    a = $('.modal-body');
+    a.height(0.4*windowHeight);
+    a =$('#front');
+    b = $('#zongtiPic');
+    topimg=0.5*a.height()-0.5*b.height();
+    b.css("top", topimg);
+    b = $('#ticket-number');
+    b.css("top", topimg-10);
+}
+window.onload=pageSuit;
+
+
 //****************************************
 
 var dateInterfaceMap = {
