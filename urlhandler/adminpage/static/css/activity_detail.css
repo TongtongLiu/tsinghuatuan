@@ -4,18 +4,27 @@
     float: left;
     background-size: contain;
     background-repeat: no-repeat;
-    margin: auto auto 20px auto;
+    margin: auto 20px auto auto;
     width: 60%;
     height: 100%
 }
 #zongtiPic{
     width: 100%;
+    position: relative;
+    top: 20px;
 }
 
-#ticket-number{
+#middle{
     float: left;
     margin: auto;
     width: 30%;
+    height: 100%;
+}
+
+#ticket-number{
+    width: 100%;
+    position: relative;
+    top: 20px;
 }
 
 #clear-float {
@@ -35,6 +44,7 @@
 
 .right {
     text-align: right;
+    padding-right: 10px;
 }
 
 .progress-in-form {

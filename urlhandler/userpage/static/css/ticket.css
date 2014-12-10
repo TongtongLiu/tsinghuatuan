@@ -1,12 +1,16 @@
-.ticket-wrapper{
-    padding-left: 10px;
-    padding-bottom: 8px;
-    text-align: center;
-}
 .details-wrapper{
     text-align: center;
     padding-bottom: 5px;
 }
+.panel {
+    margin: 0 20px;
+}
+.panel-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
 img{
     width: 25%;
 }
@@ -14,13 +18,13 @@ img{
     font-size: 18px;
 }
 .ticket-invalid{
-   color: red;
+   color: #e63a31;
 }
 .ticket-valid{
-   color: green;
+   color: #35b63e;
 }
 .ticket-used{
-    color: orangered;
+    color: #ff7844;
 }
 .img-caption{
     text-align: center;
@@ -28,12 +32,10 @@ img{
 }
 .clickToSelect {
     text-align: center;
-    color: red;
+    color: #e63a31;
     font-size: 14px;
     text-decoration: underline;
 }
-a:visited {
-    text-align: center;
-    color: red;
-    font-size: 14px;
+.emphasize {
+    font-weight: bold;
 }
