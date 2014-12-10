@@ -110,3 +110,36 @@ input:disabled {
     font-weight: bold;
     letter-spacing:8px;
 }
+
+.seatHeader {
+	padding: 5%;
+}
+
+.act_info {
+	float: left;
+}
+
+.act_title {
+	font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    word-break: break-all;
+}
+
+#submit_btn {
+	float: right;
+	margin-right: 4%;
+	background-color: #55a955;
+	color: #fff;
+	border: 1px solid #55a955;
+	width: 20%;
+    height: 30px;
+	font-size: 16px;
+	border-radius: 6px;
+    font-weight: bold;
+}
+
+.clear_float {
+    clear:both;
+    height: 0px;
+}
