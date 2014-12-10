@@ -13,14 +13,16 @@
         <h7>抢票已结束，感谢您的关注！</h7>
         </div>
     {% endif %}
-    <div class="panel panel-default">
-   		<div class="panel-body">
-            <div class="details-divider"></div>
-            <div style="text-align: center;min-width: 300px">
-                <div id="activitytimer"></div>
+    <div class="details-divider"></div>
+    <div class="details-wrapper">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div style="text-align: center;min-width: 300px">
+                    <div id="activitytimer"></div>
+                </div>
+                <div class="details-divider"></div>
+                <div class="details-divider"></div>
             </div>
-            <div class="details-divider"></div>
-            <div class="details-divider"></div>
         </div>
     </div>
     {% if act_status == 0 %}
@@ -28,7 +30,7 @@
             <div class="timer-wrapper">
             <h7>当前余票：(截至{{ cur_time|date:"Y年m月d日H:i:s" }})</h7>
             </div>
-            <div class="details-divider"></div>
+        <div class="details-divider"></div>
         <div class="panel panel-default">
    		    <div class="panel-body">
                 <div style="text-align: center;">
@@ -42,12 +44,14 @@
             <div class="timer-wrapper">
             <h7>活动预计发票：</h7>
             </div>
+            <div class="details-wrapper">
             <div class="panel panel-default">
    		        <div class="panel-body">
                     <div style="text-align: center;">
                         <span class="ticket">{{ act_totaltickets }}</span>张
                     </div>
                 </div>
+            </div>
             </div>
         <div class="details-divider"></div>
     {% else %}
