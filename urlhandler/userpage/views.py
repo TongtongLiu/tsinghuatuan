@@ -202,7 +202,7 @@ def uc_validate_post_auth(request):
     validate_result = validate_through_auth(secret)
     if validate_result['result'] == 'Accepted':
         try:
-
+            
         except:
             return HttpResponse('Error')
         try:
