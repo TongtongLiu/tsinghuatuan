@@ -24,10 +24,7 @@
     border-radius: 10px;
     width: 100%;
 }
-.details-wrapper .text-inner{
-    border-radius: 10px;
-    background-color: lightgrey;
-}
+
 .trigger {
     color: #000;
     text-decoration: none;

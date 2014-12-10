@@ -13,21 +13,27 @@
         <h7>抢票已结束，感谢您的关注！</h7>
         </div>
     {% endif %}
-    <div class="details-divider"></div>
-    <div style="text-align: center;min-width: 300px">
-        <div id="activitytimer"></div>
+    <div class="panel panel-default">
+   		<div class="panel-body">
+            <div class="details-divider"></div>
+            <div style="text-align: center;min-width: 300px">
+                <div id="activitytimer"></div>
+            </div>
+            <div class="details-divider"></div>
+            <div class="details-divider"></div>
+        </div>
     </div>
-    <div class="details-divider"></div>
-    <div class="details-divider"></div>
-
     {% if act_status == 0 %}
         <div id="ticket-during-book">
             <div class="timer-wrapper">
             <h7>当前余票：(截至{{ cur_time|date:"Y年m月d日H:i:s" }})</h7>
             </div>
             <div class="details-divider"></div>
-            <div style="text-align: center;">
-                <span class="ticket">{{ act_ticket_remian }}</span>张
+        <div class="panel panel-default">
+   		    <div class="panel-body">
+                <div style="text-align: center;">
+                    <span class="ticket">{{ act_ticket_remian }}</span>张
+                </div>
             </div>
         </div>
         <div class="details-divider"></div>
@@ -36,10 +42,13 @@
             <div class="timer-wrapper">
             <h7>活动预计发票：</h7>
             </div>
-            <div style="text-align: center;">
-                <span class="ticket">{{ act_totaltickets }}</span>张
+            <div class="panel panel-default">
+   		        <div class="panel-body">
+                    <div style="text-align: center;">
+                        <span class="ticket">{{ act_totaltickets }}</span>张
+                    </div>
+                </div>
             </div>
-        </div>
         <div class="details-divider"></div>
     {% else %}
 
@@ -50,8 +59,8 @@
     <h7>抢票时间：</h7>
     </div>
     <div class="details-wrapper">
-        <div class="text-inner">
-
+        <div class="panel panel-default">
+   		    <div class="panel-body">
             {% if act_bookstart.year != act_bookend.year %}
             <div class="trigger" >
                 <h7>开始时间：{{ act_bookstart|date:"Y年m月d日 H:i" }}</h7>
@@ -72,7 +81,7 @@
                 <h7>{{ act_bookstart|date:"Y年m月d日 H:i" }} 至 {{ act_bookend|date:"H:i" }}</h7>
             </div>
             {% endif %}
-
+            </div>
         </div>
     </div>
     <div class="details-divider"></div>
@@ -91,8 +100,8 @@
     <h7>活动时间：</h7>
     </div>
     <div class="details-wrapper">
-        <div class="text-inner">
-
+        <div class="panel panel-default">
+            <div class="panel-body">
             {% if act_begintime.year != act_endtime.year %}
             <div class="trigger" >
                 <h7>开始时间：{{ act_begintime|date:"Y年m月d日 H:i" }}</h7>
@@ -113,7 +122,7 @@
                 <h7>{{ act_begintime|date:"Y年m月d日 H:i" }} 至 {{ act_endtime|date:"H:i" }}</h7>
             </div>
             {% endif %}
-
+            </div>
         </div>
     </div>
     <div class="details-divider"></div>
@@ -131,9 +140,11 @@
     <h7>活动地点：</h7>
     </div>
     <div class="details-wrapper">
-        <div class="text-inner">
+        <div class="panel panel-default">
+   		    <div class="panel-body">
             <div class="trigger">
                 <h7>{{ act_place }}</h7>
+            </div>
             </div>
         </div>
     </div>
@@ -146,10 +157,12 @@
     <h9>(回复“抢票/取票/退票/节目单 活动代称”可进行相应操作)</h9>
     </div>
     <div class="details-wrapper">
-        <div class="text-inner">
+        <div class="panel panel-default">
+   		<div class="panel-body">
             <div class="trigger">
                 <h7 class="highlight">{{ act_key }}   </h7>
             </div>
+        </div>
         </div>
     </div>
     <div class="details-divider"></div>
@@ -159,7 +172,8 @@
     <h7>活动详情：</h7>
     </div>
     <div class="details-wrapper" id="actabstract">
-        <div class="text-inner">
+        <div class="panel panel-default">
+   		    <div class="panel-body">
             {% include 'activityphoto.html' %}
             <div class="trigger">
                 <span>{{ act_abstract|linebreaks }}</span>
@@ -171,10 +185,12 @@
                 </div>
             </div>
             {% endif %}
+            </div>
         </div>
     </div>
     <div class="details-wrapper" id="actdetails" style="display: none">
-        <div class="text-inner">
+        <div class="panel panel-default">
+   		    <div class="panel-body">
             {% include 'activityphoto.html' %}
             <div class="trigger">
                 <span>{{ act_text|linebreaks }}</span>
@@ -186,6 +202,7 @@
                 </div>
             </div>
             -->
+            </div>
         </div>
     </div>
     <div class="details-divider"></div>

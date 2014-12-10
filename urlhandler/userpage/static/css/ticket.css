@@ -1,15 +1,12 @@
-.panel {
-    margin: 0 10px;
+.details-wrapper{
+    text-align: center;
+    padding-bottom: 5px;
 }
 
 .panel-title {
     text-align: center;
-    font-size: 20px;
     font-weight: bold;
-}
-
-.emphasize {
-    font-weight: bold;
+    font-size: 1.5em;
 }
 
 img{
@@ -37,12 +34,6 @@ img{
     font-size: 14px;
     text-decoration: underline;
 }
-a:visited {
-    text-align: center;
-    color: #e63a31;
-    font-size: 14px;
-}
-
-.linkbtn {
-    color: #000000;
+.emphasize {
+    font-weight: bold;
 }
