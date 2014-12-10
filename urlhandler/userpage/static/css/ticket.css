@@ -2,7 +2,9 @@
     text-align: center;
     padding-bottom: 5px;
 }
-
+.panel {
+    margin: 0 20px;
+}
 .panel-title {
     text-align: center;
     font-weight: bold;
