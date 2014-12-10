@@ -21,10 +21,10 @@ img{
    color: #e63a31;
 }
 .ticket-valid{
-   color: #35b63e;
+   color: #428bca;
 }
 .ticket-used{
-    color: #ff7844;
+    color: #222;
 }
 .img-caption{
     text-align: center;
@@ -32,7 +32,7 @@ img{
 }
 .clickToSelect {
     text-align: center;
-    color: #e63a31;
+    color: #428bca;
     font-size: 14px;
     text-decoration: underline;
 }

@@ -36,12 +36,12 @@
         <div class="panel panel-default">
    		    <div class="panel-body">
                 <div style="text-align: center;">
-                    <span class="ticket">{{ act_ticket_remian }}</span>张
+                    <span class="ticket">{{ act_ticket_remain }}</span>张
                 </div>
             </div>
         </div>
         </div>
-            
+
         <div class="details-divider"></div>
     {% elif act_status == 1 %}
         <div  id="ticket-before-book">
@@ -71,10 +71,10 @@
    		    <div class="panel-body">
             {% if act_bookstart.year != act_bookend.year %}
             <div class="trigger" >
-                <h7>开始时间：{{ act_bookstart|date:"Y年m月d日 H:i" }}</h7>
+                <h7>开始时间：{{ act_book_start|date:"Y年m月d日 H:i" }}</h7>
             </div>
             <div class="trigger">
-                <h7>结束时间：{{ act_bookend|date:"Y年m月d日 H:i" }}</h7>
+                <h7>结束时间：{{ act_book_end|date:"Y年m月d日 H:i" }}</h7>
             </div>
             {% elif act_bookstart.month != act_bookend.month %}
             <div class="trigger">
