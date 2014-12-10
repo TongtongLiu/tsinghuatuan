@@ -69,10 +69,22 @@
             'G':price[6],
             {% endif %}
         }
-        //var width = document.documentElement.clientWidth;//屏幕宽度高度
-        //var windowWidth = window.outerWidth;
     </script>
     <script src="{% static "js/activity_detail.js" %}"></script>
+    <script type="text/javascript">
+        var windowHeight = $(window).height();//浏览器高度
+        a = $('.modal-body');
+        a.height(0.4*windowHeight);
+        a =$('#front');
+        b = $('#zongtiPic');
+        topimg=0.5*a.height()-0.5*b.height();
+        b.css("top", topimg);
+
+        a =$('#middle');
+        b = $('#ticket-number');
+        topticket=0.5*a.height()-0.5*b.height();
+        b.css("top", topticket);
+    </script>
 {% endblock %}
 
 {% block activity-list-active %}{% endblock %}
@@ -374,6 +386,7 @@
                         <div id="front">
                             <img src="{% static "img/zongti.png" %}" id = "zongtiPic">
                         </div>
+                        <div id="middle">
                         <div id="ticket-number">
                             <div class="input-group">
                                <span class="input-group-addon">A区</span>
@@ -400,6 +413,7 @@
                                <input type="text" class="form-control right" value="0">
                                <span class="input-group-addon">张</span>
                             </div>
+                        </div>
                         </div>
                     </div>
         
@@ -430,13 +444,4 @@
             <a class="btn btn-success" href="{% url "adminpage.views.activity_list" %}">返回列表</a>
         </div>
     </div>
-    <script type="text/javascript">
-    var windowHeight = $(window).height();//浏览器高度
-    a = $('.modal-body');
-    a.height(0.4*windowHeight);
-    a =$('#front');
-    b = $('#zongtiPic');
-    top=0.5*a.height()-0.5*b.height();
-    b.css("top", top);
-    </script>
 {% endblock %}

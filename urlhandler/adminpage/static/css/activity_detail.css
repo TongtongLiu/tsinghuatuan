@@ -13,10 +13,16 @@
     position: relative;
 }
 
-#ticket-number{
+#middle{
     float: left;
     margin: auto;
     width: 30%;
+    height: 100%;
+}
+
+#ticket-number{
+    width: 100%;
+    position: relative;
 }
 
 #clear-float {
