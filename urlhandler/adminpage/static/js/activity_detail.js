@@ -43,7 +43,7 @@ function pageSuit(){
     b.css("top", topimg);
     b = $('#ticket-number');
     b.css("top", topimg-10);
-    $('#ticket-number').find('input').onChange(calculateTickets);
+    $('#ticket-number').find('input').change(calculateTickets);
 }
 window.onload=pageSuit;
 
@@ -502,10 +502,10 @@ function submitComplete(xhr) {
 //}
 
 function calculateTickets(){
-    var inputList = $('#ticket-number').find('input');
+    var inputList = $('#ticket-number').find('input[type=text]');
     var num = 0;
     for(var i = 0; i < inputList.length; i++){
-        num += a[i].value - "0";
+        num += $(inputList[i]).val() - "0";
     }
     $('#count').text(num+'');
 }
