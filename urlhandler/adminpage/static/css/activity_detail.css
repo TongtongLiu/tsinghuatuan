@@ -11,6 +11,7 @@
 #zongtiPic{
     width: 100%;
     position: relative;
+    top: 20px;
 }
 
 #middle{
@@ -23,6 +24,7 @@
 #ticket-number{
     width: 100%;
     position: relative;
+    top: 20px;
 }
 
 #clear-float {
