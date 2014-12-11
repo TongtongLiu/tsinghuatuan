@@ -164,13 +164,12 @@ def validate_through_auth(secret):
     res_data = urllib2.urlopen(req)
     try:
         res = res_data.read()
-        res_dict = eval(res)
+        res_dict = json.loads(res)
     except:
         return {
             'result': 'Error'
         }
     if res_dict['code'] == 0:
-        print
         return {
             'result': 'Accepted',
             'name': res_dict['data']['name'],
