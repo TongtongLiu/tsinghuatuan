@@ -198,7 +198,6 @@ def uc_validate_post_auth(request):
             User.objects.filter(stu_id=user_id).update(status=0)
             User.objects.filter(weixin_id=openid).update(status=0)
         except:
-            print 1
             return HttpResponse('Error')
         try:
             current_user = User.objects.get(stu_id=user_id)
@@ -210,7 +209,6 @@ def uc_validate_post_auth(request):
             try:
                 current_user.save()
             except:
-                print 2
                 return HttpResponse('Error')
         except:
             try:
@@ -222,10 +220,8 @@ def uc_validate_post_auth(request):
                     status=1)
                 new_user.save()
             except:
-                print 3
                 return HttpResponse('Error')
         return HttpResponse(s_reverse_uc_account(openid))
-    print 4
     return HttpResponse(validate_result['result'])
 
 
