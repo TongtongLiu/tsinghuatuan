@@ -1,4 +1,5 @@
 #-*- coding:utf-8 -*-
+from StdSuites import null
 from django.db import transaction
 from django.db.models import F, Q
 from django.http import HttpResponse, Http404
@@ -192,6 +193,8 @@ def uc_validate_post_auth(request):
     secret = request.POST['password']
     validate_result = validate_through_auth(secret)
     if validate_result['result'] == 'Accepted':
+        if not validate_result['type']:
+            validate_result['type'] = "教师"
         try:
             User.objects.filter(stu_id=user_id).update(status=0)
             User.objects.filter(weixin_id=openid).update(status=0)
@@ -203,10 +206,7 @@ def uc_validate_post_auth(request):
             current_user.weixin_id = openid
             current_user.status = 1
             current_user.stu_name = validate_result['name']
-            if validate_result['type']:
-                current_user.stu_type = validate_result['type']
-            else:
-                current_user.stu_type = "教师"
+            current_user.stu_type = validate_result['type']
             current_user.bind_count = 0
             try:
                 current_user.save()
