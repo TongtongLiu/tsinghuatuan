@@ -202,7 +202,10 @@ def uc_validate_post_auth(request):
             current_user.weixin_id = openid
             current_user.status = 1
             current_user.stu_name = validate_result['name']
-            current_user.stu_type = validate_result['type']
+            if validate_result['type']:
+                current_user.stu_type = validate_result['type']
+            else:
+                current_user.stu_type = "教室"
             current_user.bind_count = 0
             try:
                 current_user.save()
