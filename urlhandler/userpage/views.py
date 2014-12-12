@@ -193,9 +193,10 @@ def uc_validate_post_auth(request):
     validate_result = validate_through_auth(secret)
     if validate_result['result'] == 'Accepted':
         try:
-    		User.objects.filter(stu_id=user_id).update(status=0)
-    		User.objects.filter(weixin_id=openid).update(status=0)
+            User.objects.filter(stu_id=user_id).update(status=0)
+            User.objects.filter(weixin_id=openid).update(status=0)
         except:
+            print 1
             return HttpResponse('Error')
         try:
             current_user = User.objects.get(stu_id=user_id)
@@ -205,11 +206,12 @@ def uc_validate_post_auth(request):
             if validate_result['type']:
                 current_user.stu_type = validate_result['type']
             else:
-                current_user.stu_type = "教室"
+                current_user.stu_type = "教师"
             current_user.bind_count = 0
             try:
                 current_user.save()
             except:
+                print 2
                 return HttpResponse('Error')
         except:
             try:
@@ -221,8 +223,10 @@ def uc_validate_post_auth(request):
                     status=1)
                 new_user.save()
             except:
+                print 3
                 return HttpResponse('Error')
         return HttpResponse(s_reverse_uc_account(openid))
+    print 4
     return HttpResponse(validate_result['result'])
 
 
