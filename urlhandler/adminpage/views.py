@@ -13,8 +13,8 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 import urllib
 import urllib2
-from urlhandler.models import Activity, Ticket, Seat
-from urlhandler.models import User as Booker
+from urlhandler.urlhandler.models import Activity, Ticket, Seat
+from urlhandler.urlhandler.models import User as Booker
 from weixinlib.custom_menu import get_custom_menu, modify_custom_menu, add_new_custom_menu, auto_clear_old_menus
 from weixinlib.settings import get_custom_menu_with_book_acts, WEIXIN_BOOK_HEADER
 from adminpage.safe_reverse import *
