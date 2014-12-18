@@ -609,6 +609,7 @@ def views_seats(request, uid):
                     rtn_json['next_url'] = s_reverse_ticket_detail(uid)
                     return HttpResponse(json.dumps(rtn_json), content_type='application/json')
 
+
 def views_seats_zongti(request, uid):
     ticket = Ticket.objects.filter(unique_id=uid, status=1)
     if not ticket.exists():
@@ -621,6 +622,7 @@ def views_seats_zongti(request, uid):
         ticket_type = ticket[0].partner_id
         ticket_left = get_seat_left(uid)
         return render_to_response('seats_zongti.html', locals())
+
 
 @csrf_exempt
 def views_seats_zongti_post(request):
@@ -652,6 +654,7 @@ def views_seats_zongti_post(request):
         href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
 
+
 def get_seat_left(uid):
     try:
         ticket = Ticket.objects.get(unique_id=uid)
@@ -666,9 +669,10 @@ def get_seat_left(uid):
     ticket_left['C'] = len(seats_in_section_c)
     seats_in_section_d = Seat.objects.filter(seat_section='D', is_selected=0, activity=ticket.activity)
     ticket_left['D'] = len(seats_in_section_d)
-    seats_in_section_e = Seat.objects.filter(seat_section='E', is_selected=0)
+    seats_in_section_e = Seat.objects.filter(seat_section='E', is_selected=0, activity=ticket.activity)
     ticket_left['E'] = len(seats_in_section_e)
     return ticket_left
+
 
 def section_select(post):
     with transaction.atomic():
@@ -699,6 +703,7 @@ def section_select(post):
             partner_seat.save()
         return seat
 
+
 def views_xinqing_post(request):
     if not request.POST:
         information = "出了点莫名其妙的错误"
@@ -711,7 +716,7 @@ def views_xinqing_post(request):
         seats_selected = post['seat'].split(',')
         ticket = Ticket.objects.get(unique_id=post['ticket_id'])
         activity = ticket.activity
-        now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
+        now = datetime.datetime.now()
         if activity.start_time < now or activity.status != 1:
             return_json['msg'] = 'WrongActivity'
             return_json['seat_left'] = json.dumps(get_valid_seat(post['ticket_id']))
@@ -725,16 +730,17 @@ def views_xinqing_post(request):
             return_json['msg'] = 'success'
             return_json['next_url'] = s_reverse_ticket_detail(post['ticket_id'])
         return HttpResponse(json.dumps(return_json), content_type='application/json')
-    except Exception as e:
+    except Exception:
         information = "出了点莫名其妙的错误"
         href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
+
 
 def get_valid_seat(uid):
     valid_seat_list = []
     try:
         ticket = Ticket.objects.get(unique_id=uid)
-    except Exception as e:
+    except Exception:
         return valid_seat_list
     seats = Seat.objects.get(activity=ticket.activity)
     for seat in seats:
@@ -742,29 +748,39 @@ def get_valid_seat(uid):
         valid_seat_list.append(seat_info)
     return valid_seat_list
 
+
 def seats_select(seats_selected, ticket, activity):
     with transaction.atomic():
         seat_1 = seats_selected[0].split('-')
         section_1 = seat_1[0]
         row_1 = seat_1[1]
         column_1 = seat_1[2]
-        seat_1_db = Seat.objects.select_for_update().filter(position_row=row_1, position_column=column_1, seat_section=section_1, is_selected=0, activity=activity)
+        seat_1_db = Seat.objects.select_for_update().filter(position_row=row_1,
+                                                            position_column=column_1,
+                                                            seat_section=section_1,
+                                                            is_selected=0,
+                                                            activity=activity)
         if not seat_1_db.exists():
             return None
         if len(seats_selected) > 2:
             try:
-                partner_ticket = Ticket.objects.get(stu_id=ticket.partner_id, activity=ticket.activity)
-            except Exception as e:
+                partner_ticket = Ticket.objects.get(stu_id=ticket.partner_id,
+                                                    activity=ticket.activity)
+            except Exception:
                 return None
             seat_2 = seats_selected[2].split('-')
             section_2 = seat_2[0]
             row_2 = seat_2[1]
             column_2 = seat_2[2]
-            seat_2_db = Seat.objects.filter(position_row=row_2, position_column=column_2, seat_section=section_2, is_selected=0, activity=activity)
+            seat_2_db = Seat.objects.filter(position_row=row_2,
+                                            position_column=column_2,
+                                            seat_section=section_2,
+                                            is_selected=0,
+                                            activity=activity)
             return_json = {}
             if not seat_2_db.exists():
                 return_json['msg'] = 'NoSeat'
-                return_json['seat_left'] = json.dumps(get_valid_seat(post['ticket_id']))
+                return_json['seat_left'] = json.dumps(get_valid_seat(ticket.unique_id))
                 return None
             seat = seat_2_db[0]
             seat.save()
