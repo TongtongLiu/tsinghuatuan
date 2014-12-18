@@ -32,7 +32,7 @@ function response(data){
         }
     }
 }
-$('#submitForm').on('submit', function(e) {
+$('#submit_btn').on('click', function(e) {
     e.preventDefault();
 
     $.ajax({

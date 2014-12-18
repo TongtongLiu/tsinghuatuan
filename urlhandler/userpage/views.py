@@ -1,22 +1,26 @@
 #-*- coding:utf-8 -*-
+
+import datetime
 from django.db import transaction
 from django.db.models import F, Q
 from django.http import HttpResponse, Http404
-from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
+from django.template import RequestContext
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+import json
+import random
+import string
+import time
 import urllib
 import urllib2
-import datetime
-import time
-import json
-import string
-import random
-from urlhandler.models import User, Activity, Ticket, Bind
+
+from queryhandler.settings import QRCODE_URL
+from queryhandler.weixin_msg import get_msg_create_time
+from urlhandler.models import User, Activity, Ticket, Bind, Seat
 from userpage.safe_reverse import *
 from weixinlib import http_get
-from weixinlib.settings import WEIXIN_APPID
+from weixinlib.settings import WEIXIN_OAUTH2_URL
 from weixinlib.weixin_urls import WEIXIN_URLS
 
 
@@ -164,13 +168,12 @@ def validate_through_auth(secret):
     res_data = urllib2.urlopen(req)
     try:
         res = res_data.read()
-        res_dict = eval(res)
+        res_dict = json.loads(res)
     except:
         return {
             'result': 'Error'
         }
     if res_dict['code'] == 0:
-        print
         return {
             'result': 'Accepted',
             'name': res_dict['data']['name'],
@@ -193,9 +196,11 @@ def uc_validate_post_auth(request):
     secret = request.POST['password']
     validate_result = validate_through_auth(secret)
     if validate_result['result'] == 'Accepted':
+        if not validate_result['type']:
+            validate_result['type'] = "教师"
         try:
-    		User.objects.filter(stu_id=user_id).update(status=0)
-    		User.objects.filter(weixin_id=openid).update(status=0)
+            User.objects.filter(stu_id=user_id).update(status=0)
+            User.objects.filter(weixin_id=openid).update(status=0)
         except:
             return HttpResponse('Error')
         try:
@@ -273,7 +278,7 @@ def ticket_view(request, uid):
     ticket = Ticket.objects.filter(unique_id=uid)
     if not ticket.exists():
         information = "票已过期"
-        href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {
             'information': information,
             'href': href
@@ -290,12 +295,12 @@ def ticket_view(request, uid):
     if act_end_time < now:#表示活动已经结束
         ticket_status = 3
     ticket_seat = ticket[0].seat
-    if activity[0].seat_status == '1':
-        ticket_url = s_reverse_select_zongti(uid)
+    if activity[0].seat_status == 1:
+        ticket_url = s_reverse_ticket_select_zongti(uid)
     else:
         ticket_url = s_reverse_ticket_selection(uid)
-    act_photo = "http://qr.ssast.org/fit/"+uid
-    href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+    act_photo = QRCODE_URL + "/fit/" + uid
+    href = WEIXIN_OAUTH2_URL
     variables = RequestContext(request, {
         'act_id': act_id,
         'act_name': act_name,
@@ -604,11 +609,12 @@ def views_seats(request, uid):
                     rtn_json['next_url'] = s_reverse_ticket_detail(uid)
                     return HttpResponse(json.dumps(rtn_json), content_type='application/json')
 
+
 def views_seats_zongti(request, uid):
     ticket = Ticket.objects.filter(unique_id=uid, status=1)
     if not ticket.exists():
         information = "该票无效"
-        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
     else:
         ticket_id = str(uid)
@@ -617,11 +623,12 @@ def views_seats_zongti(request, uid):
         ticket_left = get_seat_left(uid)
         return render_to_response('seats_zongti.html', locals())
 
+
 @csrf_exempt
 def views_seats_zongti_post(request):
     if not request.POST:
         information = "出了点莫名其妙的错误"
-        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
     post = request.POST
     return_json = dict()
@@ -644,8 +651,9 @@ def views_seats_zongti_post(request):
         return HttpResponse(json.dumps(return_json), content_type='application/json')
     except Exception as e:
         information = "出了点莫名其妙的错误"
-        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
+
 
 def get_seat_left(uid):
     try:
@@ -661,9 +669,10 @@ def get_seat_left(uid):
     ticket_left['C'] = len(seats_in_section_c)
     seats_in_section_d = Seat.objects.filter(seat_section='D', is_selected=0, activity=ticket.activity)
     ticket_left['D'] = len(seats_in_section_d)
-    seats_in_section_e = Seat.objects.filter(seat_section='E', is_selected=0)
+    seats_in_section_e = Seat.objects.filter(seat_section='E', is_selected=0, activity=ticket.activity)
     ticket_left['E'] = len(seats_in_section_e)
     return ticket_left
+
 
 def section_select(post):
     with transaction.atomic():
@@ -694,10 +703,11 @@ def section_select(post):
             partner_seat.save()
         return seat
 
+
 def views_xinqing_post(request):
     if not request.POST:
         information = "出了点莫名其妙的错误"
-        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
     post = request.POST
     return_json = dict()
@@ -706,7 +716,7 @@ def views_xinqing_post(request):
         seats_selected = post['seat'].split(',')
         ticket = Ticket.objects.get(unique_id=post['ticket_id'])
         activity = ticket.activity
-        now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
+        now = datetime.datetime.now()
         if activity.start_time < now or activity.status != 1:
             return_json['msg'] = 'WrongActivity'
             return_json['seat_left'] = json.dumps(get_valid_seat(post['ticket_id']))
@@ -720,16 +730,17 @@ def views_xinqing_post(request):
             return_json['msg'] = 'success'
             return_json['next_url'] = s_reverse_ticket_detail(post['ticket_id'])
         return HttpResponse(json.dumps(return_json), content_type='application/json')
-    except Exception as e:
+    except Exception:
         information = "出了点莫名其妙的错误"
-        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
+
 
 def get_valid_seat(uid):
     valid_seat_list = []
     try:
         ticket = Ticket.objects.get(unique_id=uid)
-    except Exception as e:
+    except Exception:
         return valid_seat_list
     seats = Seat.objects.get(activity=ticket.activity)
     for seat in seats:
@@ -737,28 +748,39 @@ def get_valid_seat(uid):
         valid_seat_list.append(seat_info)
     return valid_seat_list
 
+
 def seats_select(seats_selected, ticket, activity):
     with transaction.atomic():
         seat_1 = seats_selected[0].split('-')
         section_1 = seat_1[0]
         row_1 = seat_1[1]
         column_1 = seat_1[2]
-        seat_1_db = Seat.objects.select_for_update().filter(position_row=row_1, position_column=column_1, seat_section=section_1, is_selected=0, activity=activity)
+        seat_1_db = Seat.objects.select_for_update().filter(position_row=row_1,
+                                                            position_column=column_1,
+                                                            seat_section=section_1,
+                                                            is_selected=0,
+                                                            activity=activity)
         if not seat_1_db.exists():
             return None
         if len(seats_selected) > 2:
             try:
-                partner_ticket = Ticket.objects.get(stu_id=ticket.partner_id, activity=ticket.activity)
-            except Exception as e:
+                partner_ticket = Ticket.objects.get(stu_id=ticket.partner_id,
+                                                    activity=ticket.activity)
+            except Exception:
                 return None
             seat_2 = seats_selected[2].split('-')
             section_2 = seat_2[0]
             row_2 = seat_2[1]
             column_2 = seat_2[2]
-            seat_2_db = Seat.objects.filter(position_row=row_2, position_column=column_2, seat_section=section_2, is_selected=0, activity=activity)
+            seat_2_db = Seat.objects.filter(position_row=row_2,
+                                            position_column=column_2,
+                                            seat_section=section_2,
+                                            is_selected=0,
+                                            activity=activity)
+            return_json = {}
             if not seat_2_db.exists():
                 return_json['msg'] = 'NoSeat'
-                return_json['seat_left'] = json.dumps(get_valid_seat(post['ticket_id']))
+                return_json['seat_left'] = json.dumps(get_valid_seat(ticket.unique_id))
                 return None
             seat = seat_2_db[0]
             seat.save()
