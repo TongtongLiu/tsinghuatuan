@@ -16,8 +16,8 @@ import urllib
 import urllib2
 
 from queryhandler.settings import QRCODE_URL
-from urlhandler.models import User, Activity, Ticket, Bind, Seat
-from userpage.safe_reverse import *
+from urlhandler.urlhandler.models import User, Activity, Ticket, Bind, Seat
+from urlhandler.userpage.safe_reverse import *
 from weixinlib import http_get
 from weixinlib.settings import WEIXIN_OAUTH2_URL
 from weixinlib.weixin_urls import WEIXIN_URLS
