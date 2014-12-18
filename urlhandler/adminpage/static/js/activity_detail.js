@@ -514,7 +514,7 @@ function calculateTickets(){
 function recordTicketsCount(){
     var count = $('#count').text();
     $('#input-total_tickets').val(count);
-    $('#input-total_tickets').attr("disabled","readOnly");
+    $('#input-total_tickets').attr("readonly","readonly");
 }
 
 function clearSeat() {
@@ -550,17 +550,17 @@ function changePlace() {
     if(a.val() == "1"){//综体
         b.attr("data-target","#modal_zongti");
         $('#chooseSeat').removeAttr("disabled");
-        $('#input-total_tickets').attr("disabled","readOnly");
+        $('#input-total_tickets').attr("readonly","readonly");
     }
     else if(a.val() == "2"){//新清华学堂
         b.attr("data-target","#modal_xinqing");
         $('#chooseSeat').removeAttr("disabled");
-        $('#input-total_tickets').attr("disabled","readOnly");
+        $('#input-total_tickets').attr("readonly","readonly");
     }
     else if(a.val() == "0"){
         b.attr("data-target","#modal_none");
         $('#chooseSeat').attr("disabled","disabled");
-        $('#input-total_tickets').removeAttr("disabled");
+        $('#input-total_tickets').removeAttr("readonly");
     }
 }
 
