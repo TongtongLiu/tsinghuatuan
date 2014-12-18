@@ -548,15 +548,17 @@ function changePlace() {
     b = $('#chooseSeat');
     if(a.val() == "1"){//综体
         b.attr("data-target","#modal_zongti");
-        $('#chooseSeat').css("disabled","initial");
+        $('#chooseSeat').removeAttr("disabled");
     }
     else if(a.val() == "2"){//新清华学堂
         b.attr("data-target","#modal_xinqing");
-        $('#chooseSeat').css("disabled","initial");
+        $('#chooseSeat').removeAttr("disabled");
         //$('#input-total-tickets').css("display","none");
     }
-    else if(a.val() == "0")
+    else if(a.val() == "0"){
         b.attr("data-target","#modal_none");
+        $('#chooseSeat').attr("disabled","disabled");
+    }
 }
 
 initializeForm(activity);
