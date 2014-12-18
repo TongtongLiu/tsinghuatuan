@@ -1,4 +1,5 @@
 *.pyc
+*.pyo
 *.orig
 .idea
 *_backup
