@@ -514,7 +514,7 @@ function calculateTickets(){
 function recordTicketsCount(){
     var count = $('#count').text();
     $('#input-total_tickets').val(count);
-    $('#input-total_tickets').attr("disabled","disabled");
+    //$('#input-total_tickets').attr("disabled","disabled");
 }
 
 function clearSeat() {
@@ -550,13 +550,13 @@ function changePlace() {
     if(a.val() == "1"){//综体
         b.attr("data-target","#modal_zongti");
         $('#chooseSeat').removeAttr("disabled");
-        $('#input-total_tickets').attr("disabled","disabled");
+        //$('#input-total_tickets').attr("disabled","disabled");
     }
     else if(a.val() == "2"){//新清华学堂
         b.attr("data-target","#modal_xinqing");
         $('#chooseSeat').removeAttr("disabled");
         //$('#input-total-tickets').css("display","none");
-        $('#input-total_tickets').attr("disabled","disabled");
+        //$('#input-total_tickets').attr("disabled","disabled");
     }
     else if(a.val() == "0"){
         b.attr("data-target","#modal_none");
@@ -568,22 +568,22 @@ function changePlace() {
 initializeForm(activity);
 showForm();
 
-$('#activity-form').submit(function() {
-    showProcessing();
-    setResult('');
-    var options = {
-        dataType: 'json',
-        beforeSubmit: beforeSubmit,
-        success: submitResponse,
-        error: submitError,
-        complete: submitComplete
-    };
-    $(this).ajaxSubmit(options);
-    return false;
-}).on('reset', function() {
-    initializeForm(activity);
-    return false;
-});
+//$('#activity-form').submit(function() {
+//    showProcessing();
+//    setResult('');
+//    var options = {
+//        dataType: 'json',
+//        beforeSubmit: beforeSubmit,
+//        success: submitResponse,
+//        error: submitError,
+//        complete: submitComplete
+//    };
+//    $(this).ajaxSubmit(options);
+//    return false;
+//}).on('reset', function() {
+//    initializeForm(activity);
+//    return false;
+//});
 
 
 var buttonSelect = 1;//1单个，2一行，3全部
