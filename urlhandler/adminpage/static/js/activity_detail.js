@@ -556,6 +556,7 @@ function changePlace() {
         b.attr("data-target","#modal_xinqing");
         $('#chooseSeat').removeAttr("disabled");
         $('#input-total_tickets').attr("readonly","readonly");
+        $('#input-total_tickets').val(40);
     }
     else if(a.val() == "0"){
         b.attr("data-target","#modal_none");
