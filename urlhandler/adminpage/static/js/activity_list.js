@@ -183,19 +183,19 @@ function getDateByObj(obj) {
     return obj;
 }
 
-function deleteact(act_id){
-    //alert(act_id);
+function deleteact(actid){
+    //alert(actid);
     var i, len, curact;
     for(i = 0, len = activities.length; i < len; ++i){
-        if(activities[i].delete == act_id){
+        if(activities[i].delete == actid){
             curact = activities[i];
             break;
         }
     }
     var content = '确认删除<span style="color:red">'+getSmartStatus(curact)+'</span>活动：<span style="color:red">'+curact.name+'</span>？';
     $('#modalcontent').html(content);
-    $('#'+act_id).css("background-color","#FFE4C4");
-    $('#deleteid').val(act_id);
+    $('#'+actid).css("background-color","#FFE4C4");
+    $('#deleteid').val(actid);
     $('#delModal').modal({
       keyboard: false,
       backdrop:false

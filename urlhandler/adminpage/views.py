@@ -49,7 +49,7 @@ def activity_list(request):
     })
 
 
-def activity_check_in(request, act_id):
+def activity_checkin(request, act_id):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(s_reverse_admin_home())
     try:
@@ -59,12 +59,12 @@ def activity_check_in(request, act_id):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(s_reverse_activity_list())
 
-    return render_to_response('activity_check_in.html', {
+    return render_to_response('activity_checkin.html', {
         'activity': activity,
     }, context_instance=RequestContext(request))
 
 
-def activity_check_in_post(request, act_id):
+def activity_checkin_post(request, act_id):
     if (not request.POST) or (not ('uid' in request.POST)):
         raise Http404
     try:

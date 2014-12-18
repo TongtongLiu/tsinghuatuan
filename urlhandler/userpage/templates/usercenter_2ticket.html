@@ -93,12 +93,12 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <p>活动名称：{{ bind.activity.name }}</p>
-                        {% if stuid == bind.active_stuid %}
+                        {% if stu_id == bind.active_stu_id %}
                             <p>绑定状态：主动（可抢票）</p>
-                            <p>对方学号：{{ bind.passive_stuid }}</p>
+                            <p>对方学号：{{ bind.passive_stu_id }}</p>
                         {% else %}
                             <p>绑定状态：被动（等待对方抢票）</p>
-                            <p>对方学号：{{ bind.active_stuid }}</p>
+                            <p>对方学号：{{ bind.active_stu_id }}</p>
                         {% endif %}
                         <p>抢票开始时间：{{ bind.activity.book_start }}</p>
                         <p>抢票结束时间：{{ bind.activity.book_end }}</p>
@@ -171,22 +171,12 @@
             <div class="panel-body" id="div{{ bind.unique_id }}">
                 <div class="panel panel-default">
                     <div class="panel-body">
-<<<<<<< HEAD
-                        <p>活动名称：{{ bind.activity.name }}</p>
-                        {% if stuid == bind.active_stuid %}
-                            <p>绑定状态：主动（可抢票）</p>
-                            <p>对方学号：{{ bind.passive_stuid }}</p>
-                        {% else %}
-                            <p>绑定状态：被动（等待对方抢票）</p>
-                            <p>对方学号：{{ bind.active_stuid }}</p>
-=======
                         <p>请求绑定方学号：{{ bind.active_stu_id }}</p>
                         <p>请求绑定活动：{{ bind.activity.name }}</p>
                         {% if stu_id == bind.active_stu_id %}
                             <p>确定后的绑定状态：主动（可抢票）</p>
                         {% else %}
                             <p>确定后的绑定状态：被动（等待对方抢票）</p>
->>>>>>> ae072fe090cd22724b68075d27cd908a33458835
                         {% endif %}
                         <button class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#model{{ bind.unique_id }}">处理请求</button>
                     </div>
