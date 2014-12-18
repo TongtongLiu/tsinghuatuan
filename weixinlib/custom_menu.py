@@ -23,11 +23,11 @@ def modify_custom_menu(buttons):
     return res
 
 
-def check_if_activity_out(actid, actsHolder):
+def check_if_activity_out(act_id, actsHolder):
     try:
-        activity = Activity.objects.get(id=actid, status=1)
+        activity = Activity.objects.get(id=act_id, status=1)
         if actsHolder:
-            actsHolder[WEIXIN_BOOK_HEADER + str(actid)] = activity
+            actsHolder[WEIXIN_BOOK_HEADER + str(act_id)] = activity
     except:
         return True
     if datetime.datetime.now() >= activity.end_time:

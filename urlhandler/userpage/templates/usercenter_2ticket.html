@@ -93,12 +93,12 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <p>活动名称：{{ bind.activity.name }}</p>
-                        {% if stu_id == bind.active_stu_id %}
+                        {% if stuid == bind.active_stuid %}
                             <p>绑定状态：主动（可抢票）</p>
-                            <p>对方学号：{{ bind.passive_stu_id }}</p>
+                            <p>对方学号：{{ bind.passive_stuid }}</p>
                         {% else %}
                             <p>绑定状态：被动（等待对方抢票）</p>
-                            <p>对方学号：{{ bind.active_stu_id }}</p>
+                            <p>对方学号：{{ bind.active_stuid }}</p>
                         {% endif %}
                         <p>抢票开始时间：{{ bind.activity.book_start }}</p>
                         <p>抢票结束时间：{{ bind.activity.book_end }}</p>
@@ -160,12 +160,12 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <p>活动名称：{{ bind.activity.name }}</p>
-                        {% if stu_id == bind.active_stu_id %}
+                        {% if stuid == bind.active_stuid %}
                             <p>绑定状态：主动（可抢票）</p>
-                            <p>对方学号：{{ bind.passive_stu_id }}</p>
+                            <p>对方学号：{{ bind.passive_stuid }}</p>
                         {% else %}
                             <p>绑定状态：被动（等待对方抢票）</p>
-                            <p>对方学号：{{ bind.active_stu_id }}</p>
+                            <p>对方学号：{{ bind.active_stuid }}</p>
                         {% endif %}
                         <p>抢票开始时间：{{ bind.activity.book_start }}</p>
                         <p>抢票结束时间：{{ bind.activity.book_end }}</p>

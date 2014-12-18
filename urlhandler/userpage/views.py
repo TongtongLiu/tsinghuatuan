@@ -72,12 +72,12 @@ def validate_post_auth(request):
     validate_result = validate_through_auth(secret)
     if validate_result['result'] == 'Accepted':
         try:
-            User.objects.filter(stu_id=userid).update(status=0)
+            User.objects.filter(stuid=userid).update(status=0)
             User.objects.filter(weixin_id=openid).update(status=0)
         except:
             return HttpResponse('Error')
         try:
-            current_user = User.objects.get(stu_id=userid)
+            current_user = User.objects.get(stuid=userid)
             current_user.weixin_id = openid
             current_user.status = 1
             current_user.stu_name = validate_result['name']
@@ -90,7 +90,7 @@ def validate_post_auth(request):
             try:
                 new_user = User.objects.create(
                     weixin_id=openid,
-                    stu_id=userid,
+                    stuid=userid,
                     stu_name=validate_result['name'],
                     stu_type=validate_result['type'],
                     status=1)
@@ -112,12 +112,12 @@ def validate_post(request):
     if validate_result == 'Accepted':
         openid = request.POST['openid']
         try:
-            User.objects.filter(stu_id=user_id).update(status=0)
+            User.objects.filter(stuid=user_id).update(status=0)
             User.objects.filter(weixin_id=openid).update(status=0)
         except:
             return HttpResponse('Error')
         try:
-            current_user = User.objects.get(stu_id=user_id)
+            current_user = User.objects.get(stuid=user_id)
             current_user.weixin_id = openid
             current_user.status = 1
             try:
@@ -126,7 +126,7 @@ def validate_post(request):
                 return HttpResponse('Error')
         except:
             try:
-                new_user = User.objects.create(weixin_id=openid, stu_id=user_id, status=1)
+                new_user = User.objects.create(weixin_id=openid, stuid=user_id, status=1)
                 new_user.save()
             except:
                 return HttpResponse('Error')
@@ -199,12 +199,12 @@ def uc_validate_post_auth(request):
         if not validate_result['type']:
             validate_result['type'] = "教师"
         try:
-            User.objects.filter(stu_id=user_id).update(status=0)
+            User.objects.filter(stuid=user_id).update(status=0)
             User.objects.filter(weixin_id=openid).update(status=0)
         except:
             return HttpResponse('Error')
         try:
-            current_user = User.objects.get(stu_id=user_id)
+            current_user = User.objects.get(stuid=user_id)
             current_user.weixin_id = openid
             current_user.status = 1
             current_user.stu_name = validate_result['name']
@@ -218,7 +218,7 @@ def uc_validate_post_auth(request):
             try:
                 new_user = User.objects.create(
                     weixin_id=openid,
-                    stu_id=user_id,
+                    stuid=user_id,
                     stu_name=validate_result['name'],
                     stu_type=validate_result['type'],
                     status=1)
@@ -284,7 +284,7 @@ def ticket_view(request, uid):
             'href': href
         }) #current activity is invalid
     activity = Activity.objects.filter(id=ticket[0].activity_id)
-    act_id = activity[0].id
+    actid = activity[0].id
     act_name = activity[0].name
     act_key = activity[0].key
     act_begin_time = activity[0].start_time
@@ -302,7 +302,7 @@ def ticket_view(request, uid):
     act_photo = QRCODE_URL + "/fit/" + uid
     href = WEIXIN_OAUTH2_URL
     variables = RequestContext(request, {
-        'act_id': act_id,
+        'actid': actid,
         'act_name': act_name,
         'act_place': act_place,
         'act_begin_time': act_begin_time,
@@ -322,8 +322,8 @@ def help_view(request):
     return render_to_response('help.html', variables)
 
 
-def activity_menu_view(request, act_id):
-    activity = Activity.objects.get(id=act_id)
+def activity_menu_view(request, actid):
+    activity = Activity.objects.get(id=actid)
     return render_to_response('activitymenu.html', {'activity': activity})
 
 
@@ -360,15 +360,15 @@ def uc_account(request, openid):
     if user:
         if request.method == 'POST':
             try:
-                binds1 = Bind.objects.filter(active_stu_id=user[0].stu_id)
+                binds1 = Bind.objects.filter(active_stuid=user[0].stuid)
                 for bind in binds1:
                     user.update(bind_count=F('bind_count')-1)
-                    User.objects.filter(stu_id=bind.passive_stu_id, status=1).update(bind_count=F('bind_count')-1)
+                    User.objects.filter(stuid=bind.passive_stuid, status=1).update(bind_count=F('bind_count')-1)
                 binds1.delete()
-                binds2 = Bind.objects.filter(passive_stu_id=user[0].stu_id)
+                binds2 = Bind.objects.filter(passive_stuid=user[0].stuid)
                 for bind in binds2:
                     user.update(bind_count=F('bind_count')-1)
-                    User.objects.filter(stu_id=bind.active_stu_id, status=1).update(bind_count=F('bind_count')-1)
+                    User.objects.filter(stuid=bind.active_stuid, status=1).update(bind_count=F('bind_count')-1)
                 binds2.delete()
                 user.update(status=0)
             except:
@@ -377,7 +377,7 @@ def uc_account(request, openid):
         else:
             return render_to_response('usercenter_account.html', {
                 'weixin_id': openid,
-                'student_id': user[0].stu_id,
+                'student_id': user[0].stuid,
                 'student_name': user[0].stu_name,
                 'student_type': user[0].stu_type
             }, context_instance=RequestContext(request))
@@ -423,7 +423,7 @@ def uc_ticket(request, openid):
     user = User.objects.filter(weixin_id=openid, status=1)
     if user:
         is_validated = 1
-        tickets = Ticket.objects.filter(stu_id=user[0].stu_id, status=1)
+        tickets = Ticket.objects.filter(stuid=user[0].stuid, status=1)
     else:
         is_validated = 0
     return render_to_response('usercenter_ticket.html', {'tickets': tickets,
@@ -433,7 +433,7 @@ def uc_ticket(request, openid):
 def encode_token(openid):
     user = User.objects.filter(weixin_id=openid, status=1)
     timestamp = int(time.time()) / 100
-    token = int(user[0].stu_id) ^ timestamp
+    token = int(user[0].stuid) ^ timestamp
     return token
 
 
@@ -441,8 +441,8 @@ def decode_token(token):
     if not token.isdigit():
         return '-1'
     timestamp = int(time.time()) / 100
-    stu_id = str(int(token) ^ timestamp)
-    return stu_id
+    stuid = str(int(token) ^ timestamp)
+    return stuid
 
 
 def uc_2ticket_bind(request):
@@ -453,29 +453,29 @@ def uc_2ticket_bind(request):
     user = User.objects.filter(weixin_id=openid, status=1)
     if not user:
         raise Http404
-    active_stu_id = user[0].stu_id
+    active_stuid = user[0].stuid
     activity = Activity.objects.filter(name=request.POST['activity_name'], status=1)
     if not activity:
         raise Http404
-    passive_stu_id = decode_token(request.POST['token'])
-    if active_stu_id == passive_stu_id:
+    passive_stuid = decode_token(request.POST['token'])
+    if active_stuid == passive_stuid:
         return HttpResponse('SameStudentID')
-    if not User.objects.filter(stu_id=passive_stu_id, status=1).exists():
+    if not User.objects.filter(stuid=passive_stuid, status=1).exists():
         return HttpResponse('TokenError')
-    if Ticket.objects.filter(stu_id=passive_stu_id, activity=activity[0], status=1).exists():
+    if Ticket.objects.filter(stuid=passive_stuid, activity=activity[0], status=1).exists():
         return HttpResponse('HaveTicket')
-    if Bind.objects.filter(activity=activity[0], active_stu_id=passive_stu_id) or \
-            Bind.objects.filter(activity=activity[0], passive_stu_id=passive_stu_id):
+    if Bind.objects.filter(activity=activity[0], active_stuid=passive_stuid) or \
+            Bind.objects.filter(activity=activity[0], passive_stuid=passive_stuid):
         return HttpResponse('AlreadyBinded')
     else:
         random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
         while Bind.objects.filter(unique_id=random_string).exists():
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
         try:
-            newbind = Bind.objects.create(activity=activity[0], active_stu_id=active_stu_id, passive_stu_id=passive_stu_id, unique_id=random_string)
+            newbind = Bind.objects.create(activity=activity[0], active_stuid=active_stuid, passive_stuid=passive_stuid, unique_id=random_string)
             newbind.save()
-            User.objects.filter(stu_id=active_stu_id, status=1).update(bind_count=F('bind_count')+1)
-            User.objects.filter(stu_id=passive_stu_id, status=1).update(bind_count=F('bind_count')+1)
+            User.objects.filter(stuid=active_stuid, status=1).update(bind_count=F('bind_count')+1)
+            User.objects.filter(stuid=passive_stuid, status=1).update(bind_count=F('bind_count')+1)
         except:
             return HttpResponse('Error')
         return HttpResponse(s_reverse_uc_2ticket(openid))
@@ -486,8 +486,8 @@ def uc_2ticket(request, openid):
     if request.is_ajax():
         try:
             bind = Bind.objects.filter(unique_id=request.POST['unique_id'])
-            User.objects.filter(stu_id=bind[0].active_stu_id, status=1).update(bind_count=F('bind_count')-1)
-            User.objects.filter(stu_id=bind[0].passive_stu_id, status=1).update(bind_count=F('bind_count')-1)
+            User.objects.filter(stuid=bind[0].active_stuid, status=1).update(bind_count=F('bind_count')-1)
+            User.objects.filter(stuid=bind[0].passive_stuid, status=1).update(bind_count=F('bind_count')-1)
             bind.delete()
             return HttpResponse('Success')
         except:
@@ -496,14 +496,14 @@ def uc_2ticket(request, openid):
         user = User.objects.filter(weixin_id=openid, status=1)
         if user:
             is_validated = 1
-            binds = Bind.objects.filter(Q(active_stu_id=user[0].stu_id) | Q(passive_stu_id=user[0].stu_id))
-            tickets = Ticket.objects.filter(stu_id=user[0].stu_id, status=1)
+            binds = Bind.objects.filter(Q(active_stuid=user[0].stuid) | Q(passive_stuid=user[0].stuid))
+            tickets = Ticket.objects.filter(stuid=user[0].stuid, status=1)
             now = datetime.datetime.now()
             aty_can_bind = Activity.objects.filter(status=1, end_time__gt=now, book_start__lt=now)
             return render_to_response('usercenter_2ticket.html', {
                 'isValidated': is_validated,
                 'weixin_id': openid,
-                'stu_id': user[0].stu_id,
+                'stuid': user[0].stuid,
                 'aty_canBind': aty_can_bind,
                 'binds': binds,
                 'tickets': tickets
@@ -565,7 +565,7 @@ def views_seats(request, uid):
             other_seat = seats[1]
             other_row = int(other_seat.split("-")[0]) - 1
             other_column = int(other_seat.split("-")[1]) - 1
-            other_stu_id = ticket.partner_id
+            other_stuid = ticket.partner_id
 
         activity_name = ticket.activity.name
 
@@ -585,7 +585,7 @@ def views_seats(request, uid):
                     seats_list = json.dumps(seats_table)
                     activity = Activity.objects.filter(name=activity_name)
                     Ticket.objects.filter(unique_id=ticket_id).update(seat=seat)
-                    Ticket.objects.filter(stu_id=other_stu_id, activity=activity[0]).update(seat=other_seat)
+                    Ticket.objects.filter(stuid=other_stuid, activity=activity[0]).update(seat=other_seat)
                     activity.update(seat_table=seats_list)
                     rtn_json['seat'] = seats_table
                     rtn_json['msg'] = 'success'
@@ -687,7 +687,7 @@ def section_select(post):
             if len(seats) < 2:
                 return None
             try:
-                partner_ticket = Ticket.objects.get(stu_id=ticket.partner_id, activity=ticket.activity)
+                partner_ticket = Ticket.objects.get(stuid=ticket.partner_id, activity=ticket.activity)
             except Exception as e:
                 return None
         seat = seats[0]
@@ -764,7 +764,7 @@ def seats_select(seats_selected, ticket, activity):
             return None
         if len(seats_selected) > 2:
             try:
-                partner_ticket = Ticket.objects.get(stu_id=ticket.partner_id,
+                partner_ticket = Ticket.objects.get(stuid=ticket.partner_id,
                                                     activity=ticket.activity)
             except Exception:
                 return None

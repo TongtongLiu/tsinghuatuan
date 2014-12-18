@@ -4,7 +4,7 @@
 <head>
     <title>检票 - {{ activity.name }} - 紫荆之声</title>
     <link rel="stylesheet" href="{% static "lib/bs/css/bootstrap.min.css" %}"/>
-    <link rel="stylesheet" href="{% static "css/activity_checkin.css" %}"/>
+    <link rel="stylesheet" href="{% static "css/activity_check_in.css" %}"/>
 </head>
 <body onload="auto_adjust();" onresize="auto_adjust();">
 <div id="common-header" class="full-div">
@@ -27,7 +27,7 @@
 
 </div>
 <div id="checkin-screen" class="full-div" style="display: none;">
-    <form role="form" method="post" id="checkin-form" action="{% url "adminpage.views.activity_checkin_post" actid=activity.id %}">
+    <form role="form" method="post" id="checkin-form" action="{% url "adminpage.views.activity_check_in_post" act_id=activity.id %}">
         {% csrf_token %}
         <div class="form-group col-xs-offset-2 col-xs-8">
             <input class="form-control input-lg" type="text" id="input-uid" name="uid" placeholder="扫描二维码或输入学号"
@@ -74,6 +74,6 @@
 <script src="{% static "lib/jq/form/jquery.form.min.js" %}"></script>
 <script src="{% static "lib/bs/js/bootstrap.min.js" %}"></script>
 <script src="{% static "lib/screenfull/screenfull.min.js" %}"></script>
-<script src="{% static "js/activity_checkin.js" %}"></script>
+<script src="{% static "js/activity_check_in.js" %}"></script>
 </body>
 </html>

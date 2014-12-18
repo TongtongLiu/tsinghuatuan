@@ -80,7 +80,7 @@
 {% block nav-li-ext %}
     <li class="{% block activity-detail-active %}active{% endblock %}">
         <a href="{% if activity.id %}
-        {% url "adminpage.views.activity_detail" actid=activity.id %}
+        {% url "adminpage.views.activity_detail" act_id=activity.id %}
         {% else %}
         {% url "adminpage.views.activity_add" %}
         {% endif %} ">{{ activity.name }}</a>

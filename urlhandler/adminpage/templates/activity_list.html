@@ -25,7 +25,7 @@
                     'end_time': new Date('{{ activity.end_time|date:"r" }}'),
                     'place': '{{ activity.place|escapejs }}',
                 {% if permission %}'delete':{{ activity.id }},{% endif %}
-                    'operations': {{% if permission %}'detail':'{% url "adminpage.views.activity_detail" actid=activity.id %}','export':'{% url "adminpage.views.activity_export_stunum" actid=activity.id %}', {% endif %}'checkin':'{% url "adminpage.views.activity_checkin" actid=activity.id %}'},
+                    'operations': {{% if permission %}'detail':'{% url "adminpage.views.activity_detail" act_id=activity.id %}','export':'{% url "adminpage.views.activity_export_stunum" act_id=activity.id %}', {% endif %}'checkin':'{% url "adminpage.views.activity_check_in" act_id=activity.id %}'},
                     'book_start': new Date('{{ activity.book_start|date:"r" }}'),
                     'book_end': new Date('{{ activity.book_end|date:"r" }}')
                 }{% if forloop.last %}{% else %},{% endif %}

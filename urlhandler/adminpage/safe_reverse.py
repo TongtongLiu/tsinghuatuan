@@ -9,12 +9,12 @@ def s_reverse_activity_list():
     return reverse('adminpage.views.activity_list')
 
 
-def s_reverse_activity_checkin(actid):
-    return reverse('adminpage.views.activity_checkin', kwargs={'actid': actid})
+def s_reverse_activity_check_in(act_id):
+    return reverse('adminpage.views.activity_check_in', kwargs={'act_id': act_id})
 
 
-def s_reverse_activity_checkin_post(actid):
-    return reverse('adminpage.views.activity_checkin_post', kwargs={'actid': actid})
+def s_reverse_activity_check_in_post(act_id):
+    return reverse('adminpage.views.activity_check_in_post', kwargs={'act_id': act_id})
 
 
 def s_reverse_admin_login_post():
@@ -33,8 +33,8 @@ def s_reverse_activity_add():
     return reverse('adminpage.views.activity_add')
 
 
-def s_reverse_activity_detail(actid):
-    return reverse('adminpage.views.activity_detail', kwargs={'actid': actid})
+def s_reverse_activity_detail(act_id):
+    return reverse('adminpage.views.activity_detail', kwargs={'act_id': act_id})
 
 
 def s_reverse_activity_post():

@@ -101,7 +101,7 @@ def response_exam_tickets(msg):
     activities = Activity.objects.filter(status=1, end_time__gte=now)
     all_tickets = []
     for activity in activities:
-        tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status=1)
+        tickets = Ticket.objects.filter(stuid=user.stuid, activity=activity, status=1)
         if tickets.exists():
             all_tickets.append(tickets[0])
 
@@ -141,7 +141,7 @@ def response_fetch_ticket(msg):
 
 
 def fetch_ticket(msg, user, activity, now):
-    tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status=1)
+    tickets = Ticket.objects.filter(stuid=user.stuid, activity=activity, status=1)
     if tickets.exists():
         ticket = tickets[0]
         return get_reply_single_ticket(msg, ticket, now)
@@ -173,7 +173,7 @@ def response_book_ticket(msg):
             return get_reply_text_xml(msg, get_text_book_ticket_future_with_hint(future_activities[0], now))
         return get_reply_text_xml(msg, get_text_no_such_activity('抢票'))
     else:
-        tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activities[0], status__gt=0)
+        tickets = Ticket.objects.filter(stuid=user.stuid, activity=activities[0], status__gt=0)
         if tickets.exists():
             return get_reply_text_xml(msg, get_text_existed_book_ticket(tickets[0]))
         if user.bind_count > 0:
@@ -201,7 +201,7 @@ def book_ticket(user, key, now):
         while Ticket.objects.filter(unique_id=random_string).exists():
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
 
-        tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, activity=activity)
+        tickets = Ticket.objects.select_for_update().filter(stuid=user.stuid, activity=activity)
         if tickets.exists() and tickets[0].status != 0:
             return None
 
@@ -220,7 +220,7 @@ def book_ticket(user, key, now):
         if not tickets.exists():
             Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
             ticket = Ticket.objects.create(
-                stu_id=user.stu_id,
+                stuid=user.stuid,
                 activity=activity,
                 unique_id=random_string,
                 partner_id='s',
@@ -245,11 +245,11 @@ def book_double_ticket(user, key, now):
     except:
         return None
 
-    error_bind = Bind.objects.filter(passive_stu_id=user.stu_id, activity=activity)
+    error_bind = Bind.objects.filter(passive_stuid=user.stuid, activity=activity)
     if error_bind.exists():
         return None
     try:
-        bind = Bind.objects.get(active_stu_id=user.stu_id, activity=activity)
+        bind = Bind.objects.get(active_stuid=user.stuid, activity=activity)
     except:
         ticket = book_ticket(user, key, now)
         return ticket
@@ -276,8 +276,8 @@ def book_double_ticket(user, key, now):
             next_seat = ''
 
         next_seat = ''
-        partner = User.objects.get(stu_id=bind.passive_stu_id)
-        tickets = Ticket.objects.select_for_update().filter(stu_id=partner.stu_id, activity=activity)
+        partner = User.objects.get(stuid=bind.passive_stuid)
+        tickets = Ticket.objects.select_for_update().filter(stuid=partner.stuid, activity=activity)
         if tickets.exists() and tickets[0].status != 0:
             return None
 
@@ -287,10 +287,10 @@ def book_double_ticket(user, key, now):
                 random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
             Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
             ticket = Ticket.objects.create(
-                stu_id=partner.stu_id,
+                stuid=partner.stuid,
                 activity=activity,
                 unique_id=random_string,
-                partner_id=user.stu_id,
+                partner_id=user.stuid,
                 status=1,
                 seat=next_seat
             )
@@ -299,23 +299,23 @@ def book_double_ticket(user, key, now):
             ticket = tickets[0]
             ticket.status = 1
             ticket.seat = next_seat
-            ticket.partner_id=user.stu_id
+            ticket.partner_id=user.stuid
             ticket.save()
         else:
             return None
 
 
-        tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, activity=activity)
+        tickets = Ticket.objects.select_for_update().filter(stuid=user.stuid, activity=activity)
         if not tickets.exists():
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
             while Ticket.objects.filter(unique_id=random_string).exists():
                 random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
             Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
             ticket = Ticket.objects.create(
-                stu_id=user.stu_id,
+                stuid=user.stuid,
                 activity=activity,
                 unique_id=random_string,
-                partner_id=partner.stu_id,
+                partner_id=partner.stuid,
                 status=1,
                 seat=next_seat
             )
@@ -324,7 +324,7 @@ def book_double_ticket(user, key, now):
             ticket = tickets[0]
             ticket.status = 1
             ticket.seat = next_seat
-            ticket.partner_id=partner.stu_id
+            ticket.partner_id=partner.stuid
             ticket.save()
         else:
             return None
@@ -358,7 +358,7 @@ def response_cancel_ticket(msg):
     else:
         activity = activities[0]
         if activity.book_end >= now:
-            tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status=1)
+            tickets = Ticket.objects.filter(stuid=user.stuid, activity=activity, status=1)
             if tickets.exists():   # user has already booked the activity
                 ticket = tickets[0]
                 ticket.status = 0
@@ -407,7 +407,7 @@ def response_book_event(msg):
     if activity.book_start > now:
         return get_reply_text_xml(msg, get_text_book_ticket_future(activity, now))
 
-    tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status__gt=0)
+    tickets = Ticket.objects.filter(stuid=user.stuid, activity=activity, status__gt=0)
     if tickets.exists():
         return get_reply_single_ticket(msg, tickets[0], now, get_text_existed_book_event())
     if activity.book_end < now:
@@ -446,7 +446,7 @@ def response_bind_account(msg):
     if user is None:
         return get_reply_text_xml(msg, get_text_to_bind_account(fromuser))
     else:
-        return get_reply_text_xml(msg, get_text_binded_account(user.stu_id))
+        return get_reply_text_xml(msg, get_text_binded_account(user.stuid))
 
 
 def check_no_book_acts_event(msg):

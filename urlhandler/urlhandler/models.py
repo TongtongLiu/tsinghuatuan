@@ -4,7 +4,7 @@ from django.db import models
 
 class User(models.Model):
     weixin_id = models.CharField(max_length=255)
-    stu_id = models.CharField(max_length=255)
+    stuid = models.CharField(max_length=255)
     stu_name = models.CharField(max_length=255)
     stu_type = models.CharField(max_length=255)
     bind_count = models.IntegerField(default=0)
@@ -40,7 +40,7 @@ class Activity(models.Model):
 
 
 class Ticket(models.Model):
-    stu_id = models.CharField(max_length=255)
+    stuid = models.CharField(max_length=255)
     unique_id = models.CharField(max_length=255)
     activity = models.ForeignKey(Activity)
     status = models.IntegerField()
@@ -54,8 +54,8 @@ class Ticket(models.Model):
 
 class Bind(models.Model):
     activity = models.ForeignKey(Activity)
-    active_stu_id = models.CharField(max_length=255)
-    passive_stu_id = models.CharField(max_length=255)
+    active_stuid = models.CharField(max_length=255)
+    passive_stuid = models.CharField(max_length=255)
     unique_id = models.CharField(max_length=255)
 
 
@@ -70,26 +70,26 @@ class Seat(models.Model):
 
 '''
 class UserSession(models.Model):
-    stu_id = models.CharField(max_length=255)
+    stuid = models.CharField(max_length=255)
     session_key = models.CharField(max_length=255)
     session_status = models.IntegerField(1)
 
-    def generate_session(self,stu_id):
+    def generate_session(self,stuid):
         try:
-            stu = User.objects.get(stu_id=stu_id)
-            sessions = UserSession.objects.filter(stu_id = stu_id)
+            stu = User.objects.get(stuid=stuid)
+            sessions = UserSession.objects.filter(stuid = stuid)
             if sessions:
                 for session in sessions:
                     session.delete()
-            s = UserSession(stu_id=stu_id,session_key=uuid.uuid4(),session_status = 0)
+            s = UserSession(stuid=stuid,session_key=uuid.uuid4(),session_status = 0)
             s.save()
             return True
         except:
             return False
 
-    def is_session_valid(self,stu_id,session_key):
+    def is_session_valid(self,stuid,session_key):
         try:
-            s = UserSession.objects.get(stu_id=stu_id,session_key=session_key)
+            s = UserSession.objects.get(stuid=stuid,session_key=session_key)
             if(s.session_status == 0):
                 s.session_status = 1
                 s.save()
@@ -100,9 +100,9 @@ class UserSession(models.Model):
         except:
             return False
 
-    def can_print(self,stu_id,session_key):
+    def can_print(self,stuid,session_key):
         try:
-            s = UserSession.objects.get(stu_id=stu_id,session_key=session_key)
+            s = UserSession.objects.get(stuid=stuid,session_key=session_key)
             return True
         except:
             return False
