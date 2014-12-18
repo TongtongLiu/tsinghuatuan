@@ -96,52 +96,53 @@ def select_tickets_by_stu_id_and_activity(stu_id, activity):
 
 
 def delete_binds(binds):
-    User.objects.filter(stu_id=binds[0].active_stu_id, status=1).update(bind_count=F('bind_count')-1)
-    User.objects.filter(stu_id=binds[0].passive_stu_id, status=1).update(bind_count=F('bind_count')-1)
+    select_users_by_stu_id(binds[0].active_stu_id).update(bind_count=F('bind_count')-1)
+    select_users_by_stu_id(binds[0].passive_stu_id).update(bind_count=F('bind_count')-1)
     binds.delete()
 
 
 def delete_binds_of_user(user):
-    binds1 = Bind.objects.filter(active_stu_id=user.stu_id)
+    binds1 = Bind.objects.filter(active_stu_id=user.stu_id, status=1)
     for bind in binds1:
         bind_count = user.bind_count - 1
         user.bind_count = bind_count
         user.save()
-        User.objects.filter(stu_id=bind.passive_stu_id, status=1).update(bind_count=F('bind_count')-1)
-    binds1.delete()
-    binds2 = Bind.objects.filter(passive_stu_id=user.stu_id)
+        select_users_by_stu_id(bind.passive_stu_id).update(bind_count=F('bind_count')-1)
+    Bind.objects.filter(active_stu_id=user.stu_id).delete()
+    binds2 = Bind.objects.filter(passive_stu_id=user.stu_id, status=1)
     for bind in binds2:
         bind_count = user.bind_count - 1
         user.bind_count = bind_count
         user.save()
-        User.objects.filter(stu_id=bind.active_stu_id, status=1).update(bind_count=F('bind_count')-1)
-    binds2.delete()
+        select_users_by_stu_id(bind.active_stu_id).update(bind_count=F('bind_count')-1)
+    Bind.objects.filter(passive_stu_id=user.stu_id).delete()
 
 
 def insert_bind(activity, active_stu_id, passive_stu_id, unique_id):
     new_bind = Bind.objects.create(activity=activity,
                                    active_stu_id=active_stu_id,
                                    passive_stu_id=passive_stu_id,
-                                   unique_id=unique_id)
+                                   unique_id=unique_id,
+                                   status=0)
     new_bind.save()
-    User.objects.filter(stu_id=active_stu_id, status=1).update(bind_count=F('bind_count')+1)
-    User.objects.filter(stu_id=passive_stu_id, status=1).update(bind_count=F('bind_count')+1)
+    select_users_by_stu_id(active_stu_id).update(bind_count=F('bind_count')+1)
+    select_users_by_stu_id(passive_stu_id).update(bind_count=F('bind_count')+1)
 
 
 def select_binds_by_id(unique_id):
     return Bind.objects.filter(unique_id=unique_id)
 
 
-def select_binds_by_stu_id(stu_id):
-    return Bind.objects.filter(Q(active_stu_id=stu_id) | Q(passive_stu_id=stu_id))
+def select_binds_by_stu_id(stu_id, status):
+    return Bind.objects.filter(Q(active_stu_id=stu_id) | Q(passive_stu_id=stu_id), status=status)
 
 
-def select_binds_by_active_stu_id_and_activity(active_stu_id, activity):
-    return Bind.objects.filter(active_stu_id=active_stu_id, activity=activity)
+def select_binds_by_active_stu_id_and_activity(active_stu_id, activity, status):
+    return Bind.objects.filter(active_stu_id=active_stu_id, activity=activity, status=status)
 
 
-def select_binds_by_passive_stu_id_and_activity(passive_stu_id, activity):
-    return Bind.objects.filter(passive_stu_id=passive_stu_id, activity=activity)
+def select_binds_by_passive_stu_id_and_activity(passive_stu_id, activity, status):
+    return Bind.objects.filter(passive_stu_id=passive_stu_id, activity=activity, status=status)
 
 
 def home(request):
@@ -409,7 +410,7 @@ def uc_ticket(request, openid):
         else:
             unique_id = request.POST['ticket_id']
             tickets = select_tickets_by_id(unique_id)
-            if not tickets.exists():
+            if not tickets.exists() or tickets[0].status != 1:
                 return HttpResponse('logout error')
             else:
                 ticket = tickets[0]
@@ -437,26 +438,11 @@ def uc_ticket(request, openid):
         'weixin_id': openid})
 
 
-def encode_token(openid):
-    users = select_users_by_openid(openid)
-    timestamp = int(time.time()) / 100
-    token = int(users[0].stu_id) ^ timestamp
-    return token
-
-
-def decode_token(token):
-    if not token.isdigit():
-        return '-1'
-    timestamp = int(time.time()) / 100
-    stu_id = str(int(token) ^ timestamp)
-    return stu_id
-
-
 def uc_2ticket_bind(request):
     if ((not request.POST) or
             (not 'openid' in request.POST) or
             (not 'activity_name' in request.POST) or
-            (not 'token' in request.POST)):
+            (not 'student_id' in request.POST)):
         raise Http404
     openid = request.POST['openid']
     users = select_users_by_openid(openid)
@@ -466,15 +452,15 @@ def uc_2ticket_bind(request):
     activities = select_activities_by_name(request.POST['activity_name'])
     if not activities:
         raise Http404
-    passive_stu_id = decode_token(request.POST['token'])
+    passive_stu_id = request.POST['student_id']
     if active_stu_id == passive_stu_id:
         return HttpResponse('SameStudentID')
     if not select_users_by_stu_id(passive_stu_id).exists():
-        return HttpResponse('TokenError')
+        return HttpResponse('StudentIDError')
     if select_tickets_by_stu_id_and_activity(passive_stu_id, activities[0]).exists():
         return HttpResponse('HaveTicket')
-    if (select_binds_by_active_stu_id_and_activity(passive_stu_id, activities[0]).exists() or
-            select_binds_by_passive_stu_id_and_activity(passive_stu_id, activities[0]).exists()):
+    if (select_binds_by_active_stu_id_and_activity(passive_stu_id, activities[0], 1).exists() or
+            select_binds_by_passive_stu_id_and_activity(passive_stu_id, activities[0], 1).exists()):
         return HttpResponse('AlreadyBinded')
     else:
         random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
@@ -499,18 +485,19 @@ def uc_2ticket(request, openid):
         users = select_users_by_openid(openid)
         if users:
             is_validated = 1
-            binds = select_binds_by_stu_id(users[0].stu_id)
-            tickets = select_tickets_unused_by_stu_id(users[0].stu_id)
             activity_valid = select_activities_valid()
+            tickets = select_tickets_unused_by_stu_id(users[0].stu_id)
+            binds_confirmed = select_binds_by_stu_id(users[0].stu_id, 1)
+            binds_unconfirmed = select_binds_by_stu_id(users[0].stu_id, 0)
             return render_to_response('usercenter_2ticket.html', {
                 'isValidated': is_validated,
                 'weixin_id': openid,
                 'stu_id': users[0].stu_id,
                 'activity_valid': activity_valid,
-                'binds': binds,
                 'tickets': tickets,
-                'binds_info': 123,
-                'binds_info_len': 123
+                'binds': binds_confirmed,
+                'binds_unconfirmed': binds_unconfirmed,
+                'binds_unconfirmed_num': len(binds_unconfirmed)
             }, context_instance=RequestContext(request))
         else:
             is_validated = 0
@@ -518,6 +505,21 @@ def uc_2ticket(request, openid):
                 'isValidated': is_validated,
                 'weixin_id': openid
             }, context_instance=RequestContext(request))
+
+
+def encode_token(openid):
+    users = select_users_by_openid(openid)
+    timestamp = int(time.time()) / 100
+    token = int(users[0].stu_id) ^ timestamp
+    return token
+
+
+def decode_token(token):
+    if not token.isdigit():
+        return '-1'
+    timestamp = int(time.time()) / 100
+    stu_id = str(int(token) ^ timestamp)
+    return stu_id
 
 
 @csrf_exempt
