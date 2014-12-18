@@ -1,29 +1,29 @@
 #-*- coding:utf-8 -*-
 
-from django.http import HttpResponse, Http404
-from django.template import RequestContext
-from django.forms.models import model_to_dict
 from datetime import datetime
-import json
-import time
-from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
 from django.contrib import auth
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from django.forms.models import model_to_dict
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from django.utils.http import urlquote
+from django.utils.encoding import smart_str
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
+import json
+import re
+import time
 import urllib
 import urllib2
+import xlwt
+
+from adminpage.safe_reverse import *
+from queryhandler.settings import QRCODE_URL
 from urlhandler.models import Activity, Ticket, Seat
 from urlhandler.models import User as Booker
 from weixinlib.custom_menu import get_custom_menu, modify_custom_menu, add_new_custom_menu, auto_clear_old_menus
 from weixinlib.settings import get_custom_menu_with_book_acts, WEIXIN_BOOK_HEADER
-from adminpage.safe_reverse import *
-
-import xlwt
-import re
-from django.utils.http import urlquote
-from django.utils.encoding import smart_str
-from queryhandler.settings import QRCODE_URL
 
 
 @csrf_protect
@@ -38,9 +38,9 @@ def activity_list(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(s_reverse_admin_home())
 
-    actmodels = Activity.objects.filter(status__gte=0).order_by('-id').all()
+    act_models = Activity.objects.filter(status__gte=0).order_by('-id').all()
     activities = []
-    for act in actmodels:
+    for act in act_models:
         activities += [wrap_activity_dict(act)]
     permission_num = 1 if request.user.is_superuser else 0
     return render_to_response('activity_list.html', {
@@ -49,14 +49,14 @@ def activity_list(request):
     })
 
 
-def activity_checkin(request, actid):
+def activity_checkin(request, act_id):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(s_reverse_admin_home())
     try:
-        activity = Activity.objects.get(id=actid)
+        activity = Activity.objects.get(id=act_id)
         if datetime.now() > activity.end_time:
             raise 'Time out!'
-    except:
+    except ObjectDoesNotExist:
         return HttpResponseRedirect(s_reverse_activity_list())
 
     return render_to_response('activity_checkin.html', {
@@ -64,98 +64,91 @@ def activity_checkin(request, actid):
     }, context_instance=RequestContext(request))
 
 
-def activity_checkin_post(request, actid):
+def activity_checkin_post(request, act_id):
     if (not request.POST) or (not ('uid' in request.POST)):
         raise Http404
     try:
-        activity = Activity.objects.get(id=actid)
-    except:
+        activity = Activity.objects.get(id=act_id)
+    except ObjectDoesNotExist:
         return HttpResponse(json.dumps({'result': 'error', 'stuid': 'Unknown', 'msg': 'noact'}),
                             content_type='application/json')
 
-    rtnJSON = {'result': 'error', 'stuid': 'Unknown', 'msg': 'rejected'}
+    return_json = {'result': 'error', 'stuid': 'Unknown', 'msg': 'rejected'}
     flag = False
     uid = request.POST['uid']
     if len(uid) == 10:
         if not uid.isdigit():
-            rtnJSON['result'] = 'error'
-            rtnJSON['stuid'] = 'Unknown'
-            rtnJSON['msg'] = 'rejected'
+            return_json['result'] = 'error'
+            return_json['stuid'] = 'Unknown'
+            return_json['msg'] = 'rejected'
             flag = True
         if not flag:
-            rtnJSON['stuid'] = uid
+            return_json['stuid'] = uid
             try:
-                student = Booker.objects.get(stu_id=uid, status=1)
-            except Exception as e:
-                rtnJSON['msg'] = 'nouser'
+                student = Booker.objects.get(stuid=uid, status=1)
+            except ObjectDoesNotExist:
+                return_json['msg'] = 'nouser'
                 flag = True
             if not flag:
                 try:
-                    ticket = Ticket.objects.get(stu_id=student.stu_id, activity=activity)
+                    ticket = Ticket.objects.get(stuid=student.stuid, activity=activity)
                     if ticket.status == 0:
                         raise 'noticket'
                     elif ticket.status == 2:
-                        rtnJSON['result'] = 'warning'
-                        rtnJSON['msg'] = 'used'
-                        flag = True
+                        return_json['result'] = 'warning'
+                        return_json['msg'] = 'used'
                     elif ticket.status == 1:
                         ticket.status = 2
                         ticket.save()
-                        rtnJSON['msg'] = 'accepted'
-                        rtnJSON['result'] = 'success'
-                        flag = True
-                except:
-                    rtnJSON['msg'] = 'noticket'
-                    flag = True
+                        return_json['msg'] = 'accepted'
+                        return_json['result'] = 'success'
+                except ObjectDoesNotExist:
+                    return_json['msg'] = 'noticket'
     elif len(uid) == 32:
         try:
             ticket = Ticket.objects.get(unique_id=uid, activity=activity)
             if ticket.status == 0:
                 raise 'rejected'
             elif ticket.status == 2:
-                rtnJSON['msg'] = 'used'
-                rtnJSON['stuid'] = ticket.stu_id
-                rtnJSON['result'] = 'warning'
-                flag = True
+                return_json['msg'] = 'used'
+                return_json['stuid'] = ticket.stuid
+                return_json['result'] = 'warning'
             else:
                 ticket.status = 2
                 ticket.save()
-                rtnJSON['result'] = 'success'
-                rtnJSON['stuid'] = ticket.stu_id
-                rtnJSON['msg'] = 'accepted'
-                flag = True
-        except:
-            rtnJSON['result'] = 'error'
-            rtnJSON['stuid'] = 'Unknown'
-            rtnJSON['msg'] = 'rejected'
-            flag = True
+                return_json['result'] = 'success'
+                return_json['stuid'] = ticket.stuid
+                return_json['msg'] = 'accepted'
+        except ObjectDoesNotExist:
+            return_json['result'] = 'error'
+            return_json['stuid'] = 'Unknown'
+            return_json['msg'] = 'rejected'
 
-    return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+    return HttpResponse(json.dumps(return_json), content_type='application/json')
 
 
 def login(request):
     if not request.POST:
         raise Http404
 
-    rtnJSON = {}
-
+    return_json = {}
     username = request.POST.get('username', '')
     password = request.POST.get('password', '')
 
     user = auth.authenticate(username=username, password=password)
     if user is not None and user.is_active:
         auth.login(request, user)
-        rtnJSON['message'] = 'success'
-        rtnJSON['next'] = s_reverse_activity_list()
+        return_json['message'] = 'success'
+        return_json['next'] = s_reverse_activity_list()
     else:
         time.sleep(2)
-        rtnJSON['message'] = 'failed'
+        return_json['message'] = 'failed'
         if User.objects.filter(username=username, is_active=True):
-            rtnJSON['error'] = 'wrong'
+            return_json['error'] = 'wrong'
         else:
-            rtnJSON['error'] = 'none'
+            return_json['error'] = 'none'
 
-    return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+    return HttpResponse(json.dumps(return_json), content_type='application/json')
 
 
 def logout(request):
@@ -168,87 +161,90 @@ def str_to_datetime(strg):
 
 
 def activity_create(activity):
-    preDict = dict()
+    act_dict = dict()
     for k in ['name', 'key', 'description', 'place', 'pic_url', 'seat_status', 'total_tickets']:
-        preDict[k] = activity[k]
+        act_dict[k] = activity[k]
     for k in ['start_time', 'end_time', 'book_start', 'book_end']:
-        preDict[k] = str_to_datetime(activity[k])
-    #preDict['seat_price'] = activity['A']+','+activity['B']+','+activity['C']+','+activity['D']+','+activity['E']+','+activity['F']+','+activity['G']
-    preDict['status'] = 1 if ('publish' in activity) else 0
-    preDict['remain_tickets'] = preDict['total_tickets']
-    preDict['seat_table'] = [[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1]]
-    newact = Activity.objects.create(**preDict)
-    return newact
+        act_dict[k] = str_to_datetime(activity[k])
+    act_dict['status'] = 1 if ('publish' in activity) else 0
+    act_dict['remain_tickets'] = act_dict['total_tickets']
+    act_dict['seat_table'] = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                              [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                              [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                              [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+    new_act = Activity.objects.create(**act_dict)
+    return new_act
+
 
 def seat_create(post, activity):
     seats = Seat.objects.filter(activity=activity)
     if seats.exists():
         seats.delete()
-    preDict = dict()
+    seat_dict = dict()
     if post['seat_status'] == '1':
         for k in ['zongtiA', 'zongtiB', 'zongtiC', 'zongtiD', 'zongtiE']:
             for i in range(int(post[k])):
-                preDict['position_row'] = 0
-                preDict['position_column'] = 0
-                preDict['seat_section'] = k[-1]
-                preDict['price'] = 0
-                preDict['is_selected'] = 0
-                preDict['activity'] = activity
-                newseat = Seat.objects.create(**preDict)
-    elif post['seat_status'] == '3':
-        seatSet = post['seat-list'].split(',')
-        for seat in seatSet:
-            seatInfo = seat.split('-')
-            preDict['position_row'] = int(seatInfo[0])
-            preDict['position_column'] = int(seatInfo[1])
-            preDict['seat_section'] = seatInfo[2].encode('utf8')
-            preDict['price'] = int(post[seatInfo[2]])
-            preDict['is_selected'] = 0
-            preDict['activity'] = activity
-            newseat = Seat.objects.create(**preDict)
+                seat_dict['position_row'] = 0
+                seat_dict['position_column'] = 0
+                seat_dict['seat_section'] = k[-1]
+                seat_dict['price'] = 0
+                seat_dict['is_selected'] = 0
+                seat_dict['activity'] = activity
+                new_seat = Seat.objects.create(**seat_dict)
+    elif post['seat_status'] == '2':
+        for row in range(1, 5):
+            for column in range(1, 11):
+                seat_dict['position_row'] = row
+                seat_dict['position_column'] = column
+                seat_dict['seat_section'] = ''
+                seat_dict['price'] = 0
+                seat_dict['is_selected'] = 0
+                seat_dict['activity'] = activity
+                new_seat = Seat.objects.create(**seat_dict)
+
 
 def activity_modify(activity):
-    nowact = Activity.objects.get(id=activity['id'])
+    now_act = Activity.objects.get(id=activity['id'])
     now = datetime.now()
-    if nowact.status == 0:
-        keylist = ['name', 'key', 'description', 'place', 'pic_url', 'seat_status', 'total_tickets']
-        timelist = ['start_time', 'end_time', 'book_start', 'book_end']
-        seat_create(activity, nowact)
-    elif nowact.status == 1:
-        if now >= nowact.start_time:
-            keylist = ['description', 'pic_url']
-            timelist = ['start_time', 'end_time']
-        elif now >= nowact.book_start:
-            keylist = ['description', 'place', 'pic_url']
-            timelist = ['start_time', 'end_time', 'book_end']
+    if now_act.status == 0:
+        key_list = ['name', 'key', 'description', 'place', 'pic_url', 'seat_status', 'total_tickets']
+        time_list = ['start_time', 'end_time', 'book_start', 'book_end']
+        seat_create(activity, now_act)
+    elif now_act.status == 1:
+        if now >= now_act.start_time:
+            key_list = ['description', 'pic_url']
+            time_list = ['start_time', 'end_time']
+        elif now >= now_act.book_start:
+            key_list = ['description', 'place', 'pic_url']
+            time_list = ['start_time', 'end_time', 'book_end']
         else:
-            keylist = ['description', 'place', 'pic_url', 'seat_status', 'total_tickets']
-            timelist = ['start_time', 'end_time', 'book_end']
-            seat_create(activity, nowact)
+            key_list = ['description', 'place', 'pic_url', 'seat_status', 'total_tickets']
+            time_list = ['start_time', 'end_time', 'book_end']
+            seat_create(activity, now_act)
     else:
-        keylist = []
-        timelist = []
-    for key in keylist:
+        key_list = []
+        time_list = []
+    for key in key_list:
         if key == 'total_tickets':
-            setattr(nowact, 'remain_tickets', activity[key])
-        setattr(nowact, key, activity[key])
-    for key in timelist:
-        setattr(nowact, key, str_to_datetime(activity[key]))
-    if (nowact.status == 0) and ('publish' in activity):
-        nowact.status = 1
-    nowact.save()
-    return nowact
+            setattr(now_act, 'remain_tickets', activity[key])
+        setattr(now_act, key, activity[key])
+    for key in time_list:
+        setattr(now_act, key, str_to_datetime(activity[key]))
+    if (now_act.status == 0) and ('publish' in activity):
+        now_act.status = 1
+    now_act.save()
+    return now_act
 
 
 @csrf_exempt
 def activity_delete(request):
-    requestdata = request.POST
-    if not requestdata:
+    request_data = request.POST
+    if not request_data:
         raise Http404
-    curact = Activity.objects.get(id=requestdata.get('activityId', ''))
-    curact.status = -1
-    curact.save()
-    #删除后刷新界面
+    current_act = Activity.objects.get(id=request_data.get('activityId', ''))
+    current_act.status = -1
+    current_act.save()
+    # 删除后刷新界面
     return HttpResponse('OK')
 
 
@@ -264,20 +260,6 @@ def wrap_activity_dict(activity):
         dt['checked_tickets'] = get_checked_tickets(activity)
     return dt
 
-##def wrap_seat(seats):
-##    rt = []
-##    for x in seats:
-##<<<<<<< HEAD
-##        temp = str(x.position_row) + '-' + str(x.position_column)
-##        print temp
-##        rt.append(temp.encode("utf8"))
-##=======
-##        dt = model_to_dict(x)
-##        temp = '' + str(dt['position_row']).encode('utf8') + '-' + str(dt['position_column']).encode('utf8')
-##        rt.append(temp)
-##>>>>>>> e0b18219f6e8a4a588cad079079b0f97a28ab8f4
-##    return rt
-##
 
 def activity_add(request):
     if not request.user.is_authenticated():
@@ -287,26 +269,49 @@ def activity_add(request):
         'activity': {
             'name': u'新建活动',
         },
-        'seats_list':[[0,1,1,1,1,1,1,1,1,1,1,1,1,0],[0,1,1,1,1,1,1,1,1,1,1,1,1,0],[0,2,2,2,2,2,2,2,2,2,2,2,2,0],[0,2,2,2,2,2,2,2,2,2,2,2,2,0],[0,3,3,3,3,3,3,3,3,3,3,3,3,0],[0,0,3,3,3,3,3,3,3,3,3,3,0,0],[0,0,4,4,4,4,4,4,4,4,4,4,0,0],[0,4,4,4,4,4,4,4,4,4,4,4,4,0],[0,5,5,5,5,5,5,5,5,5,5,5,5,0],[0,5,5,5,5,5,5,5,5,5,5,5,5,0],[0,6,6,6,6,6,6,6,6,6,6,6,6,0],[0,6,6,6,6,6,6,6,6,6,6,6,6,0],[0,7,7,7,7,7,7,7,7,7,7,7,7,0],[0,7,7,7,7,7,7,7,7,7,7,7,7,0]],
-        'chosen_seats': [] 
+        'seats_list': [[0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                       [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                       [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0],
+                       [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0],
+                       [0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0],
+                       [0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0],
+                       [0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0],
+                       [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0],
+                       [0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0],
+                       [0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0],
+                       [0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0],
+                       [0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0],
+                       [0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 0],
+                       [0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 0]],
+        'chosen_seats': []
     }, context_instance=RequestContext(request))
 
 
-def activity_detail(request, actid):
+def activity_detail(request, act_id):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(s_reverse_admin_home())
 
     try:
-        activity = Activity.objects.get(id=actid)
-        #seats = Seat.objects.filter(activity=activity)
+        activity = Activity.objects.get(id=act_id)
         unpublished = (activity.status == 0)
     except:
         raise Http404
     return render_to_response('activity_detail.html', {
         'activity': wrap_activity_dict(activity),
         'unpublished': unpublished,
-        'seats_list':[[0,1,1,1,1,1,1,1,1,1,1,1,1,0],[0,1,1,1,1,1,1,1,1,1,1,1,1,0],[0,2,2,2,2,2,2,2,2,2,2,2,2,0],[0,2,2,2,2,2,2,2,2,2,2,2,2,0],[0,3,3,3,3,3,3,3,3,3,3,3,3,0],[0,0,3,3,3,3,3,3,3,3,3,3,0,0],[0,0,4,4,4,4,4,4,4,4,4,4,0,0],[0,4,4,4,4,4,4,4,4,4,4,4,4,0],[0,5,5,5,5,5,5,5,5,5,5,5,5,0],[0,5,5,5,5,5,5,5,5,5,5,5,5,0],[0,6,6,6,6,6,6,6,6,6,6,6,6,0],[0,6,6,6,6,6,6,6,6,6,6,6,6,0],[0,7,7,7,7,7,7,7,7,7,7,7,7,0],[0,7,7,7,7,7,7,7,7,7,7,7,7,0]]
-        #'chosen_seats': wrap_seat(seats)
+        'seats_list': [[0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                       [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                       [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0],
+                       [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0],
+                       [0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0],
+                       [0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0],
+                       [0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0],
+                       [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0],
+                       [0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0],
+                       [0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0],
+                       [0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0],
+                       [0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0],
+                       [0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 0]]
     }, context_instance=RequestContext(request))
 
 
@@ -325,30 +330,31 @@ def activity_post(request):
     if not request.POST:
         raise Http404
     post = request.POST
-    rtnJSON = dict()
+    return_json = dict()
     try:
         if 'id' in post:
             activity = activity_modify(post)
         else:
-            iskey = Activity.objects.filter(key=post['key'])
-            if iskey:
+            is_key = Activity.objects.filter(key=post['key'])
+            if is_key:
                 now = datetime.now()
-                for keyact in iskey:
-                    if now < keyact.end_time:
-                        rtnJSON['error'] = u"当前有活动正在使用该活动代称"
-                        return HttpResponse(json.dumps(rtnJSON, cls=DatetimeJsonEncoder),
+                for key_act in is_key:
+                    if now < key_act.end_time:
+                        return_json['error'] = u"当前有活动正在使用该活动代称"
+                        return HttpResponse(json.dumps(return_json, cls=DatetimeJsonEncoder),
                                             content_type='application/json')
             activity = activity_create(post)
             seat_create(post, activity)
-            rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)
-        rtnJSON['activity'] = wrap_activity_dict(activity)
+            return_json['updateUrl'] = s_reverse_activity_detail(activity.id)
+        return_json['activity'] = wrap_activity_dict(activity)
         if 'publish' in post:
-            updateErr = json.loads(add_new_custom_menu(name=activity.key, key=WEIXIN_BOOK_HEADER + str(activity.id))).get('errcode', 'err')
-            if updateErr != 0:
-                rtnJSON['error'] = u'活动创建成功，但更新微信菜单失败，请手动更新:(  \r\n错误代码：%s' % updateErr
+            update_error = json.loads(add_new_custom_menu(
+                name=activity.key, key=WEIXIN_BOOK_HEADER + str(activity.id))).get('errcode', 'err')
+            if update_error != 0:
+                return_json['error'] = u'活动创建成功，但更新微信菜单失败，请手动更新:(  \r\n错误代码：%s' % update_error
     except Exception as e:
-        rtnJSON['error'] = str(e)
-    return HttpResponse(json.dumps(rtnJSON, cls=DatetimeJsonEncoder), content_type='application/json')
+        return_json['error'] = str(e)
+    return HttpResponse(json.dumps(return_json, cls=DatetimeJsonEncoder), content_type='application/json')
 
 
 def order_index(request):
@@ -359,16 +365,15 @@ def order_login(request):
     if not request.POST:
         raise Http404
 
-    rtnJSON = {}
-
+    return_json = {}
     username = request.POST.get('username', '')
     password = request.POST.get('password', '')
 
     try:
-        Booker.objects.get(stu_id=username)
-    except:
-        rtnJSON['message'] = 'none'
-        return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+        Booker.objects.get(stuid=username)
+    except ObjectDoesNotExist:
+        return_json['message'] = 'none'
+        return HttpResponse(json.dumps(return_json), content_type='application/json')
 
     req_data = urllib.urlencode({'userid': username, 'userpass': password, 'submit1': u'登录'.encode('gb2312')})
     request_url = 'https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp'
@@ -383,12 +388,12 @@ def order_login(request):
     if 'loginteacher_action.jsp' in res:
         request.session['stuid'] = username
         request.session.set_expiry(0)
-        rtnJSON['message'] = 'success'
-        rtnJSON['next'] = s_reverse_order_list()
+        return_json['message'] = 'success'
+        return_json['next'] = s_reverse_order_list()
     else:
-        rtnJSON['message'] = 'failed'
+        return_json['message'] = 'failed'
 
-    return HttpResponse(json.dumps(rtnJSON), content_type='application/json')
+    return HttpResponse(json.dumps(return_json), content_type='application/json')
 
 
 def order_logout(request):
@@ -397,23 +402,20 @@ def order_logout(request):
 
 def order_list(request):
 
-    if not 'stuid' in request.session:
+    if not ('stuid' in request.session):
         return HttpResponseRedirect(s_reverse_order_index())
 
-    stuid = request.session['stuid']
+    student_id = request.session['stuid']
 
     orders = []
-    qset = Ticket.objects.filter(stu_id = stuid)
+    queryset = Ticket.objects.filter(stuid=student_id)
 
-    for x in qset:
+    for x in queryset:
         item = {}
-
-        activity = Activity.objects.get(id = x.activity_id)
+        activity = Activity.objects.get(id=x.activity_id)
 
         item['name'] = activity.name
-
         item['start_time'] = activity.start_time
-
         item['end_time'] = activity.end_time
         item['place'] = activity.place
         item['seat'] = x.seat
@@ -423,27 +425,26 @@ def order_list(request):
 
     return render_to_response('order_list.html', {
         'orders': orders,
-        'stuid':stuid
+        'stuid': student_id
     }, context_instance=RequestContext(request))
 
 
 def print_ticket(request, unique_id):
 
-    if not 'stuid' in request.session:
+    if not ('stuid' in request.session):
         return HttpResponseRedirect(s_reverse_order_index())
 
     try:
-        ticket = Ticket.objects.get(unique_id = unique_id)
-        activity = Activity.objects.get(id = ticket.activity_id)
-        #qr_addr = "http://tsinghuaqr.duapp.com/fit/" + unique_id
+        ticket = Ticket.objects.get(unique_id=unique_id)
+        activity = Activity.objects.get(id=ticket.activity_id)
         qr_addr = QRCODE_URL + "/fit/" + unique_id
-    except:
+    except ObjectDoesNotExist:
         raise Http404
 
     return render_to_response('print_ticket.html', {
         'qr_addr': qr_addr,
         'activity': activity,
-        'stu_id':ticket.stu_id
+        'stuid':ticket.stuid
     }, context_instance=RequestContext(request))
 
 
@@ -466,20 +467,20 @@ def custom_menu_get(request):
     custom_buttons = get_custom_menu()
     current_menu = []
     for button in custom_buttons:
-        sbtns = button.get('sub_button', [])
-        if len(sbtns) > 0:
-            tmpkey = sbtns[0].get('key', '')
-            if (not tmpkey.startswith(WEIXIN_BOOK_HEADER + 'W')) and tmpkey.startswith(WEIXIN_BOOK_HEADER):
-                current_menu = sbtns
+        sub_button = button.get('sub_button', [])
+        if len(sub_button) > 0:
+            temp_key = sub_button[0].get('key', '')
+            if (not temp_key.startswith(WEIXIN_BOOK_HEADER + 'W')) and temp_key.startswith(WEIXIN_BOOK_HEADER):
+                current_menu = sub_button
                 break
     if auto_clear_old_menus(current_menu):
         modify_custom_menu(json.dumps(get_custom_menu_with_book_acts(current_menu), ensure_ascii=False).encode('utf8'))
     wrap_menu = []
     for menu in current_menu:
         wrap_menu += [{
-                          'name': menu['name'],
-                          'id': int(menu['key'].split('_')[-1]),
-                      }]
+            'name': menu['name'],
+            'id': int(menu['key'].split('_')[-1]),
+        }]
     return HttpResponse(json.dumps(wrap_menu), content_type='application/json')
 
 
@@ -490,27 +491,28 @@ def custom_menu_modify_post(request):
         raise Http404
     if not request.POST:
         raise Http404
-    if not 'menus' in request.POST:
+    if not ('menus' in request.POST):
         raise Http404
     menus = json.loads(request.POST.get('menus', ''))
     sub_button = []
     for menu in menus:
         sub_button += [{
-                           'type': 'click',
-                           'name': menu['name'],
-                           'key': 'TSINGHUA_BOOK_' + str(menu['id']),
-                           'sub_button': [],
-                       }]
-    return HttpResponse(modify_custom_menu(json.dumps(get_custom_menu_with_book_acts(sub_button), ensure_ascii=False).encode('utf8')),
-                        content_type='application/json')
+            'type': 'click',
+            'name': menu['name'],
+            'key': 'TSINGHUA_BOOK_' + str(menu['id']),
+            'sub_button': [],
+        }]
+    return HttpResponse(
+        modify_custom_menu(json.dumps(get_custom_menu_with_book_acts(sub_button), ensure_ascii=False).encode('utf8')),
+        content_type='application/json')
 
 
-def activity_export_stunum(request, actid):
+def activity_export_stunum(request, act_id):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(s_reverse_admin_home())
     try:
-        activity = Activity.objects.get(id=actid)
-    except:
+        activity = Activity.objects.get(id=act_id)
+    except ObjectDoesNotExist:
         raise Http404
 
     tickets = Ticket.objects.filter(activity=activity)
@@ -523,19 +525,19 @@ def activity_export_stunum(request, actid):
     ws = wb.add_sheet(activity.name)
     row = 1
     write_row(ws, 0, [u'学号', u'状态', u'座位'])
-    statusMap = [u'已取消', u'未入场', u'已入场']
+    status_map = [u'已取消', u'未入场', u'已入场']
     for ticket in tickets:
-        write_row(ws, row, [ticket.stu_id, statusMap[ticket.status], ticket.seat])
-        row = row + 1
-##########################################定义Content-Disposition，让浏览器能识别，弹出下载框
-    fname = 'activity' + actid + '.xls'
-    agent=request.META.get('HTTP_USER_AGENT')
-    if agent and re.search('MSIE',agent):
+        write_row(ws, row, [ticket.stuid, status_map[ticket.status], ticket.seat])
+        row += 1
+    # 定义Content-Disposition，让浏览器能识别，弹出下载框
+    file_name = 'activity' + act_id + '.xls'
+    agent = request.META.get('HTTP_USER_AGENT')
+    if agent and re.search('MSIE', agent):
         response = HttpResponse(content_type="application/vnd.ms-excel")  # 解决ie不能下载的问题
-        response['Content-Disposition'] = 'attachment; filename=%s' % urlquote(fname)  # 解决文件名乱码/不显示的问题
+        response['Content-Disposition'] = 'attachment; filename=%s' % urlquote(file_name)  # 解决文件名乱码/不显示的问题
     else:
         response = HttpResponse(content_type="application/ms-excel")  # 解决ie不能下载的问题
-        response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(fname)  # 解决文件名乱码/不显示的问题
-    ##########################################保存
+        response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_name)  # 解决文件名乱码/不显示的问题
+    # 保存
     wb.save(response)
     return response
