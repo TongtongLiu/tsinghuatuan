@@ -52,12 +52,12 @@
     <script>
 	$(document).ready(function(){
 	  $("a.a_collapse1").click(function(){
-	  	$("a.a_collapse1 span").toggleClass("glyphicon-chevron-down");
-	  	$("a.a_collapse1 span").toggleClass("glyphicon-chevron-up");
+	  	$("a.a_collapse1 span.glyphicon").toggleClass("glyphicon-chevron-down");
+	  	$("a.a_collapse1 span.glyphicon").toggleClass("glyphicon-chevron-up");
 	  });
       $("a.a_collapse2").click(function(){
-        $("a.a_collapse2 span").toggleClass("glyphicon-chevron-down");
-	  	$("a.a_collapse2 span").toggleClass("glyphicon-chevron-up");
+        $("a.a_collapse2 span.glyphicon").toggleClass("glyphicon-chevron-down");
+	  	$("a.a_collapse2 span.glyphicon").toggleClass("glyphicon-chevron-up");
 	  });
 	});
 	</script>
@@ -65,7 +65,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <a class="a_collapse1" data-toggle="collapse" href="#bind_activity_collapse" style="display: block; width: 100%">
-          	已绑定活动<span class="glyphicon glyphicon-chevron-down" style="float: right"></span>
+          	已绑定活动{{ binds.length }}<span class="glyphicon glyphicon-chevron-down" style="float: right"></span>
         	</a>
         </div>
         <div id="bind_activity_collapse" aria-expanded="false" class="collapse" style="height: 0px;">
@@ -132,17 +132,29 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <a class="a_collapse2" data-toggle="collapse" href="#not_bind_activity_collapse" style="display: block; width: 100%">
-          	待确认绑定信息<span class="glyphicon glyphicon-chevron-down" style="float: right"></span>
+          	待确认绑定信息&nbsp;<span class="badge" style="background-color:#428bca">5</span><span class="glyphicon glyphicon-chevron-down" style="float: right"></span>
         	</a>
         </div>
         <div id="not_bind_activity_collapse" aria-expanded="false" class="collapse" style="height: 0px;">
-        {% if not binds %}
+        {% if not binds_info %}
             <p style="text-align: center; font-weight: bold; margin-top: 5px;">暂无</p>
         {% else %}
-            {% for bind in binds %}
+            {% for bind in binds_info %}
             <script type="text/javascript">
             $( document ).ready( function() {
-                $( '#btn{{ bind.unique_id }}' ).click( function() {
+                $( '#btn_confirm{{ bind.unique_id }}' ).click( function() {
+                     $.post("",
+                     {
+                        unique_id:"{{ bind.unique_id }}"
+                     },
+                     function(data, status){
+                       $( '#div{{ bind.unique_id }}' ).remove();
+                       if($('.panel .btn-sm').length == 0) {
+                       $('.panel-heading').eq(1).after("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                   }
+                     });
+                });
+                $( '#btn_cancel{{ bind.unique_id }}' ).click( function() {
                      $.post("",
                      {
                         unique_id:"{{ bind.unique_id }}"
@@ -159,6 +171,7 @@
             <div class="panel-body" id="div{{ bind.unique_id }}">
                 <div class="panel panel-default">
                     <div class="panel-body">
+<<<<<<< HEAD
                         <p>活动名称：{{ bind.activity.name }}</p>
                         {% if stuid == bind.active_stuid %}
                             <p>绑定状态：主动（可抢票）</p>
@@ -166,25 +179,29 @@
                         {% else %}
                             <p>绑定状态：被动（等待对方抢票）</p>
                             <p>对方学号：{{ bind.active_stuid }}</p>
+=======
+                        <p>请求绑定方学号：{{ bind.active_stu_id }}</p>
+                        <p>请求绑定活动：{{ bind.activity.name }}</p>
+                        {% if stu_id == bind.active_stu_id %}
+                            <p>确定后的绑定状态：主动（可抢票）</p>
+                        {% else %}
+                            <p>确定后的绑定状态：被动（等待对方抢票）</p>
+>>>>>>> ae072fe090cd22724b68075d27cd908a33458835
                         {% endif %}
-                        <p>抢票开始时间：{{ bind.activity.book_start }}</p>
-                        <p>抢票结束时间：{{ bind.activity.book_end }}</p>
-                        <p>当前剩余票数：{{ bind.activity.remain_tickets }}</p>
-                        <button class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#model{{ bind.unique_id }}">解绑</button>
+                        <button class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#model{{ bind.unique_id }}">处理请求</button>
                     </div>
                 </div>
             </div>
-             <!-- 解绑警告信息 -->
+             <!-- 处理请求模态框 -->
             <div class="modal fade" id="model{{ bind.unique_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                <div class="modal-dialog">
                   <div class="modal-content">
                      <div class="modal-body">
-                        是否确定绑定？
+                        处理绑定请求╮(╯▽╰)╭
                      </div>
                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-danger" id="btn{{ bind.unique_id }}" data-dismiss="modal">确定</button>
-                        <button type="button" class="btn btn-default"
-                           data-dismiss="modal">取消
+                        <button type="submit" class="btn btn-primary" id="btn_confirm{{ bind.unique_id }}" data-dismiss="modal">确认绑定</button>
+                        <button type="submit" class="btn btn-default" id="btn_cancel{{ bind.unique_id }}" data-dismiss="modal">残忍拒绝
                         </button>
                      </div>
                   </div>
