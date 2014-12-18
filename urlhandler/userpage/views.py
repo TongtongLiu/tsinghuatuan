@@ -542,7 +542,6 @@ def views_seats(request, uid):
             seats_list = []
         else:
             seats_list = json.loads(ticket[0].activity.seat_table)
-        print '%s\n' % seats_list
         ticket_id = uid
         act_title = ticket[0].activity.name
         act_place = ticket[0].activity.place
@@ -708,6 +707,7 @@ def section_select(post):
         return seat
 
 
+@csrf_exempt
 def select_seats_xinqing_post(request):
     if not request.POST:
         information = "出了点莫名其妙的错误"
@@ -735,9 +735,7 @@ def select_seats_xinqing_post(request):
             return_json['next_url'] = s_reverse_ticket_detail(post['ticket_id'])
         return HttpResponse(json.dumps(return_json), content_type='application/json')
     except Exception:
-        information = "出了点莫名其妙的错误"
-        href = WEIXIN_OAUTH2_URL
-        return render_to_response('404.html', {'information': information, 'href': href})
+        return HttpResponse(json.dumps(return_json), content_type='application/json')
 
 
 def get_valid_seat(uid):
