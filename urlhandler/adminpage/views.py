@@ -17,7 +17,7 @@ from urlhandler.urlhandler.models import Activity, Ticket, Seat
 from urlhandler.urlhandler.models import User as Booker
 from weixinlib.custom_menu import get_custom_menu, modify_custom_menu, add_new_custom_menu, auto_clear_old_menus
 from weixinlib.settings import get_custom_menu_with_book_acts, WEIXIN_BOOK_HEADER
-from adminpage.safe_reverse import *
+from urlhandler.adminpage.safe_reverse import *
 
 import xlwt
 import re
