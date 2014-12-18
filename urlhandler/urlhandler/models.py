@@ -57,6 +57,7 @@ class Bind(models.Model):
     active_stu_id = models.CharField(max_length=255)
     passive_stu_id = models.CharField(max_length=255)
     unique_id = models.CharField(max_length=255)
+    status = models.IntegerField()
 
 
 class Seat(models.Model):
