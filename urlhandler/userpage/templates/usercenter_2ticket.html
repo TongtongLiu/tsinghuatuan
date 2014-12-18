@@ -16,8 +16,8 @@
                 <div class="input-group" id="activityGroup">
                     <span class="input-group-addon">选择活动</span>
                     <select class="form-control" id="selectActivity" name="activity_name" onblur="checkActivity();">
-                        {% for aty in aty_canBind %}
-                            <option value="{{ aty.name }}" id="opt{{ aty.name }}">{{ aty.name }}</option>
+                        {% for activity in activity_valid %}
+                            <option value="{{ activity.name }}" id="opt{{ activity.name }}">{{ activity.name }}</option>
                         {% endfor %}
                     </select>
                     {% for bind in binds %}
@@ -35,9 +35,9 @@
                     </script>
                     {% endfor %}
                 </div>
-                <div class="input-group" id="tokenGroup">
+                <div class="input-group" id="studentIDGroup">
                     <span class="input-group-addon">对方学号</span>
-                    <input type="text" class="form-control" id="inputToken" placeholder="请输入对方的学号" name="token" onblur="checkToken();">
+                    <input type="text" class="form-control" id="inputStudentID" placeholder="请输入对方的学号" name="student_id" onblur="checkStudentID();">
                 </div>
                 <button onclick="ajaxForm();" class="btn btn-default btn-block" id="submitBtn" style="margin-top: 5px">绑定</button>
                 <div class="input-group" id="submitGroup">

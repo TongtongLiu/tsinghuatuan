@@ -21,7 +21,7 @@ function clearHelp(groupid, helpid) {
 
 function clearAllHelps() {
     clearHelp('activityGroup', 'helpActivity');
-    clearHelp('tokenGroup', 'helpToken');
+    clearHelp('studentIDGroup', 'helpStudentID');
     clearHelp('submitGroup', 'helpSubmit');
 }
 
@@ -50,7 +50,7 @@ function disableOne(id, flag) {
 
 function disableAll(flag) {
     disableOne('selectActivity', flag);
-    disableOne('inputToken', flag);
+    disableOne('inputStudentID', flag);
     disableOne('submitBtn', flag);
 }
 
@@ -77,8 +77,8 @@ function uc_readyStateChanged() {
                     showError('submitGroup', 'helpSubmit', '对方在该活动中已绑定，请解绑后重试。');
                     break;
 
-                case 'TokenError':
-                    showError('submitGroup', 'helpSubmit', '令牌不正确或者已过期，请重新输入。');
+                case 'StudentIDError':
+                    showError('submitGroup', 'helpSubmit', '学号不存在或尚未登录，请重新输入。');
                     break;
 
                 case 'HaveTicket':
@@ -107,7 +107,7 @@ function uc_readyStateChanged() {
 }
 
 function uc_bind2ticket(openid) {
-    if (checkActivity() & checkToken()) {
+    if (checkActivity() & checkStudentID()) {
         disableAll(true);
         showLoading(true);
 
@@ -125,7 +125,7 @@ function uc_bind2ticket(openid) {
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xmlhttp.onreadystatechange = uc_readyStateChanged;
         xmlhttp.send(params);
-        document.getElementById('inputToken').value = '';
+        document.getElementById('inputStudentID').value = '';
     }
     return false;
 }
@@ -148,8 +148,8 @@ function checkActivity() {
     return checkNotEmpty('activityGroup', 'helpActivity', 'selectActivity', '选择活动');
 }
 
-function checkToken() {
-    return checkNotEmpty('tokenGroup', 'helpToken', 'inputToken', '对方令牌');
+function checkStudentID() {
+    return checkNotEmpty('studentIDGroup', 'helpStudentID', 'inputStudentID', '对方学号');
 }
 
 window.setupWeixin({'optionMenu':false, 'toolbar':false});

@@ -501,14 +501,16 @@ def uc_2ticket(request, openid):
             is_validated = 1
             binds = select_binds_by_stu_id(users[0].stu_id)
             tickets = select_tickets_unused_by_stu_id(users[0].stu_id)
-            aty_can_bind = select_activities_valid()
+            activity_valid = select_activities_valid()
             return render_to_response('usercenter_2ticket.html', {
                 'isValidated': is_validated,
                 'weixin_id': openid,
                 'stu_id': users[0].stu_id,
-                'aty_canBind': aty_can_bind,
+                'activity_valid': activity_valid,
                 'binds': binds,
-                'tickets': tickets
+                'tickets': tickets,
+                'binds_info': 123,
+                'binds_info_len': 123
             }, context_instance=RequestContext(request))
         else:
             is_validated = 0
