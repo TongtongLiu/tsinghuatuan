@@ -181,6 +181,7 @@ def seat_create(post, activity):
     if seats.exists():
         seats.delete()
     seat_dict = dict()
+    print post['seat_status']
     if post['seat_status'] == '1':
         for k in ['zongtiA', 'zongtiB', 'zongtiC', 'zongtiD', 'zongtiE']:
             for i in range(int(post[k])):
@@ -194,6 +195,8 @@ def seat_create(post, activity):
     elif post['seat_status'] == '2':
         for row in range(1, 5):
             for column in range(1, 11):
+                print row
+                print column
                 seat_dict['position_row'] = row
                 seat_dict['position_column'] = column
                 seat_dict['seat_section'] = ''

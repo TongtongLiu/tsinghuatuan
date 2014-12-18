@@ -109,7 +109,7 @@ def delete_binds_of_user(user):
         user.save()
         User.objects.filter(stu_id=bind.passive_stu_id, status=1).update(bind_count=F('bind_count')-1)
     binds1.delete()
-    binds2 = Bind.objects.filter(passive_stu_id=user[0].stu_id)
+    binds2 = Bind.objects.filter(passive_stu_id=user.stu_id)
     for bind in binds2:
         bind_count = user.bind_count - 1
         user.bind_count = bind_count
