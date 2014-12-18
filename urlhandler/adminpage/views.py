@@ -435,7 +435,8 @@ def print_ticket(request, unique_id):
     try:
         ticket = Ticket.objects.get(unique_id = unique_id)
         activity = Activity.objects.get(id = ticket.activity_id)
-        qr_addr = "http://tsinghuaqr.duapp.com/fit/" + unique_id
+        #qr_addr = "http://tsinghuaqr.duapp.com/fit/" + unique_id
+        qr_addr = "127.0.0.1/qrcode/fit/" + unique_id
     except:
         raise Http404
 
