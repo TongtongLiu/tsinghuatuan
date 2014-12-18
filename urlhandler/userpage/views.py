@@ -1,24 +1,26 @@
 #-*- coding:utf-8 -*-
+
+import datetime
 from django.db import transaction
 from django.db.models import F, Q
 from django.http import HttpResponse, Http404
-from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
+from django.template import RequestContext
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+import json
+import random
+import string
+import time
 import urllib
 import urllib2
-import datetime
-import time
-import json
-import string
-import random
+
+from queryhandler.settings import QRCODE_URL
 from urlhandler.models import User, Activity, Ticket, Bind, Seat
 from userpage.safe_reverse import *
 from weixinlib import http_get
 from weixinlib.settings import WEIXIN_OAUTH2_URL
 from weixinlib.weixin_urls import WEIXIN_URLS
-from queryhandler.settings import QRCODE_URL
 
 
 def home(request):
