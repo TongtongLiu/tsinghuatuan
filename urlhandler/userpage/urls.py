@@ -1,9 +1,9 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import patterns, url
 
 urlpatterns = patterns('',
                        url(r'^$', 'userpage.views.home'),
-                       url(r'^validate/try/$', 'userpage.views.validate_post'),
-                       url(r'^validate/try_auth/$', 'userpage.views.validate_post_auth'),
+                       # url(r'^validate/try/$', 'userpage.views.validate_post'),
+                       # url(r'^validate/try_auth/$', 'userpage.views.validate_post_auth'),
                        url(r'^validate/uc_try_auth/$', 'userpage.views.uc_validate_post_auth'),
                        url(r'^validate/time_auth/$', 'userpage.views.validate_get_time_auth'),
                        url(r'^validate/(?P<openid>\S+)/$', 'userpage.views.validate_view'),
