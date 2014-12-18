@@ -725,9 +725,17 @@ def seats_select(seats_selected, ticket, activity):
             seat.save()
             partner_ticket.seat = seats_selected[1]
             partner_ticket.save()
+            change_seat_status(activity, row_2, column_2, 2)
         seat = seat_1_db[0]
         seat.is_selected = 1
         seat.save()
         ticket.seat = seats_selected[0]
         ticket.save()
+        change_seat_status(activity, row_1, column_1, 2)
         return seat
+
+def change_seat_status(activity, row, column, status):
+    seat_table = json.loads(activity.seat_table)
+    seat_table[row][column] = status
+    activity.seat_table = json.dumps(seat_table)
+    activity.save()
