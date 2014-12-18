@@ -16,6 +16,7 @@ import urllib
 import urllib2
 
 from queryhandler.settings import QRCODE_URL
+from queryhandler.weixin_msg import get_msg_create_time
 from urlhandler.urlhandler.models import User, Activity, Ticket, Bind, Seat
 from urlhandler.userpage.safe_reverse import *
 from weixinlib import http_get
@@ -612,7 +613,7 @@ def views_seats_zongti(request, uid):
     ticket = Ticket.objects.filter(unique_id=uid, status=1)
     if not ticket.exists():
         information = "该票无效"
-        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
     else:
         ticket_id = str(uid)
@@ -625,7 +626,7 @@ def views_seats_zongti(request, uid):
 def views_seats_zongti_post(request):
     if not request.POST:
         information = "出了点莫名其妙的错误"
-        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
     post = request.POST
     return_json = dict()
@@ -648,7 +649,7 @@ def views_seats_zongti_post(request):
         return HttpResponse(json.dumps(return_json), content_type='application/json')
     except Exception as e:
         information = "出了点莫名其妙的错误"
-        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
 
 def get_seat_left(uid):
@@ -701,7 +702,7 @@ def section_select(post):
 def views_xinqing_post(request):
     if not request.POST:
         information = "出了点莫名其妙的错误"
-        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
     post = request.POST
     return_json = dict()
@@ -726,7 +727,7 @@ def views_xinqing_post(request):
         return HttpResponse(json.dumps(return_json), content_type='application/json')
     except Exception as e:
         information = "出了点莫名其妙的错误"
-        href="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+WEIXIN_APPID+"&redirect_uri="+"http://wx2.igeek.asia/u/uc_center"+"&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
+        href = WEIXIN_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
 
 def get_valid_seat(uid):
@@ -760,6 +761,7 @@ def seats_select(seats_selected, ticket, activity):
             row_2 = seat_2[1]
             column_2 = seat_2[2]
             seat_2_db = Seat.objects.filter(position_row=row_2, position_column=column_2, seat_section=section_2, is_selected=0, activity=activity)
+            return_json = {}
             if not seat_2_db.exists():
                 return_json['msg'] = 'NoSeat'
                 return_json['seat_left'] = json.dumps(get_valid_seat(post['ticket_id']))
