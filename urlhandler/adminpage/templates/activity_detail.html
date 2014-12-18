@@ -345,7 +345,13 @@
                            提示
                         </h4>
                      </div>
-                    <div class="modal-body">您不需要选座哦~</div>
+                    <div class="modal-body">
+                        您不需要选座哦~请设置抢票数量
+                        <label for="input-total_tickets" class="col-sm-2 control-label">总票数</label>
+                            <div class="col-sm-10">
+                                <input type="number" name="total_tickets" class="form-control" id="input-   total_tickets" min="1" placeholder="此次活动通过“紫荆之声”的发票总数，如 1000">
+                            </div>
+                    </div>
                     <div class="modal-footer">
                         <button type="button" onclick="getSeatPosition();" class="btn btn-primary" data-dismiss="modal">
                            关闭
@@ -403,11 +409,10 @@
                                    <p id="totalTicketsNumber">共计选择：<span id="count">0</span>张票</p>
                                 </div>
                             </div>
-                            <input type="text" name="total_tickets" id="total-tickets" style="display: none;" />
+                            <!--
+                            <input type="text" name="total_tickets" id="total-tickets" style="display: none;" /> -->
                         </div>
-                        <div id="bottom">
-                            <
-                        </div>
+                        <div id="bottom"></div>
                     </div>
         
                     <div id="clear-float"></div>

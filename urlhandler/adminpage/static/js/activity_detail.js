@@ -512,7 +512,7 @@ function calculateTickets(){
 
 function recordTicketsCount(){
     var count = $('#count').text();
-    $('#total-tickets').val(count);
+    $('#input-total-tickets').val(count);
 }
 
 function clearSeat() {
