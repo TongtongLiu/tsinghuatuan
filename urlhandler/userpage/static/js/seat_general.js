@@ -73,6 +73,10 @@ function submitComplete(data) {
     alert('submitComplete');
 }
 
+function beforeSubmit(data) { 
+
+}
+
 
 var moveableDiv = document.getElementById('moveableDiv');
 var dx, dy;

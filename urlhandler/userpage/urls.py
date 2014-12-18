@@ -23,6 +23,6 @@ urlpatterns = patterns('',
                        url(r'^seat/(?P<uid>\S+)/$', 'userpage.views.views_seats'),
                        url(r'^seats_zongti/(?P<uid>\S+)/$', 'userpage.views.views_seats_zongti'),
                        url(r'^seats_zongti_post/$', 'userpage.views.select_seats_zongti_post'),
-                       url(r'^seats_xinqing_post/$', 'userpage.views.select_seats_zongti_post'),
+                       url(r'^seats_xinqing_post/$', 'userpage.views.select_seats_xinqing_post'),
                        )
 

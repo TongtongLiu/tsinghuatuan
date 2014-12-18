@@ -46,12 +46,12 @@ def select_users_by_stu_id(stu_id):
     return User.objects.filter(stu_id=stu_id, status=1)
 
 
-def update_user(user, openid, stu_id, stu_name, stu_type):
+def update_user_by_stu_id(stu_id, openid, stu_name, stu_type):
+    user = User.objects.filter(stu_id=stu_id)[0]
     user.weixin_id = openid
-    user.stu_id = stu_id
-    user.status = 1
     user.stu_name = stu_name
     user.stu_type = stu_type
+    user.status = 1
     user.bind_count = 0
     user.save()
 
@@ -216,8 +216,9 @@ def uc_validate_post_auth(request):
         except IOError:
             return HttpResponse('Error')
         try:
-            update_user(select_users_by_openid(stu_id)[0], openid, stu_id,
-                        validate_result['name'], validate_result['type'])
+            update_user_by_stu_id(stu_id, openid,
+                                  validate_result['name'], 
+                                  validate_result['type'])
         except IOError:
             try:
                 insert_user(openid, stu_id,
@@ -541,6 +542,7 @@ def views_seats(request, uid):
             seats_list = []
         else:
             seats_list = json.loads(ticket[0].activity.seat_table)
+        print '%s\n' % seats_list
         ticket_id = uid
         act_title = ticket[0].activity.name
         act_place = ticket[0].activity.place
@@ -706,7 +708,7 @@ def section_select(post):
         return seat
 
 
-def select_xinqing_post(request):
+def select_seats_xinqing_post(request):
     if not request.POST:
         information = "出了点莫名其妙的错误"
         href = WEIXIN_OAUTH2_URL
