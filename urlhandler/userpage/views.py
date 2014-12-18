@@ -287,8 +287,8 @@ def details_view(request, activity_id):
     return render_to_response('activitydetails.html', variables)
 
 
-def ticket_view(request, unique_id):
-    tickets = select_tickets_by_id(unique_id)
+def ticket_view(request, uid):
+    tickets = select_tickets_by_id(uid)
     if not tickets.exists() or tickets[0].status == 0:
         information = u'该票无效'
         href = WEIXIN_OAUTH2_URL
@@ -309,10 +309,10 @@ def ticket_view(request, unique_id):
         ticket_status = 3
     ticket_seat = tickets[0].seat
     if activities[0].seat_status == 1:
-        ticket_url = s_reverse_ticket_select_zongti(unique_id)
+        ticket_url = s_reverse_ticket_select_zongti(uid)
     else:
-        ticket_url = s_reverse_ticket_selection(unique_id)
-    act_photo = '{}/fit/{}'.format(QRCODE_URL, unique_id)
+        ticket_url = s_reverse_ticket_selection(uid)
+    act_photo = '{}/fit/{}'.format(QRCODE_URL, uid)
     href = WEIXIN_OAUTH2_URL
     variables = RequestContext(request, {
         'act_id': act_id,
