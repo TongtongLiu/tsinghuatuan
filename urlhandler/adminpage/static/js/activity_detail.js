@@ -548,11 +548,11 @@ function changePlace() {
     b = $('#chooseSeat');
     if(a.val() == "1"){//综体
         b.attr("data-target","#modal_zongti");
-        $('#chooseSeat').css("display","initial");
+        $('#chooseSeat').css("disabled","initial");
     }
     else if(a.val() == "2"){//新清华学堂
         b.attr("data-target","#modal_xinqing");
-        $('#chooseSeat').css("display","initial");
+        $('#chooseSeat').css("disabled","initial");
         //$('#input-total-tickets').css("display","none");
     }
     else if(a.val() == "0")
