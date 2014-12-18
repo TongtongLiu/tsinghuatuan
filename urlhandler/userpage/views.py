@@ -625,7 +625,7 @@ def views_seats_zongti(request, uid):
 
 
 @csrf_exempt
-def views_seats_zongti_post(request):
+def select_seats_zongti_post(request):
     if not request.POST:
         information = "出了点莫名其妙的错误"
         href = WEIXIN_OAUTH2_URL
@@ -704,7 +704,7 @@ def section_select(post):
         return seat
 
 
-def views_xinqing_post(request):
+def select_xinqing_post(request):
     if not request.POST:
         information = "出了点莫名其妙的错误"
         href = WEIXIN_OAUTH2_URL

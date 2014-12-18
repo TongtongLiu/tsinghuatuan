@@ -34,7 +34,7 @@ function response(data){
 }
 $('#submit_btn').on('click', function(e) {
     e.preventDefault();
-
+    /*
     $.ajax({
         url: window.location.pathname,
         type: "POST",
@@ -49,7 +49,29 @@ $('#submit_btn').on('click', function(e) {
         }
     });
     return false;
+    */
+
+    var options = {
+        dataType: 'json',
+        beforeSubmit: beforeSubmit,
+        success: submitResponse,
+        error: submitError,
+    }
+    $('#submitForm').ajaxSubmit(options);
+    return false;
 });
+
+function submitResponse(data) {
+    alert('submitResponse');
+}
+
+function submitError(data) {
+    alert('submitError');
+}
+
+function submitComplete(data) {
+    alert('submitComplete');
+}
 
 
 var moveableDiv = document.getElementById('moveableDiv');
