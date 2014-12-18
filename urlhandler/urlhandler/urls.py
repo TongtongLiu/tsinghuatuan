@@ -10,5 +10,6 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^u/', include('userpage.urls')),
+    url(r'^qrcode/', include('qrhandler.urls')),
     url(r'^', include('adminpage.urls')),
 ) + staticfiles_urlpatterns()

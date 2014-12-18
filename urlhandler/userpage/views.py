@@ -295,7 +295,8 @@ def ticket_view(request, uid):
         ticket_url = s_reverse_ticket_select_zongti(uid)
     else:
         ticket_url = s_reverse_ticket_selection(uid)
-    act_photo = "http://qr.ssast.org/fit/"+uid
+    #act_photo = "http://qr.ssast.org/fit/"+uid
+    act_photo = "127.0.0.1/qrcode/fit/" + uid
     href = WEIXIN_OAUTH2_URL
     variables = RequestContext(request, {
         'act_id': act_id,
