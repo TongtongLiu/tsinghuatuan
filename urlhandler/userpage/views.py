@@ -726,6 +726,7 @@ def select_seats_xinqing_post(request):
             return_json['seat_left'] = json.dumps(get_valid_seat(post['ticket_id']))
             return HttpResponse(json.dumps(return_json), content_type='application/json')
         seat = seats_select(seats_selected, ticket, activity)
+        print "333"
         if seat == None:
             print "error"
             return_json['msg'] = 'error'
@@ -753,7 +754,9 @@ def get_valid_seat(uid):
 
 def seats_select(seats_selected, ticket, activity):
     with transaction.atomic():
+        print seats_selected
         seat_1 = seats_selected[0].split('-')
+        print seat_1
         section_1 = seat_1[0]
         row_1 = seat_1[1]
         column_1 = seat_1[2]

@@ -12,14 +12,14 @@ function bind_tap(){
             if (this.getAttribute('class') == 'valid') {
                 if(numToSelect > 0) {
                     this.setAttribute('class', 'selectThis');
-                    inputSelect.value += this.getAttribute('id') + ',';
+                    inputSelect.value += '-' + this.getAttribute('id') + ',';
                     numToSelect--;
                     showText();
                 } else {
                 }
             } else if ((this.getAttribute('class') == 'selectThis')) {
                 this.setAttribute('class', 'valid');
-                inputSelect.value.replace(this.getAttribute('id') + ',', '');
+                inputSelect.value.replace('-' + this.getAttribute('id') + ',', '');
                 numToSelect++;
                 showText();
             } else {

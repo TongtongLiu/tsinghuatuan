@@ -11,13 +11,13 @@ function bind_tap(){
             if (this.getAttribute('class') == 'valid') {
                 if(isSelected == false) {
                     this.setAttribute('class', 'selectThis');
-                    inputSelect.value = this.getAttribute('id');
+                    inputSelect.value = '-' + this.getAttribute('id');
                     showText(this.getAttribute('id'));
                     isSelected = true;
                 } else {
                     document.getElementsByClassName('selectThis')[1].setAttribute('class', 'valid');
                     this.setAttribute('class', 'selectThis');
-                    inputSelect.value = this.getAttribute('id');
+                    inputSelect.value = '-' + this.getAttribute('id');
                     showText(this.getAttribute('id'));
                 }
             } else if ((this.getAttribute('class') == 'selectThis')) {
