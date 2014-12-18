@@ -54,8 +54,12 @@ $('#submit_btn').on('click', function(e) {
     var options = {
         dataType: 'json',
         beforeSubmit: beforeSubmit,
-        success: submitResponse,
-        error: submitError,
+        success: response,
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(XMLHttpRequest.status);
+                        alert(XMLHttpRequest.readyState);
+                        alert(textStatus);
+                    },
     }
     $('#submitForm').ajaxSubmit(options);
     return false;
