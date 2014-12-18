@@ -550,69 +550,6 @@ def views_seats(request, uid):
         act_time = ticket[0].activity.start_time
         ticket_type = ticket[0].partner_id
         return render_to_response('seats.html', locals())
-    else:
-        rtn_json = {}
-        ticket_id = request.POST.get('ticketID', '')
-        post_select = request.POST.get('postSelect', '')
-
-        try:
-            ticket = Ticket.objects.get(unique_id=ticket_id, status=1)
-        except:
-            rtn_json['msg'] = 'invalidTicket'
-            return HttpResponse(json.dumps(rtn_json), content_type='application/json')
-
-        seats = post_select.split(',')
-        seat = seats[0]
-        row = int(seat.split("-")[0]) - 1
-        column = int(seat.split("-")[1]) - 1
-
-        if len(seats) > 1:
-            other_seat = seats[1]
-            other_row = int(other_seat.split("-")[0]) - 1
-            other_column = int(other_seat.split("-")[1]) - 1
-            other_stu_id = ticket.partner_id
-
-        activity_name = ticket.activity.name
-
-        with transaction.atomic():
-            if len(seats) > 1:
-                activity = Activity.objects.select_for_update().filter(name=activity_name)
-                seats_table = json.loads(activity[0].seat_table)
-                ticket = Ticket.objects.select_for_update().filter(status=1, seat=seat)
-                other_ticket = Ticket.objects.filter(status=1, seat=other_seat)
-                if ticket.exists() or other_ticket.exists():
-                    rtn_json['seat'] = seats_table
-                    rtn_json['msg'] = 'invalidSeat'
-                    return HttpResponse(json.dumps(rtn_json), content_type='application/json')
-                else:
-                    seats_table[row][column] = 2
-                    seats_table[other_row][other_column] = 2
-                    seats_list = json.dumps(seats_table)
-                    activity = Activity.objects.filter(name=activity_name)
-                    Ticket.objects.filter(unique_id=ticket_id).update(seat=seat)
-                    Ticket.objects.filter(stu_id=other_stu_id, activity=activity[0]).update(seat=other_seat)
-                    activity.update(seat_table=seats_list)
-                    rtn_json['seat'] = seats_table
-                    rtn_json['msg'] = 'success'
-                    rtn_json['next_url'] = s_reverse_ticket_detail(uid)
-                    return HttpResponse(json.dumps(rtn_json), content_type='application/json')
-            else:
-                activity = Activity.objects.select_for_update().filter(name=activity_name)
-                seats_table = json.loads(activity[0].seat_table)
-                ticket = Ticket.objects.select_for_update().filter(status=1, seat=seat)
-                if ticket.exists():
-                    rtn_json['seat'] = seats_table
-                    rtn_json['msg'] = 'invalidSeat'
-                    return HttpResponse(json.dumps(rtn_json), content_type='application/json')
-                else:
-                    seats_table[row][column] = 2
-                    seats_list = json.dumps(seats_table)
-                    Ticket.objects.filter(unique_id=ticket_id).update(seat=seat)
-                    Activity.objects.filter(name=activity_name).update(seat_table=seats_list)
-                    rtn_json['seat'] = seats_table
-                    rtn_json['msg'] = 'success'
-                    rtn_json['next_url'] = s_reverse_ticket_detail(uid)
-                    return HttpResponse(json.dumps(rtn_json), content_type='application/json')
 
 
 def views_seats_zongti(request, uid):
@@ -728,12 +665,9 @@ def select_seats_xinqing_post(request):
             return_json['seat_left'] = json.dumps(get_valid_seat(post['ticket_id']))
             return HttpResponse(json.dumps(return_json), content_type='application/json')
         seat = seats_select(seats_selected, ticket, activity)
-        print "333"
         if seat == None:
-            print "error"
             return_json['msg'] = 'error'
         else:
-            print "success"
             return_json['msg'] = 'success'
             return_json['next_url'] = s_reverse_ticket_detail(post['ticket_id'])
         return HttpResponse(json.dumps(return_json), content_type='application/json')
@@ -769,13 +703,13 @@ def seats_select(seats_selected, ticket, activity):
                                                             activity=activity)
         if not seat_1_db.exists():
             return None
-        if len(seats_selected) > 2:
+        if len(seats_selected) >= 2:
             try:
                 partner_ticket = Ticket.objects.get(stu_id=ticket.partner_id,
                                                     activity=ticket.activity)
             except Exception:
                 return None
-            seat_2 = seats_selected[2].split('-')
+            seat_2 = seats_selected[1].split('-')
             section_2 = seat_2[0]
             row_2 = seat_2[1]
             column_2 = seat_2[2]
@@ -786,16 +720,14 @@ def seats_select(seats_selected, ticket, activity):
                                             activity=activity)
             return_json = {}
             if not seat_2_db.exists():
-                return_json['msg'] = 'NoSeat'
-                return_json['seat_left'] = json.dumps(get_valid_seat(ticket.unique_id))
                 return None
             seat = seat_2_db[0]
             seat.save()
-            partner_ticket.seat = seat_2
+            partner_ticket.seat = seats_selected[1]
             partner_ticket.save()
         seat = seat_1_db[0]
         seat.is_selected = 1
         seat.save()
-        ticket.seat = seat_1
+        ticket.seat = seats_selected[0]
         ticket.save()
         return seat
