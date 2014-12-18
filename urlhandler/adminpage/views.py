@@ -23,7 +23,7 @@ import xlwt
 import re
 from django.utils.http import urlquote
 from django.utils.encoding import smart_str
-
+from queryhandler.settings import QRCODE_URL
 
 
 @csrf_protect
@@ -436,7 +436,7 @@ def print_ticket(request, unique_id):
         ticket = Ticket.objects.get(unique_id = unique_id)
         activity = Activity.objects.get(id = ticket.activity_id)
         #qr_addr = "http://tsinghuaqr.duapp.com/fit/" + unique_id
-        qr_addr = "127.0.0.1/qrcode/fit/" + unique_id
+        qr_addr = QRCODE_URL + "/fit/" + unique_id
     except:
         raise Http404
 

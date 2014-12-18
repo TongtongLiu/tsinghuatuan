@@ -44,6 +44,7 @@ function pageSuit(){
     b = $('#ticket-number');
     b.css("top", topimg-10);
     $('#ticket-number').find('input').change(calculateTickets);
+    $('#save-seat').click(recordTicketsCount);
 }
 window.onload=pageSuit;
 
