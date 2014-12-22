@@ -506,6 +506,23 @@ def uc_2ticket_handler(command, unique_id):
         return 'Error'
 
 
+def uc_2ticket_activity(request):
+    users = select_users_by_openid(request.POST['openid'])
+    if users:
+        activity_valid = select_activities_valid()
+        tickets = select_tickets_unused_by_stu_id(users[0].stu_id)
+        binds_confirmed = select_binds_by_stu_id(users[0].stu_id, 1)
+        binds_unconfirmed = select_binds_by_stu_id(users[0].stu_id, 0)
+        return {
+            'activity_valid': activity_valid,
+            'tickets': tickets,
+            'binds': binds_confirmed,
+            'binds_unconfirmed': binds_unconfirmed
+        }
+    else:
+        return HttpResponse('Error')
+
+
 @csrf_exempt
 def uc_2ticket(request, openid):
     if request.is_ajax():
@@ -514,7 +531,7 @@ def uc_2ticket(request, openid):
         users = select_users_by_openid(openid)
         if users:
             is_validated = 1
-            activity_valid = select_activities_valid()
+            activities_valid = select_activities_valid()
             tickets = select_tickets_unused_by_stu_id(users[0].stu_id)
             binds_confirmed = select_binds_by_stu_id(users[0].stu_id, 1)
             binds_unconfirmed = select_binds_by_stu_id(users[0].stu_id, 0)
@@ -522,7 +539,7 @@ def uc_2ticket(request, openid):
                 'isValidated': is_validated,
                 'weixin_id': openid,
                 'stu_id': users[0].stu_id,
-                'activity_valid': activity_valid,
+                'activity_valid': activities_valid,
                 'tickets': tickets,
                 'binds': binds_confirmed,
                 'binds_unconfirmed': binds_unconfirmed,

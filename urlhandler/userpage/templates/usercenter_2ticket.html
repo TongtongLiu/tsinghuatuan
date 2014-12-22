@@ -253,12 +253,12 @@
 {% block js %}
     <script src="{% static 'js/tt_2ticket.js' %}"></script>
     <script>
-    function ajaxForm() {
-        uc_bind2ticket('{{ weixin_id }}');
-    }
-    $(document).ready(function(){
-      $("li.active").toggleClass("active");
-      $("li#nav_2ticket").addClass("active");
-    });
+        function ajaxForm() {
+            uc_bind2ticket('{{ weixin_id }}');
+        }
+        $(document).ready(function(){
+            $("li.active").toggleClass("active");
+            $("li#nav_2ticket").addClass("active");
+        });
     </script>
 {% endblock %}
