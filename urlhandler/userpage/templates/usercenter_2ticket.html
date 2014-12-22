@@ -156,8 +156,8 @@
                      },
                      function(data, status){
                        $( '#div{{ bind.unique_id }}' ).remove();
-                       if($('.panel .btn-sm').length == 0) {
-                       $('.panel-heading').eq(1).after("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                       if($('.panel .btn-x').length == 0) {
+                       $('.panel-heading').eq(2).after("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
                    }
                        var num = $('span#bind_unconfirmed_num').html();
                        num -= 1;
@@ -177,8 +177,8 @@
                      },
                      function(data, status){
                        $( '#div{{ bind.unique_id }}' ).remove();
-                       if($('.panel .btn-sm').length == 0) {
-                       $('.panel-heading').eq(1).after("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                       if($('.panel .btn-x').length == 0) {
+                       $('.panel-heading').eq(2).after("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
                    }
                        var num = $('span#bind_unconfirmed_num').html();
                        num -= 1;
@@ -203,7 +203,7 @@
                             <p>确定后的绑定状态：被动（等待对方抢票）</p>
                         {% endif %}
                         <button type="submit" class="btn btn-primary" id="btn_confirm{{ bind.unique_id }}" data-dismiss="modal">确认绑定</button>
-                        <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#model{{ bind.unique_id }}">残忍拒绝</button>
+                        <button class="btn btn-default btn-x" data-toggle="modal" data-target="#model{{ bind.unique_id }}">残忍拒绝</button>
                     </div>
                 </div>
             </div>
@@ -215,7 +215,7 @@
                         真的真的要拒绝吗_(:зゝ∠)_
                      </div>
                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="btn_cancel{{ bind.unique_id }}" data-dismiss="modal">真的</button>
+                        <button type="submit" class="btn btn-danger" id="btn_cancel{{ bind.unique_id }}" data-dismiss="modal">真的</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">不不不</button>
                      </div>
                   </div>
