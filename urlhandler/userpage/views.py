@@ -468,7 +468,9 @@ def uc_2ticket_bind(request):
     if select_tickets_by_stu_id_and_activity(passive_stu_id, activities[0]).exists():
         return HttpResponse('HaveTicket')
     if (select_binds_by_active_stu_id_and_activity(passive_stu_id, activities[0], 1).exists() or
-            select_binds_by_passive_stu_id_and_activity(passive_stu_id, activities[0], 1).exists()):
+            select_binds_by_active_stu_id_and_activity(passive_stu_id, activities[0], 0).exists() or
+            select_binds_by_passive_stu_id_and_activity(passive_stu_id, activities[0], 1).exists() or
+            select_binds_by_passive_stu_id_and_activity(passive_stu_id, activities[0], 0).exists()):
         return HttpResponse('AlreadyBinded')
     else:
         random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
