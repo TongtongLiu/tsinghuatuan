@@ -95,10 +95,18 @@ def select_tickets_by_stu_id_and_activity(stu_id, activity):
     return Ticket.objects.filter(stu_id=stu_id, activity=activity, status__gt=0)
 
 
+def confirm_binds(binds):
+    binds.update(status=1)
+
+
+def cancel_binds(binds):
+    delete_binds(binds)
+
+
 def delete_binds(binds):
     select_users_by_stu_id(binds[0].active_stu_id).update(bind_count=F('bind_count')-1)
     select_users_by_stu_id(binds[0].passive_stu_id).update(bind_count=F('bind_count')-1)
-    binds.delete()
+    binds.update(status=-1)
 
 
 def delete_binds_of_user(user):
@@ -108,14 +116,14 @@ def delete_binds_of_user(user):
         user.bind_count = bind_count
         user.save()
         select_users_by_stu_id(bind.passive_stu_id).update(bind_count=F('bind_count')-1)
-    Bind.objects.filter(active_stu_id=user.stu_id).delete()
+    Bind.objects.filter(active_stu_id=user.stu_id).update(statue=-1)
     binds2 = Bind.objects.filter(passive_stu_id=user.stu_id, status=1)
     for bind in binds2:
         bind_count = user.bind_count - 1
         user.bind_count = bind_count
         user.save()
         select_users_by_stu_id(bind.active_stu_id).update(bind_count=F('bind_count')-1)
-    Bind.objects.filter(passive_stu_id=user.stu_id).delete()
+    Bind.objects.filter(passive_stu_id=user.stu_id).update(statue=-1)
 
 
 def insert_bind(activity, active_stu_id, passive_stu_id, unique_id):
@@ -473,14 +481,33 @@ def uc_2ticket_bind(request):
         return HttpResponse(s_reverse_uc_2ticket(openid))
 
 
+def uc_2ticket_handler(command, unique_id):
+    if command == 'delete':
+        try:
+            delete_binds(select_binds_by_id(unique_id))
+            return 'Success'
+        except IOError:
+            return 'Error'
+    elif command == 'confirm':
+        try:
+            confirm_binds(select_binds_by_id(unique_id))
+            return 'Success'
+        except ValueError:
+            return 'Error'
+    elif command == 'cancel':
+        try:
+            cancel_binds(select_binds_by_id(unique_id))
+            return 'Success'
+        except ValueError:
+            return 'Error'
+    else:
+        return 'Error'
+
+
 @csrf_exempt
 def uc_2ticket(request, openid):
     if request.is_ajax():
-        try:
-            delete_binds(select_binds_by_id(request.POST['unique_id']))
-            return HttpResponse('Success')
-        except IOError:
-            return HttpResponse('Error')
+        return HttpResponse(uc_2ticket_handler(request.POST['command'], request.POST['unique_id']))
     else:
         users = select_users_by_openid(openid)
         if users:

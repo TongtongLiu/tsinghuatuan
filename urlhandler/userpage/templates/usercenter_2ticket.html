@@ -78,6 +78,7 @@
                 $( '#btn{{ bind.unique_id }}' ).click( function() {
                      $.post("",
                      {
+                        command: "delete",
                         unique_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
@@ -150,6 +151,7 @@
                 $( '#btn_confirm{{ bind.unique_id }}' ).click( function() {
                      $.post("",
                      {
+                        command: "confirm",
                         unique_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
@@ -170,6 +172,7 @@
                 $( '#btn_cancel{{ bind.unique_id }}' ).click( function() {
                      $.post("",
                      {
+                        command: "cancel",
                         unique_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
