@@ -322,14 +322,20 @@ def ticket_view(request, uid):
     now = datetime.datetime.now()
     if act_end_time < now:  # 表示活动已经结束
         ticket_status = 3
-    ticket_seat = tickets[0].seat
+    seat = tickets[0].seat
     if activities[0].seat_status == 1:
-        ticket_seat = tickets[0].seat.seat_section
+        if seat.position_row == -1:
+            ticket_seat = ''
+        else:
+            ticket_seat = tickets[0].seat.seat_section
         ticket_url = s_reverse_ticket_select_zongti(uid)
     elif activities[0].seat_status == 2:
-        row = tickets[0].seat.position_row
-        column = tickets[0].seat.position_column
-        ticket_seat = row + u'行' + column + u'列'
+        if seat.position_row == -1:
+            ticket_seat = ''
+        else:
+            row = tickets[0].seat.position_row
+            column = tickets[0].seat.position_column
+            ticket_seat = str(row) + u'行' + str(column) + u'列'
         ticket_url = s_reverse_ticket_selection(uid)
     act_photo = '{}/fit/{}'.format(QRCODE_URL, uid)
     href = WEIXIN_OAUTH2_URL
