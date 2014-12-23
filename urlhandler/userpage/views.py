@@ -80,6 +80,8 @@ def update_activity_tickets(activity, remain_tickets):
 
 
 def disable_tickets(tickets):
+    print "hahahahahahaha\n"
+    print tickets[0].status
     tickets.update(status=0)
 
 
@@ -431,17 +433,14 @@ def uc_ticket(request, openid):
             rtn_json = {'ticketURL': ticket_url, 'seatURL': seat_url}
             return HttpResponse(json.dumps(rtn_json),
                                 content_type='application/json')
-        else:
-            return HttpResponse('Error')
-    if request.is_ajax():
-        if not request.POST.get('ticket_id', ''):
-            return HttpResponse('Error')
-        else:
+        elif request.POST.get('ticket_id', ''):
             tickets = select_tickets_by_id(request.POST['ticket_id'])
             if not tickets.exists() or tickets[0].status != 1:
                 return HttpResponse('Error')
             else:
                 return HttpResponse(uc_cancel_ticket(tickets))
+        else:
+            return HttpResponse('Error')
     tickets = []
     users = select_users_by_openid(openid)
     if users:
