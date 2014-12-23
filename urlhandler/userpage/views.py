@@ -310,8 +310,12 @@ def ticket_view(request, uid):
         ticket_status = 3
     ticket_seat = tickets[0].seat
     if activities[0].seat_status == 1:
+        ticket_seat = tickets[0].seat.seat_section
         ticket_url = s_reverse_ticket_select_zongti(uid)
-    else:
+    elif activities[0].seat_status == 2:
+        row = tickets[0].seat.position_row
+        column = tickets[0].seat.position_column
+        ticket_seat = row + u'行' + column + u'列'
         ticket_url = s_reverse_ticket_selection(uid)
     act_photo = '{}/fit/{}'.format(QRCODE_URL, uid)
     href = WEIXIN_OAUTH2_URL
@@ -633,16 +637,16 @@ def section_select(post):
             except Exception as e:
                 return None
         seat = seats[0]
-        ticket.seat = post['section']
-        ticket.save()
         seat.is_selected = 1
         seat.save()
+        ticket.seat = seat
+        ticket.save()
         if ticket.partner_id != "s":
-            partner_ticket.seat = post['section']
-            partner_ticket.save()
             partner_seat = seats[1]
             partner_seat.is_selected = 1
             partner_seat.save()
+            partner_ticket.seat = partner_seat
+            partner_ticket.save()
         return seat
 
 
@@ -723,13 +727,13 @@ def seats_select(seats_selected, ticket, activity):
                 return None
             seat = seat_2_db[0]
             seat.save()
-            partner_ticket.seat = seats_selected[1]
+            partner_ticket.seat = seat
             partner_ticket.save()
             change_seat_status(activity, row_2, column_2, 2)
         seat = seat_1_db[0]
         seat.is_selected = 1
         seat.save()
-        ticket.seat = seats_selected[0]
+        ticket.seat = seat
         ticket.save()
         change_seat_status(activity, row_1, column_1, 2)
         return seat
