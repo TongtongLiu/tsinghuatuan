@@ -244,8 +244,8 @@ def uc_validate_post_auth(request):
 STRING_MAX_LEN = 256
 
 
-def details_view(request, activity_id):
-    activities = select_activities_by_id(activity_id)
+def details_view(request, activityid):
+    activities = select_activities_by_id(activityid)
     if not activities.exists():
         raise Http404    # current activity is invalid
     act_name = activities[0].name
@@ -278,7 +278,7 @@ def details_view(request, activity_id):
         act_status = 2  # after book time
     variables = RequestContext(request, {
         'act_name': act_name,
-        ' act_text': act_text,
+        'act_text': act_text,
         'act_photo': act_photo,
         'act_book_start': act_book_start,
         'act_book_end': act_book_end,
