@@ -4,6 +4,7 @@
 
 {% block content %}
 {% if isValidated %}
+    <!-- 双人抢票版块 -->
     <div class="panel panel-default">
         <div class="panel-heading">
             <a href="#couple_intro" data-toggle="modal">双人抢票&nbsp;
@@ -37,7 +38,7 @@
                 </div>
                 <div class="input-group" id="studentIDGroup">
                     <span class="input-group-addon">对方学号</span>
-                    <input type="text" class="form-control" id="inputStudentID" placeholder="请输入对方的学号" name="student_id" onblur="checkStudentID();">
+                    <input type="tel" class="form-control" id="inputStudentID" placeholder="请输入对方的学号" name="student_id" onblur="checkStudentID();">
                 </div>
                 <button onclick="ajaxForm();" class="btn btn-default btn-block" id="submitBtn" style="margin-top: 5px">绑定</button>
                 <div class="input-group" id="submitGroup">
@@ -48,21 +49,8 @@
         </div>
     </div>
 
-
-    <script>
-	$(document).ready(function(){
-	  $("a.a_collapse1").click(function(){
-	  	$("a.a_collapse1 span.glyphicon").toggleClass("glyphicon-chevron-down");
-	  	$("a.a_collapse1 span.glyphicon").toggleClass("glyphicon-chevron-up");
-	  });
-      $("a.a_collapse2").click(function(){
-        $("a.a_collapse2 span.glyphicon").toggleClass("glyphicon-chevron-down");
-	  	$("a.a_collapse2 span.glyphicon").toggleClass("glyphicon-chevron-up");
-	  });
-	});
-	</script>
-    <!-- 已绑定双人抢票活动的信息 -->
-    <div class="panel panel-default">
+    <!-- 已绑定双人抢票活动的信息板块 -->
+    <div class="panel panel-default already_bind">
         <div class="panel-heading">
             <a class="a_collapse1" data-toggle="collapse" href="#bind_activity_collapse" style="display: block; width: 100%">
           	已绑定活动<span class="glyphicon glyphicon-chevron-down" style="float: right"></span>
@@ -73,6 +61,7 @@
             <p style="text-align: center; font-weight: bold; margin-top: 5px;">暂无</p>
         {% else %}
             {% for bind in binds %}
+            <!-- 处理解绑按钮 -->
             <script type="text/javascript">
             $( document ).ready( function() {
                 $( '#btn{{ bind.unique_id }}' ).click( function() {
@@ -82,10 +71,12 @@
                         bind_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
-                       $( '#div{{ bind.unique_id }}' ).remove();
-                       if($('.panel .btn-sm').length == 0) {
-                       $('#bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
-                   }
+                        $('#div{{ bind.unique_id }}').remove();//删除绑定信息
+                        var tempStr = "opt" + data.activity_name;
+                        $('#selectActivity').append("<option value=data.activity_name id=tempStr>data.activity_name</option>");//加入可绑定活动
+                        if($('.panel .btn-sm').length == 0) {
+                            $('#bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                        }
                      });
                 });
             });
@@ -155,9 +146,10 @@
                         bind_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
-                       $( '#div{{ bind.unique_id }}' ).remove();
-                       if($('.panel .btn-x').length == 0) {
-                       $('#not_bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                        $('#div{{ bind.unique_id }}').remove();//删除信息
+                        $('#bind_activity_collapse').append('');//增加已绑定活动
+                        if($('.panel .btn-x').length == 0) {
+                        $('#not_bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
                    }
                        var num = $('span#bind_unconfirmed_num').html();
                        num -= 1;
@@ -176,9 +168,11 @@
                         bind_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
-                       $( '#div{{ bind.unique_id }}' ).remove();
-                       if($('.panel .btn-x').length == 0) {
-                       $('#not_bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                        $( '#div{{ bind.unique_id }}' ).remove();
+                        var tempStr = "opt" + data.activity_name;
+                        $('#selectActivity').append("<option value=data.activity_name id=tempStr>data.activity_name</option>");//加入可绑定活动
+                        if($('.panel .btn-x').length == 0) {
+                        $('#not_bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
                    }
                        var num = $('span#bind_unconfirmed_num').html();
                        num -= 1;
@@ -265,6 +259,15 @@
         $(document).ready(function(){
             $("li.active").toggleClass("active");
             $("li#nav_2ticket").addClass("active");
+            //处理可下拉收缩栏
+            $("a.a_collapse1").click(function(){
+                $("a.a_collapse1 span.glyphicon").toggleClass("glyphicon-chevron-down");
+                $("a.a_collapse1 span.glyphicon").toggleClass("glyphicon-chevron-up");
+            });
+            $("a.a_collapse2").click(function(){
+                $("a.a_collapse2 span.glyphicon").toggleClass("glyphicon-chevron-down");
+                $("a.a_collapse2 span.glyphicon").toggleClass("glyphicon-chevron-up");
+            });
         });
     </script>
 {% endblock %}
