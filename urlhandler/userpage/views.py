@@ -429,14 +429,17 @@ def uc_account(request, openid):
 def uc_cancel_ticket(tickets):
     disable_tickets(tickets)
     ticket = tickets[0]
-    seat = ticket.seat.split('-')
     activity = ticket.activity
-    if len(seat) > 1:
-        row = int(seat[0]) - 1
-        column = int(seat[1]) - 1
-        seat_table = json.loads(activity.seat_table)
-        seat_table[row][column] = 1
-        update_activity_seat_table(activity, json.dumps(json.dumps(seat_table)))
+    seat = ticket.seat
+    if not seat.position_row == -1:
+        seat.is_selected == 0
+        seat.save()
+        if activity.seat_status == 2:
+            row = seat.position_row - 1
+            column = seat.position_column - 1
+            seat_table = json.loads(activity.seat_table)
+            seat_table[row][column] = 1
+            update_activity_seat_table(activity, json.dumps(json.dumps(seat_table)))
     update_activity_tickets(activity, activity.remain_tickets + 1)
     return 'Success'
 
