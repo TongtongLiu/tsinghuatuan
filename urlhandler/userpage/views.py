@@ -402,6 +402,25 @@ def uc_account(request, openid):
                                   context_instance=RequestContext(request))
 
 
+def uc_cancel_ticket(ticket_id):
+    tickets = select_tickets_by_id(ticket_id)
+    if not tickets.exists() or tickets[0].status != 1:
+        return 'Error'
+    else:
+        disable_tickets(tickets)
+        ticket = tickets[0]
+        seat = ticket.seat.split('-')
+        activity = ticket.activity
+        if len(seat) > 1:
+            row = int(seat[0]) - 1
+            column = int(seat[1]) - 1
+            seat_table = json.loads(activity.seat_table)
+            seat_table[row][column] = 1
+            update_activity_seat_table(activity, json.dumps(json.dumps(seat_table)))
+        update_activity_tickets(activity, activity.remain_tickets + 1)
+        return 'Success'
+
+
 @csrf_exempt
 def uc_ticket(request, openid):
     if request.method == 'POST':
@@ -412,27 +431,13 @@ def uc_ticket(request, openid):
             rtn_json = {'ticketURL': ticket_url, 'seatURL': seat_url}
             return HttpResponse(json.dumps(rtn_json),
                                 content_type='application/json')
+        else:
+            return HttpResponse('Error')
     if request.is_ajax():
         if not request.POST.get('ticket_id', ''):
-            return HttpResponse('logout error')
+            return HttpResponse('Error')
         else:
-            unique_id = request.POST['ticket_id']
-            tickets = select_tickets_by_id(unique_id)
-            if not tickets.exists() or tickets[0].status != 1:
-                return HttpResponse('logout error')
-            else:
-                ticket = tickets[0]
-                disable_tickets(tickets)
-                seat = ticket.seat.split('-')
-                activity = ticket.activity
-                if len(seat) > 1:
-                    row = int(seat[0]) - 1
-                    column = int(seat[1]) - 1
-                    seat_table = json.loads(activity.seat_table)
-                    seat_table[row][column] = 1
-                    update_activity_seat_table(activity, json.dumps(json.dumps(seat_table)))
-                update_activity_tickets(activity, activity.remain_tickets + 1)
-            return HttpResponse('logout error')
+            return HttpResponse(uc_cancel_ticket(request.POST['ticket_id']))
     tickets = []
     users = select_users_by_openid(openid)
     if users:
@@ -483,9 +488,9 @@ def uc_2ticket_bind(request):
         return HttpResponse(s_reverse_uc_2ticket(openid))
 
 
-def uc_2ticket_handler(command, unique_id):
-    binds = select_binds_by_id(unique_id)
-    if not binds:
+def uc_2ticket_handler(command, bind_id):
+    binds = select_binds_by_id(bind_id)
+    if not binds or binds[0].status == -1:
         return {'result': 'Error'}
     if command == 'delete':
         try:
@@ -503,7 +508,7 @@ def uc_2ticket_handler(command, unique_id):
             return {'result': 'Error'}
     elif command == 'cancel':
         try:
-            cancel_binds(select_binds_by_id(unique_id))
+            cancel_binds(binds)
             return {'result': 'Success',
                     'activity_name': binds[0].activity.name}
         except ValueError:
@@ -516,7 +521,7 @@ def uc_2ticket_handler(command, unique_id):
 def uc_2ticket(request, openid):
     if request.is_ajax():
         return HttpResponse(json.dumps(uc_2ticket_handler(request.POST['command'],
-                                                          request.POST['unique_id'])),
+                                                          request.POST['bind_id'])),
                             content_type='application/json')
     else:
         users = select_users_by_openid(openid)

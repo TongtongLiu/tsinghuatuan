@@ -79,7 +79,7 @@
                      $.post("",
                      {
                         command: "delete",
-                        unique_id:"{{ bind.unique_id }}"
+                        bind_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
                        $( '#div{{ bind.unique_id }}' ).remove();
@@ -152,7 +152,7 @@
                      $.post("",
                      {
                         command: "confirm",
-                        unique_id:"{{ bind.unique_id }}"
+                        bind_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
                        $( '#div{{ bind.unique_id }}' ).remove();
@@ -173,7 +173,7 @@
                      $.post("",
                      {
                         command: "cancel",
-                        unique_id:"{{ bind.unique_id }}"
+                        bind_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
                        $( '#div{{ bind.unique_id }}' ).remove();
