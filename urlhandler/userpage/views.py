@@ -487,40 +487,26 @@ def uc_2ticket_handler(command, unique_id):
     if command == 'delete':
         try:
             delete_binds(select_binds_by_id(unique_id))
-            return 'Success'
+            return {'result': 'Success',
+                    'activity_name': select_binds_by_id(unique_id)[0].activity.name}
         except IOError:
-            return 'Error'
+            return {'result': 'Error'}
     elif command == 'confirm':
         try:
             confirm_binds(select_binds_by_id(unique_id))
-            return 'Success'
+            return {'result': 'Success',
+                    'bind': select_binds_by_id(unique_id)[0]}
         except ValueError:
-            return 'Error'
+            return {'result': 'Error'}
     elif command == 'cancel':
         try:
             cancel_binds(select_binds_by_id(unique_id))
-            return 'Success'
+            return {'result': 'Success',
+                    'activity_name': select_binds_by_id(unique_id)[0].activity.name}
         except ValueError:
-            return 'Error'
+            return {'result': 'Error'}
     else:
-        return 'Error'
-
-
-def uc_2ticket_activity(request):
-    users = select_users_by_openid(request.POST['openid'])
-    if users:
-        activity_valid = select_activities_valid()
-        tickets = select_tickets_unused_by_stu_id(users[0].stu_id)
-        binds_confirmed = select_binds_by_stu_id(users[0].stu_id, 1)
-        binds_unconfirmed = select_binds_by_stu_id(users[0].stu_id, 0)
-        return {
-            'activity_valid': activity_valid,
-            'tickets': tickets,
-            'binds': binds_confirmed,
-            'binds_unconfirmed': binds_unconfirmed
-        }
-    else:
-        return HttpResponse('Error')
+        return {'result': 'Error'}
 
 
 @csrf_exempt
