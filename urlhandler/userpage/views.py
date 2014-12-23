@@ -496,21 +496,28 @@ def uc_2ticket_handler(command, bind_id):
             delete_binds(binds)
             return {'result': 'Success',
                     'activity_name': binds[0].activity.name}
-        except IOError:
+        except Exception as e:
+            print 'Error occured!!!!!!' + str(e)
             return {'result': 'Error'}
     elif command == 'confirm':
+        if binds[0].status == -1:
+            return {'result': 'Fail'}
         try:
             confirm_binds(binds)
             return {'result': 'Success',
                     'bind': binds[0]}
-        except ValueError:
+        except Exception as e:
+            print 'Error occured!!!!!!' + str(e)
             return {'result': 'Error'}
     elif command == 'cancel':
+        if binds[0].status == 1:
+            return {'result': 'Fail'}
         try:
             cancel_binds(binds)
             return {'result': 'Success',
                     'activity_name': binds[0].activity.name}
-        except ValueError:
+        except Exception as e:
+            print 'Error occured!!!!!!' + str(e)
             return {'result': 'Error'}
     else:
         return {'result': 'Error'}
