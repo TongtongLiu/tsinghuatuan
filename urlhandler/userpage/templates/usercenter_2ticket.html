@@ -192,18 +192,20 @@
                 });
             });
             </script>
+            <!-- 每一个绑定活动信息 -->
             <div class="panel-body" id="div{{ bind.unique_id }}">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <p>请求绑定方学号：{{ bind.active_stu_id }}</p>
                         <p>请求绑定活动：{{ bind.activity.name }}</p>
                         {% if stu_id == bind.active_stu_id %}
-                            <p>确定后的绑定状态：主动（可抢票）</p>
+                            <p>绑定确定后状态：主动（可抢票）</p>
+                            <button class="btn btn-default btn-x btn-block" data-toggle="modal" data-target="#model{{ bind.unique_id }}">不等了</button>
                         {% else %}
-                            <p>确定后的绑定状态：被动（等待对方抢票）</p>
+                            <p>绑定确定后状态：被动（等待对方抢票）</p>
+                            <button class="btn btn-default btn-x" data-toggle="modal" data-target="#model{{ bind.unique_id }}"style="float: right;margin-left: 5px">残忍拒绝</button>
+                            <button type="submit" class="btn btn-primary" id="btn_confirm{{ bind.unique_id }}" data-dismiss="modal" style="float: right">确认绑定</button>
                         {% endif %}
-                        <button class="btn btn-default btn-x" data-toggle="modal" data-target="#model{{ bind.unique_id }}"style="float: right;margin-right: 5px">残忍拒绝</button>
-                        <button type="submit" class="btn btn-primary" id="btn_confirm{{ bind.unique_id }}" data-dismiss="modal" style="float: right">确认绑定</button>
                     </div>
                 </div>
             </div>
@@ -212,7 +214,11 @@
                <div class="modal-dialog">
                   <div class="modal-content">
                      <div class="modal-body">
-                        真的真的要拒绝吗_(:зゝ∠)_
+                        {% if stu_id == bind.active_stu_id %}
+                            真的真的不等了吗_(:зゝ∠)_
+                        {% else %}
+                            真的真的要拒绝吗_(:зゝ∠)_
+                        {% endif %}
                      </div>
                      <div class="modal-footer">
                         <button type="submit" class="btn btn-danger" id="btn_cancel{{ bind.unique_id }}" data-dismiss="modal">真的</button>
