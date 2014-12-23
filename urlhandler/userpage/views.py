@@ -80,6 +80,8 @@ def update_activity_tickets(activity, remain_tickets):
 
 
 def disable_tickets(tickets):
+    print "hahahahahahaha\n"
+    print tickets[0].status
     tickets.update(status=0)
 
 
@@ -420,6 +422,7 @@ def uc_cancel_ticket(tickets):
 @csrf_exempt
 def uc_ticket(request, openid):
     if request.method == 'POST':
+        print "tickets POST"
         if request.POST.get('ticket_uid', ''):
             ticket_uid = request.POST['ticket_uid']
             ticket_url = s_reverse_ticket_detail(ticket_uid)
@@ -427,9 +430,8 @@ def uc_ticket(request, openid):
             rtn_json = {'ticketURL': ticket_url, 'seatURL': seat_url}
             return HttpResponse(json.dumps(rtn_json),
                                 content_type='application/json')
-        else:
-            return HttpResponse('Error')
     if request.is_ajax():
+        print "is_ajax()"
         if not request.POST.get('ticket_id', ''):
             return HttpResponse('Error')
         else:
