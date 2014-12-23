@@ -361,7 +361,7 @@ def response_cancel_ticket(msg):
         if activity.book_end >= now:
             tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status=1)
             if tickets.exists():   # user has already booked the activity
-                if uc_cancel_ticket(tickets) == 'Success':
+                uc_cancel_ticket(tickets)
                 # ticket = tickets[0]
                 # ticket.status = 0
                 # ticket.save()
@@ -373,9 +373,7 @@ def response_cancel_ticket(msg):
                 #     seat_table[row][column] = 1
                 #     Activity.objects.filter(id=activity.id).update(seat_table=json.dumps(seat_table))
                 # Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')+1)
-                    return get_reply_text_xml(msg, get_text_success_cancel_ticket())
-                else:
-                    return get_reply_text_xml(msg, get_text_fail_cancel_ticket())
+                return get_reply_text_xml(msg, get_text_success_cancel_ticket())
             else:
                 return get_reply_text_xml(msg, get_text_fail_cancel_ticket())
         else:
