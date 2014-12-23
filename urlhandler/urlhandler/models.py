@@ -39,6 +39,15 @@ class Activity(models.Model):
     # 2: select seat
 
 
+class Seat(models.Model):
+    position_row = models.IntegerField()
+    position_column = models.IntegerField()
+    seat_section = models.CharField(max_length=255)
+    price = models.IntegerField()
+    is_selected = models.IntegerField()
+    activity = models.ForeignKey(Activity)
+    
+
 class Ticket(models.Model):
     stu_id = models.CharField(max_length=255)
     unique_id = models.CharField(max_length=255)
@@ -59,15 +68,6 @@ class Bind(models.Model):
     unique_id = models.CharField(max_length=255)
     status = models.IntegerField()
 
-
-class Seat(models.Model):
-    position_row = models.IntegerField()
-    position_column = models.IntegerField()
-    seat_section = models.CharField(max_length=255)
-    price = models.IntegerField()
-    is_selected = models.IntegerField()
-    activity = models.ForeignKey(Activity)
-    
 
 '''
 class UserSession(models.Model):
