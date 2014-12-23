@@ -80,7 +80,6 @@ def update_activity_tickets(activity, remain_tickets):
 
 
 def disable_tickets(tickets):
-    print "hahahahahahaha\n"
     print tickets[0].status
     tickets.update(status=0)
 
@@ -181,7 +180,8 @@ def validate_get_time_auth(request):
     res_data = urllib2.urlopen(req)
     try:
         res = res_data.read()
-    except IOError:
+    except Exception as e:
+        print 'Error occured!!!!!!' + str(e)
         return HttpResponse('Error')
     return HttpResponse(res)
 
@@ -193,7 +193,8 @@ def validate_through_auth(secret):
     res_data = urllib2.urlopen(req)
     try:
         res = res_data.read()
-    except IOError:
+    except Exception as e:
+        print 'Error occured!!!!!!' + str(e)
         return {'result': 'Error'}
     res_dict = json.loads(res)
     if res_dict['code'] == 0:
@@ -224,18 +225,20 @@ def uc_validate_post_auth(request):
         try:
             disable_users(select_users_by_openid(openid))
             disable_users(select_users_by_stu_id(stu_id))
-        except IOError:
+        except Exception as e:
+            print 'Error occured!!!!!!' + str(e)
             return HttpResponse('Error')
         try:
             update_user_by_stu_id(stu_id, openid,
                                   validate_result['name'], 
                                   validate_result['type'])
-        except IOError:
+        except Exception:
             try:
                 insert_user(openid, stu_id,
                             validate_result['name'],
                             validate_result['type'])
-            except IOError:
+            except Exception as e:
+                print 'Error occured!!!!!!' + str(e)
                 return HttpResponse('Error')
         return HttpResponse(s_reverse_uc_account(openid))
     return HttpResponse(validate_result['result'])
@@ -390,7 +393,8 @@ def uc_account(request, openid):
             try:
                 delete_binds_of_user(users[0])
                 disable_users(users)
-            except IOError:
+            except Exception as e:
+                print 'Error occured!!!!!!' + str(e)
                 return HttpResponse('logout error')
             return render_to_response('usercenter_account_login.html',
                                       {'weixin_id': openid},
@@ -486,7 +490,8 @@ def uc_2ticket_bind(request):
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
         try:
             insert_bind(activities[0], active_stu_id, passive_stu_id, random_string)
-        except IOError:
+        except Exception as e:
+            print 'Error occured!!!!!!' + str(e)
             return HttpResponse('Error')
         return HttpResponse(s_reverse_uc_2ticket(openid))
 
@@ -500,21 +505,27 @@ def uc_2ticket_handler(command, bind_id):
             delete_binds(binds)
             return {'result': 'Success',
                     'activity_name': binds[0].activity.name}
-        except IOError:
+        except Exception as e:
+            print 'Error occured!!!!!!' + str(e)
             return {'result': 'Error'}
     elif command == 'confirm':
+        if binds[0].status == -1:
+            return {'result': 'Fail'}
         try:
             confirm_binds(binds)
-            return {'result': 'Success',
-                    'bind': binds[0]}
-        except ValueError:
+            return {'result': 'Success'}
+        except Exception as e:
+            print 'Error occured!!!!!!' + str(e)
             return {'result': 'Error'}
     elif command == 'cancel':
+        if binds[0].status == 1:
+            return {'result': 'Fail'}
         try:
             cancel_binds(binds)
             return {'result': 'Success',
                     'activity_name': binds[0].activity.name}
-        except ValueError:
+        except Exception as e:
+            print 'Error occured!!!!!!' + str(e)
             return {'result': 'Error'}
     else:
         return {'result': 'Error'}

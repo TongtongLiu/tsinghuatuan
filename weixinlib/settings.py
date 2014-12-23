@@ -68,13 +68,18 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
             "sub_button": [
                 {
                     "type": "click",
-                    "name": "有啥",
+                    "name": "活动中心",
                     "key": WEIXIN_EVENT_KEYS['ticket_book_what'],
                     "sub_button": []
                 },
                 {
                     "type": "view",
                     "name": "个人中心",
+                    "url": WEIXIN_OAUTH2_URL
+                },
+                {
+                    "type": "view",
+                    "name": "我要上墙",
                     "url": WEIXIN_OAUTH2_URL
                 },
                 #{

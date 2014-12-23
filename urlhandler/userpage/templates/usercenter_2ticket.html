@@ -78,12 +78,16 @@
                         bind_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
-                        $('#div{{ bind.unique_id }}').remove();//删除绑定信息
-                        var tempStr = "opt" + data.activity_name;
-                        $('#selectActivity').append("<option value=data.activity_name id=tempStr>data.activity_name</option>");//加入可绑定活动
-                        if($('.panel .btn-sm').length == 0) {
-                            $('#bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
-                        }
+                         if (data.result == "Success") {
+                             $('#div{{ bind.unique_id }}').remove();//删除绑定信息
+                             $('#selectActivity').append("<option value=" + data.activity_name + "id=opt" + data.activity_name + ">" + data.activity_name + "</option>");//加入可绑定活动
+                             if ($('.panel .btn-sm').length == 0) {
+                                 $('#bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                             }
+                         }
+                         else if (data.result == "Error") {
+                            $('#div{{ bind.unique_id }} .panel').append('<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a><strong>警告！</strong>数据库出现了奇怪的问题，请稍后重试。</div>');
+                         }
                      });
                 });
             });
@@ -153,19 +157,12 @@
                         bind_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
-                        $('#div{{ bind.unique_id }}').remove();//删除信息
-                        $('#bind_activity_collapse').append('');//增加已绑定活动
-                        if($('.panel .btn-x').length == 0) {
-                        $('#not_bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
-                   }
-                       var num = $('span#bind_unconfirmed_num').html();
-                       num -= 1;
-                       if(num != 0) {
-                            $('span#bind_unconfirmed_num').html(num);
-                       }
-                       else {
-                            $('span#bind_unconfirmed_num').html('');
-                       }
+                        if(data.result == "Success" || data.result == "Fail") {
+                            location.reload();
+                        }
+                        else if (data.result == "Error") {
+                            $('#div{{ bind.unique_id }} .panel').append('<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a><strong>警告！</strong>数据库出现了奇怪的问题，请稍后重试。</div>');
+                        }
                      });
                 });
                 $( '#btn_cancel{{ bind.unique_id }}' ).click( function() {
@@ -175,20 +172,24 @@
                         bind_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
-                        $( '#div{{ bind.unique_id }}' ).remove();
-                        var tempStr = "opt" + data.activity_name;
-                        $('#selectActivity').append("<option value=data.activity_name id=tempStr>data.activity_name</option>");//加入可绑定活动
-                        if($('.panel .btn-x').length == 0) {
-                        $('#not_bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
-                   }
-                       var num = $('span#bind_unconfirmed_num').html();
-                       num -= 1;
-                       if(num != 0) {
-                            $('span#bind_unconfirmed_num').html(num);
-                       }
-                       else {
-                            $('span#bind_unconfirmed_num').html('');
-                       }
+                         if (data.result == "Success") {
+                             $('#div{{ bind.unique_id }}').remove();
+                             $('#selectActivity').append("<option value=" + data.activity_name + "id=opt" + data.activity_name + ">" + data.activity_name + "</option>");//加入可绑定活动
+                             if ($('.panel .btn-x').length == 0) {
+                                 $('#not_bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                             }
+                             var num = $('span#bind_unconfirmed_num').html();
+                             num -= 1;
+                             if (num != 0) {
+                                 $('span#bind_unconfirmed_num').html(num);
+                             }
+                             else {
+                                 $('span#bind_unconfirmed_num').html('');
+                             }
+                         }
+                         else if(data.result == "Error") {
+                                $('#div{{ bind.unique_id }} .panel').append('<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a><strong>警告！</strong>数据库出现了奇怪的问题，请稍后重试。</div>');
+                         }
                      });
                 });
             });
