@@ -484,25 +484,28 @@ def uc_2ticket_bind(request):
 
 
 def uc_2ticket_handler(command, unique_id):
+    binds = select_binds_by_id(unique_id)
+    if not binds:
+        return {'result': 'Error'}
     if command == 'delete':
         try:
-            delete_binds(select_binds_by_id(unique_id))
+            delete_binds(binds)
             return {'result': 'Success',
-                    'activity_name': select_binds_by_id(unique_id)[0].activity.name}
+                    'activity_name': binds[0].activity.name}
         except IOError:
             return {'result': 'Error'}
     elif command == 'confirm':
         try:
-            confirm_binds(select_binds_by_id(unique_id))
+            confirm_binds(binds)
             return {'result': 'Success',
-                    'bind': select_binds_by_id(unique_id)[0]}
+                    'bind': binds[0]}
         except ValueError:
             return {'result': 'Error'}
     elif command == 'cancel':
         try:
             cancel_binds(select_binds_by_id(unique_id))
             return {'result': 'Success',
-                    'activity_name': select_binds_by_id(unique_id)[0].activity.name}
+                    'activity_name': binds[0].activity.name}
         except ValueError:
             return {'result': 'Error'}
     else:
