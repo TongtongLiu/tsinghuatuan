@@ -422,7 +422,6 @@ def uc_cancel_ticket(tickets):
 @csrf_exempt
 def uc_ticket(request, openid):
     if request.method == 'POST':
-        print "tickets POST"
         if request.POST.get('ticket_uid', ''):
             ticket_uid = request.POST['ticket_uid']
             ticket_url = s_reverse_ticket_detail(ticket_uid)
@@ -430,16 +429,14 @@ def uc_ticket(request, openid):
             rtn_json = {'ticketURL': ticket_url, 'seatURL': seat_url}
             return HttpResponse(json.dumps(rtn_json),
                                 content_type='application/json')
-    if request.is_ajax():
-        print "is_ajax()"
-        if not request.POST.get('ticket_id', ''):
-            return HttpResponse('Error')
-        else:
+        elif request.POST.get('ticket_id', ''):
             tickets = select_tickets_by_id(request.POST['ticket_id'])
             if not tickets.exists() or tickets[0].status != 1:
                 return HttpResponse('Error')
             else:
                 return HttpResponse(uc_cancel_ticket(tickets))
+        else:
+            return HttpResponse('Error')
     tickets = []
     users = select_users_by_openid(openid)
     if users:
