@@ -512,7 +512,9 @@ def uc_2ticket_handler(command, unique_id):
 @csrf_exempt
 def uc_2ticket(request, openid):
     if request.is_ajax():
-        return HttpResponse(uc_2ticket_handler(request.POST['command'], request.POST['unique_id']))
+        return HttpResponse(json.dumps(uc_2ticket_handler(request.POST['command'],
+                                                          request.POST['unique_id'])),
+                            content_type='application/json')
     else:
         users = select_users_by_openid(openid)
         if users:
