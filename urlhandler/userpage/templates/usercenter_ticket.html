@@ -40,10 +40,10 @@
 			</div>
 			<div class="panel-body">
 				<p>活动地点：{{ ticket.activity.place }}&nbsp;&nbsp;
-				{% if ticket.seat %}
-					座位：{{ ticket.seat }}
-				{% else %}
+				{% if ticket_seat == '' %}
 					<a id="seat{{ ticket.unique_id }}">请选座</a>
+				{% else %}
+					座位：{{ ticket_seat }}
 				{% endif %}
 				</p>
 				<p>活动开始时间：{{ ticket.activity.start_time }}</p>

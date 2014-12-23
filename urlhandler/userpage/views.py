@@ -230,7 +230,7 @@ def uc_validate_post_auth(request):
             return HttpResponse('Error')
         try:
             update_user_by_stu_id(stu_id, openid,
-                                  validate_result['name'], 
+                                  validate_result['name'],
                                   validate_result['type'])
         except Exception:
             try:
@@ -322,21 +322,10 @@ def ticket_view(request, uid):
     now = datetime.datetime.now()
     if act_end_time < now:  # 表示活动已经结束
         ticket_status = 3
-    seat = tickets[0].seat
-    if activities[0].seat_status == 1:
-        if seat.position_row == -1:
-            ticket_seat = ''
-        else:
-            ticket_seat = tickets[0].seat.seat_section
-        ticket_url = s_reverse_ticket_select_zongti(uid)
-    elif activities[0].seat_status == 2:
-        if seat.position_row == -1:
-            ticket_seat = ''
-        else:
-            row = tickets[0].seat.position_row
-            column = tickets[0].seat.position_column
-            ticket_seat = str(row) + u'行' + str(column) + u'列'
-        ticket_url = s_reverse_ticket_selection(uid)
+
+    ticket_seat = get_seat_string(tickets[0])
+    ticket_url = get_seat_url(tickets[0])
+
     act_photo = '{}/fit/{}'.format(QRCODE_URL, uid)
     href = WEIXIN_OAUTH2_URL
     variables = RequestContext(request, {
@@ -353,6 +342,25 @@ def ticket_view(request, uid):
         'href': href
     })
     return render_to_response('activityticket.html', variables)
+
+
+def get_seat_string(ticket):
+    if ticket.seat.position_row == -1:
+        return ''
+    if ticket.seat.activity.seat_status == 1:
+        return tickets.seat.seat_section
+    elif ticket.seat.activity.seat_status == 2:
+        row = tickets.seat.position_row
+        column = tickets.seat.position_column
+        return (str(row) + u'行' + str(column) + u'列')
+
+
+def get_seat_url(ticket):
+    if seat.activity.seat_status == 1:
+        return s_reverse_ticket_select_zongti(ticket.unique_id)
+    elif seat.activity.seat_status == 2:
+        return s_reverse_ticket_selection(ticket.unique_id)
+
 
 
 def help_view(request):
@@ -456,11 +464,13 @@ def uc_ticket(request, openid):
     if users:
         is_validated = 1
         tickets = select_tickets_unused_by_stu_id(users[0].stu_id)
+        ticket_seat = get_seat_string(tickets[0])
     else:
         is_validated = 0
     return render_to_response('usercenter_ticket.html', {
         'tickets': tickets,
         'isValidated': is_validated,
+        'ticket_seat': ticket_seat,
         'weixin_id': openid})
 
 
