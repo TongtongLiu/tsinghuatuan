@@ -165,7 +165,7 @@
                             $('span#bind_unconfirmed_num').html('');
                        }
                      });
-                    document.URL=location.href;
+                    location.reload(true);
                 });
                 $( '#btn_cancel{{ bind.unique_id }}' ).click( function() {
                      $.post("",
