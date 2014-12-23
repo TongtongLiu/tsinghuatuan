@@ -504,8 +504,7 @@ def uc_2ticket_handler(command, bind_id):
             return {'result': 'Fail'}
         try:
             confirm_binds(binds)
-            return {'result': 'Success',
-                    'bind': binds[0]}
+            return {'result': 'Success'}
         except Exception as e:
             print 'Error occured!!!!!!' + str(e)
             return {'result': 'Error'}
