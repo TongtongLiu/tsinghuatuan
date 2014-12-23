@@ -28,6 +28,13 @@
                         parent.removeChild(child);
                     </script>
                     {% endfor %}
+                    {% for bind in binds_unconfirmed %}
+                    <script>
+                        var parent = document.getElementById("selectActivity");
+                        var child = document.getElementById("opt{{ bind.activity.name }}");
+                        parent.removeChild(child);
+                    </script>
+                    {% endfor %}
                     {% for ticket in tickets %}
                     <script>
                         var parent = document.getElementById("selectActivity");
