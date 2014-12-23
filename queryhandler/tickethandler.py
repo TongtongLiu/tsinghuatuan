@@ -339,21 +339,24 @@ def check_cancel_ticket(msg):
     return handler_check_text_header(msg, ['退票'])
 
 
-from userpage.views import disable_tickets, update_activity_seat_table, update_activity_tickets
+# from userpage.views import disable_tickets, update_activity_seat_table, update_activity_tickets
+#
+#
+# def uc_cancel_ticket(tickets):
+#     disable_tickets(tickets)
+#     ticket = tickets[0]
+#     seat = ticket.seat.split('-')
+#     activity = ticket.activity
+#     if len(seat) > 1:
+#         row = int(seat[0]) - 1
+#         column = int(seat[1]) - 1
+#         seat_table = json.loads(activity.seat_table)
+#         seat_table[row][column] = 1
+#         update_activity_seat_table(activity, json.dumps(json.dumps(seat_table)))
+#     update_activity_tickets(activity, activity.remain_tickets + 1)
 
 
-def uc_cancel_ticket(tickets):
-    disable_tickets(tickets)
-    ticket = tickets[0]
-    seat = ticket.seat.split('-')
-    activity = ticket.activity
-    if len(seat) > 1:
-        row = int(seat[0]) - 1
-        column = int(seat[1]) - 1
-        seat_table = json.loads(activity.seat_table)
-        seat_table[row][column] = 1
-        update_activity_seat_table(activity, json.dumps(json.dumps(seat_table)))
-    update_activity_tickets(activity, activity.remain_tickets + 1)
+from userpage.views import uc_cancel_ticket
 
 
 def response_cancel_ticket(msg):
@@ -387,7 +390,7 @@ def response_cancel_ticket(msg):
 
 #check book event
 def check_book_event(msg):
-    if msg['MsgType'] == 'event' and msg['Event']=='CLICK':
+    if msg['MsgType'] == 'event' and msg['Event'] == 'CLICK':
         cmd_list = msg['EventKey'].split('_')
         if len(cmd_list) == 3:
             if cmd_list[0] == 'TSINGHUA' and cmd_list[1] == 'BOOK' and cmd_list[2].isdigit():
