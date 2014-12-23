@@ -402,11 +402,8 @@ def uc_account(request, openid):
                                   context_instance=RequestContext(request))
 
 
-def uc_cancel_ticket(ticket_id):
-    tickets = select_tickets_by_id(ticket_id)
-    if not tickets.exists() or tickets[0].status != 1:
-        return 'Error'
-    else:
+def uc_cancel_ticket(tickets):
+    try:
         disable_tickets(tickets)
         ticket = tickets[0]
         seat = ticket.seat.split('-')
@@ -419,6 +416,8 @@ def uc_cancel_ticket(ticket_id):
             update_activity_seat_table(activity, json.dumps(json.dumps(seat_table)))
         update_activity_tickets(activity, activity.remain_tickets + 1)
         return 'Success'
+    except IOError:
+        return 'Error'
 
 
 @csrf_exempt
@@ -437,7 +436,11 @@ def uc_ticket(request, openid):
         if not request.POST.get('ticket_id', ''):
             return HttpResponse('Error')
         else:
-            return HttpResponse(uc_cancel_ticket(request.POST['ticket_id']))
+            tickets = select_tickets_by_id(request.POST['ticket_id'])
+            if not tickets.exists() or tickets[0].status != 1:
+                return HttpResponse('Error')
+            else:
+                return HttpResponse(uc_cancel_ticket(tickets))
     tickets = []
     users = select_users_by_openid(openid)
     if users:
