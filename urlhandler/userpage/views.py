@@ -356,9 +356,9 @@ def get_seat_string(ticket):
 
 
 def get_seat_url(ticket):
-    if seat.activity.seat_status == 1:
+    if ticket.seat.activity.seat_status == 1:
         return s_reverse_ticket_select_zongti(ticket.unique_id)
-    elif seat.activity.seat_status == 2:
+    elif ticket.seat.activity.seat_status == 2:
         return s_reverse_ticket_selection(ticket.unique_id)
 
 
