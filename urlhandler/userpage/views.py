@@ -95,53 +95,62 @@ def select_tickets_by_stu_id_and_activity(stu_id, activity):
     return Ticket.objects.filter(stu_id=stu_id, activity=activity, status__gt=0)
 
 
+def confirm_binds(binds):
+    binds.update(status=1)
+
+
+def cancel_binds(binds):
+    delete_binds(binds)
+
+
 def delete_binds(binds):
-    User.objects.filter(stu_id=binds[0].active_stu_id, status=1).update(bind_count=F('bind_count')-1)
-    User.objects.filter(stu_id=binds[0].passive_stu_id, status=1).update(bind_count=F('bind_count')-1)
-    binds.delete()
+    select_users_by_stu_id(binds[0].active_stu_id).update(bind_count=F('bind_count')-1)
+    select_users_by_stu_id(binds[0].passive_stu_id).update(bind_count=F('bind_count')-1)
+    binds.update(status=-1)
 
 
 def delete_binds_of_user(user):
-    binds1 = Bind.objects.filter(active_stu_id=user.stu_id)
+    binds1 = Bind.objects.filter(active_stu_id=user.stu_id, status=1)
     for bind in binds1:
         bind_count = user.bind_count - 1
         user.bind_count = bind_count
         user.save()
-        User.objects.filter(stu_id=bind.passive_stu_id, status=1).update(bind_count=F('bind_count')-1)
-    binds1.delete()
-    binds2 = Bind.objects.filter(passive_stu_id=user.stu_id)
+        select_users_by_stu_id(bind.passive_stu_id).update(bind_count=F('bind_count')-1)
+    Bind.objects.filter(active_stu_id=user.stu_id).update(statue=-1)
+    binds2 = Bind.objects.filter(passive_stu_id=user.stu_id, status=1)
     for bind in binds2:
         bind_count = user.bind_count - 1
         user.bind_count = bind_count
         user.save()
-        User.objects.filter(stu_id=bind.active_stu_id, status=1).update(bind_count=F('bind_count')-1)
-    binds2.delete()
+        select_users_by_stu_id(bind.active_stu_id).update(bind_count=F('bind_count')-1)
+    Bind.objects.filter(passive_stu_id=user.stu_id).update(statue=-1)
 
 
 def insert_bind(activity, active_stu_id, passive_stu_id, unique_id):
     new_bind = Bind.objects.create(activity=activity,
                                    active_stu_id=active_stu_id,
                                    passive_stu_id=passive_stu_id,
-                                   unique_id=unique_id)
+                                   unique_id=unique_id,
+                                   status=0)
     new_bind.save()
-    User.objects.filter(stu_id=active_stu_id, status=1).update(bind_count=F('bind_count')+1)
-    User.objects.filter(stu_id=passive_stu_id, status=1).update(bind_count=F('bind_count')+1)
+    select_users_by_stu_id(active_stu_id).update(bind_count=F('bind_count')+1)
+    select_users_by_stu_id(passive_stu_id).update(bind_count=F('bind_count')+1)
 
 
 def select_binds_by_id(unique_id):
     return Bind.objects.filter(unique_id=unique_id)
 
 
-def select_binds_by_stu_id(stu_id):
-    return Bind.objects.filter(Q(active_stu_id=stu_id) | Q(passive_stu_id=stu_id))
+def select_binds_by_stu_id(stu_id, status):
+    return Bind.objects.filter(Q(active_stu_id=stu_id) | Q(passive_stu_id=stu_id), status=status)
 
 
-def select_binds_by_active_stu_id_and_activity(active_stu_id, activity):
-    return Bind.objects.filter(active_stu_id=active_stu_id, activity=activity)
+def select_binds_by_active_stu_id_and_activity(active_stu_id, activity, status):
+    return Bind.objects.filter(active_stu_id=active_stu_id, activity=activity, status=status)
 
 
-def select_binds_by_passive_stu_id_and_activity(passive_stu_id, activity):
-    return Bind.objects.filter(passive_stu_id=passive_stu_id, activity=activity)
+def select_binds_by_passive_stu_id_and_activity(passive_stu_id, activity, status):
+    return Bind.objects.filter(passive_stu_id=passive_stu_id, activity=activity, status=status)
 
 
 def home(request):
@@ -235,8 +244,8 @@ def uc_validate_post_auth(request):
 STRING_MAX_LEN = 256
 
 
-def details_view(request, activity_id):
-    activities = select_activities_by_id(activity_id)
+def details_view(request, activityid):
+    activities = select_activities_by_id(activityid)
     if not activities.exists():
         raise Http404    # current activity is invalid
     act_name = activities[0].name
@@ -269,7 +278,7 @@ def details_view(request, activity_id):
         act_status = 2  # after book time
     variables = RequestContext(request, {
         'act_name': act_name,
-        ' act_text': act_text,
+        'act_text': act_text,
         'act_photo': act_photo,
         'act_book_start': act_book_start,
         'act_book_end': act_book_end,
@@ -397,6 +406,21 @@ def uc_account(request, openid):
                                   context_instance=RequestContext(request))
 
 
+def uc_cancel_ticket(tickets):
+    disable_tickets(tickets)
+    ticket = tickets[0]
+    seat = ticket.seat.split('-')
+    activity = ticket.activity
+    if len(seat) > 1:
+        row = int(seat[0]) - 1
+        column = int(seat[1]) - 1
+        seat_table = json.loads(activity.seat_table)
+        seat_table[row][column] = 1
+        update_activity_seat_table(activity, json.dumps(json.dumps(seat_table)))
+    update_activity_tickets(activity, activity.remain_tickets + 1)
+    return 'Success'
+
+
 @csrf_exempt
 def uc_ticket(request, openid):
     if request.method == 'POST':
@@ -407,27 +431,17 @@ def uc_ticket(request, openid):
             rtn_json = {'ticketURL': ticket_url, 'seatURL': seat_url}
             return HttpResponse(json.dumps(rtn_json),
                                 content_type='application/json')
+        else:
+            return HttpResponse('Error')
     if request.is_ajax():
         if not request.POST.get('ticket_id', ''):
-            return HttpResponse('logout error')
+            return HttpResponse('Error')
         else:
-            unique_id = request.POST['ticket_id']
-            tickets = select_tickets_by_id(unique_id)
-            if not tickets.exists():
-                return HttpResponse('logout error')
+            tickets = select_tickets_by_id(request.POST['ticket_id'])
+            if not tickets.exists() or tickets[0].status != 1:
+                return HttpResponse('Error')
             else:
-                ticket = tickets[0]
-                disable_tickets(tickets)
-                seat = ticket.seat.split('-')
-                activity = ticket.activity
-                if len(seat) > 1:
-                    row = int(seat[0]) - 1
-                    column = int(seat[1]) - 1
-                    seat_table = json.loads(activity.seat_table)
-                    seat_table[row][column] = 1
-                    update_activity_seat_table(activity, json.dumps(json.dumps(seat_table)))
-                update_activity_tickets(activity, activity.remain_tickets + 1)
-            return HttpResponse('logout error')
+                return HttpResponse(uc_cancel_ticket(tickets))
     tickets = []
     users = select_users_by_openid(openid)
     if users:
@@ -439,6 +453,104 @@ def uc_ticket(request, openid):
         'tickets': tickets,
         'isValidated': is_validated,
         'weixin_id': openid})
+
+
+def uc_2ticket_bind(request):
+    if ((not request.POST) or
+            (not 'openid' in request.POST) or
+            (not 'activity_name' in request.POST) or
+            (not 'student_id' in request.POST)):
+        raise Http404
+    openid = request.POST['openid']
+    users = select_users_by_openid(openid)
+    if not users:
+        raise Http404
+    active_stu_id = users[0].stu_id
+    activities = select_activities_by_name(request.POST['activity_name'])
+    if not activities:
+        raise Http404
+    passive_stu_id = request.POST['student_id']
+    if active_stu_id == passive_stu_id:
+        return HttpResponse('SameStudentID')
+    if not select_users_by_stu_id(passive_stu_id).exists():
+        return HttpResponse('StudentIDError')
+    if select_tickets_by_stu_id_and_activity(passive_stu_id, activities[0]).exists():
+        return HttpResponse('HaveTicket')
+    if (select_binds_by_active_stu_id_and_activity(passive_stu_id, activities[0], 1).exists() or
+            select_binds_by_active_stu_id_and_activity(passive_stu_id, activities[0], 0).exists() or
+            select_binds_by_passive_stu_id_and_activity(passive_stu_id, activities[0], 1).exists() or
+            select_binds_by_passive_stu_id_and_activity(passive_stu_id, activities[0], 0).exists()):
+        return HttpResponse('AlreadyBinded')
+    else:
+        random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+        while select_binds_by_id(random_string).exists():
+            random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+        try:
+            insert_bind(activities[0], active_stu_id, passive_stu_id, random_string)
+        except IOError:
+            return HttpResponse('Error')
+        return HttpResponse(s_reverse_uc_2ticket(openid))
+
+
+def uc_2ticket_handler(command, bind_id):
+    binds = select_binds_by_id(bind_id)
+    if not binds or binds[0].status == -1:
+        return {'result': 'Error'}
+    if command == 'delete':
+        try:
+            delete_binds(binds)
+            return {'result': 'Success',
+                    'activity_name': binds[0].activity.name}
+        except IOError:
+            return {'result': 'Error'}
+    elif command == 'confirm':
+        try:
+            confirm_binds(binds)
+            return {'result': 'Success',
+                    'bind': binds[0]}
+        except ValueError:
+            return {'result': 'Error'}
+    elif command == 'cancel':
+        try:
+            cancel_binds(binds)
+            return {'result': 'Success',
+                    'activity_name': binds[0].activity.name}
+        except ValueError:
+            return {'result': 'Error'}
+    else:
+        return {'result': 'Error'}
+
+
+@csrf_exempt
+def uc_2ticket(request, openid):
+    if request.is_ajax():
+        return HttpResponse(json.dumps(uc_2ticket_handler(request.POST['command'],
+                                                          request.POST['bind_id'])),
+                            content_type='application/json')
+    else:
+        users = select_users_by_openid(openid)
+        if users:
+            is_validated = 1
+            activities_valid = select_activities_valid()
+            tickets = select_tickets_unused_by_stu_id(users[0].stu_id)
+            binds_confirmed = select_binds_by_stu_id(users[0].stu_id, 1)
+            binds_unconfirmed = select_binds_by_stu_id(users[0].stu_id, 0)
+            return render_to_response('usercenter_2ticket.html', {
+                'isValidated': is_validated,
+                'weixin_id': openid,
+                'stu_id': users[0].stu_id,
+                'activity_valid': activities_valid,
+                'tickets': tickets,
+                'binds': binds_confirmed,
+                'binds_unconfirmed': binds_unconfirmed,
+                'binds_unconfirmed_num': len(binds_unconfirmed)
+            }, context_instance=RequestContext(request))
+        else:
+            is_validated = 0
+            return render_to_response('usercenter_2ticket.html', {
+                'isValidated': is_validated,
+                'weixin_id': openid
+            }, context_instance=RequestContext(request))
 
 
 def encode_token(openid):
@@ -454,74 +566,6 @@ def decode_token(token):
     timestamp = int(time.time()) / 100
     stu_id = str(int(token) ^ timestamp)
     return stu_id
-
-
-def uc_2ticket_bind(request):
-    if ((not request.POST) or
-            (not 'openid' in request.POST) or
-            (not 'activity_name' in request.POST) or
-            (not 'token' in request.POST)):
-        raise Http404
-    openid = request.POST['openid']
-    users = select_users_by_openid(openid)
-    if not users:
-        raise Http404
-    active_stu_id = users[0].stu_id
-    activities = select_activities_by_name(request.POST['activity_name'])
-    if not activities:
-        raise Http404
-    passive_stu_id = decode_token(request.POST['token'])
-    if active_stu_id == passive_stu_id:
-        return HttpResponse('SameStudentID')
-    if not select_users_by_stu_id(passive_stu_id).exists():
-        return HttpResponse('TokenError')
-    if select_tickets_by_stu_id_and_activity(passive_stu_id, activities[0]).exists():
-        return HttpResponse('HaveTicket')
-    if (select_binds_by_active_stu_id_and_activity(passive_stu_id, activities[0]).exists() or
-            select_binds_by_passive_stu_id_and_activity(passive_stu_id, activities[0]).exists()):
-        return HttpResponse('AlreadyBinded')
-    else:
-        random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
-        while select_binds_by_id(random_string).exists():
-            random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
-        try:
-            insert_bind(activities[0], active_stu_id, passive_stu_id, random_string)
-        except IOError:
-            return HttpResponse('Error')
-        return HttpResponse(s_reverse_uc_2ticket(openid))
-
-
-@csrf_exempt
-def uc_2ticket(request, openid):
-    if request.is_ajax():
-        try:
-            delete_binds(select_binds_by_id(request.POST['unique_id']))
-            return HttpResponse('Success')
-        except IOError:
-            return HttpResponse('Error')
-    else:
-        users = select_users_by_openid(openid)
-        if users:
-            is_validated = 1
-            binds = select_binds_by_stu_id(users[0].stu_id)
-            tickets = select_tickets_unused_by_stu_id(users[0].stu_id)
-            activity_valid = select_activities_valid()
-            return render_to_response('usercenter_2ticket.html', {
-                'isValidated': is_validated,
-                'weixin_id': openid,
-                'stu_id': users[0].stu_id,
-                'activity_valid': activity_valid,
-                'binds': binds,
-                'tickets': tickets,
-                'binds_info': 123,
-                'binds_info_len': 123
-            }, context_instance=RequestContext(request))
-        else:
-            is_validated = 0
-            return render_to_response('usercenter_2ticket.html', {
-                'isValidated': is_validated,
-                'weixin_id': openid
-            }, context_instance=RequestContext(request))
 
 
 @csrf_exempt

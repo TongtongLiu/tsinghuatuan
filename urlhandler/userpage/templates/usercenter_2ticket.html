@@ -4,6 +4,7 @@
 
 {% block content %}
 {% if isValidated %}
+    <!-- 双人抢票版块 -->
     <div class="panel panel-default">
         <div class="panel-heading">
             <a href="#couple_intro" data-toggle="modal">双人抢票&nbsp;
@@ -37,7 +38,7 @@
                 </div>
                 <div class="input-group" id="studentIDGroup">
                     <span class="input-group-addon">对方学号</span>
-                    <input type="text" class="form-control" id="inputStudentID" placeholder="请输入对方的学号" name="student_id" onblur="checkStudentID();">
+                    <input type="tel" class="form-control" id="inputStudentID" placeholder="请输入对方的学号" name="student_id" onblur="checkStudentID();">
                 </div>
                 <button onclick="ajaxForm();" class="btn btn-default btn-block" id="submitBtn" style="margin-top: 5px">绑定</button>
                 <div class="input-group" id="submitGroup">
@@ -48,21 +49,8 @@
         </div>
     </div>
 
-
-    <script>
-	$(document).ready(function(){
-	  $("a.a_collapse1").click(function(){
-	  	$("a.a_collapse1 span.glyphicon").toggleClass("glyphicon-chevron-down");
-	  	$("a.a_collapse1 span.glyphicon").toggleClass("glyphicon-chevron-up");
-	  });
-      $("a.a_collapse2").click(function(){
-        $("a.a_collapse2 span.glyphicon").toggleClass("glyphicon-chevron-down");
-	  	$("a.a_collapse2 span.glyphicon").toggleClass("glyphicon-chevron-up");
-	  });
-	});
-	</script>
-    <!-- 已绑定双人抢票活动的信息 -->
-    <div class="panel panel-default">
+    <!-- 已绑定双人抢票活动的信息板块 -->
+    <div class="panel panel-default already_bind">
         <div class="panel-heading">
             <a class="a_collapse1" data-toggle="collapse" href="#bind_activity_collapse" style="display: block; width: 100%">
           	已绑定活动<span class="glyphicon glyphicon-chevron-down" style="float: right"></span>
@@ -73,18 +61,22 @@
             <p style="text-align: center; font-weight: bold; margin-top: 5px;">暂无</p>
         {% else %}
             {% for bind in binds %}
+            <!-- 处理解绑按钮 -->
             <script type="text/javascript">
             $( document ).ready( function() {
                 $( '#btn{{ bind.unique_id }}' ).click( function() {
                      $.post("",
                      {
-                        unique_id:"{{ bind.unique_id }}"
+                        command: "delete",
+                        bind_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
-                       $( '#div{{ bind.unique_id }}' ).remove();
-                       if($('.panel .btn-sm').length == 0) {
-                       $('.panel-heading').eq(1).after("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
-                   }
+                        $('#div{{ bind.unique_id }}').remove();//删除绑定信息
+                        var tempStr = "opt" + data.activity_name;
+                        $('#selectActivity').append("<option value=data.activity_name id=tempStr>data.activity_name</option>");//加入可绑定活动
+                        if($('.panel .btn-sm').length == 0) {
+                            $('#bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                        }
                      });
                 });
             });
@@ -133,73 +125,81 @@
         <div class="panel-heading">
             <a class="a_collapse2" data-toggle="collapse" href="#not_bind_activity_collapse" style="display: block; width: 100%">
           	待确认绑定信息&nbsp;
-            {% ifequal binds_info_len 0 %}
-                <span id="binds_info_num" class="badge" style="background-color:#428bca"></span>
+            {% ifequal binds_unconfirmed_num 0 %}
+                <span id="bind_unconfirmed_num" class="badge" style="background-color:#428bca"></span>
             {% else %}
-                <span id="binds_info_num" class="badge" style="background-color:#428bca">{{ binds_info_len }}</span>
+                <span id="bind_unconfirmed_num" class="badge" style="background-color:#428bca">{{ binds_unconfirmed_num }}</span>
             {% endifequal %}<span class="glyphicon glyphicon-chevron-down" style="float: right"></span>
         	</a>
         </div>
         <div id="not_bind_activity_collapse" aria-expanded="false" class="collapse" style="height: 0px;">
-        {% if not binds_info %}
+        {% if not binds_unconfirmed %}
             <p style="text-align: center; font-weight: bold; margin-top: 5px;">暂无</p>
         {% else %}
-            {% for bind in binds_info %}
+            {% for bind in binds_unconfirmed %}
             <script type="text/javascript">
             $( document ).ready( function() {
                 $( '#btn_confirm{{ bind.unique_id }}' ).click( function() {
                      $.post("",
                      {
-                        unique_id:"{{ bind.unique_id }}"
+                        command: "confirm",
+                        bind_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
-                       $( '#div{{ bind.unique_id }}' ).remove();
-                       if($('.panel .btn-sm').length == 0) {
-                       $('.panel-heading').eq(1).after("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                        $('#div{{ bind.unique_id }}').remove();//删除信息
+                        $('#bind_activity_collapse').append('');//增加已绑定活动
+                        if($('.panel .btn-x').length == 0) {
+                        $('#not_bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
                    }
-                       var num = $('span#binds_info_num').html();
+                       var num = $('span#bind_unconfirmed_num').html();
                        num -= 1;
                        if(num != 0) {
-                            $('span#binds_info_num').html(num);
+                            $('span#bind_unconfirmed_num').html(num);
                        }
                        else {
-                            $('span#binds_info_num').html('');
+                            $('span#bind_unconfirmed_num').html('');
                        }
                      });
                 });
                 $( '#btn_cancel{{ bind.unique_id }}' ).click( function() {
                      $.post("",
                      {
-                        unique_id:"{{ bind.unique_id }}"
+                        command: "cancel",
+                        bind_id:"{{ bind.unique_id }}"
                      },
                      function(data, status){
-                       $( '#div{{ bind.unique_id }}' ).remove();
-                       if($('.panel .btn-sm').length == 0) {
-                       $('.panel-heading').eq(1).after("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                        $( '#div{{ bind.unique_id }}' ).remove();
+                        var tempStr = "opt" + data.activity_name;
+                        $('#selectActivity').append("<option value=data.activity_name id=tempStr>data.activity_name</option>");//加入可绑定活动
+                        if($('.panel .btn-x').length == 0) {
+                        $('#not_bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
                    }
-                       var num = $('span#binds_info_num').html();
+                       var num = $('span#bind_unconfirmed_num').html();
                        num -= 1;
                        if(num != 0) {
-                            $('span#binds_info_num').html(num);
+                            $('span#bind_unconfirmed_num').html(num);
                        }
                        else {
-                            $('span#binds_info_num').html('');
+                            $('span#bind_unconfirmed_num').html('');
                        }
                      });
                 });
             });
             </script>
+            <!-- 每一个绑定活动信息 -->
             <div class="panel-body" id="div{{ bind.unique_id }}">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <p>请求绑定方学号：{{ bind.active_stu_id }}</p>
                         <p>请求绑定活动：{{ bind.activity.name }}</p>
                         {% if stu_id == bind.active_stu_id %}
-                            <p>确定后的绑定状态：主动（可抢票）</p>
+                            <p>绑定确定后状态：主动（可抢票）</p>
+                            <button class="btn btn-default btn-x btn-block" data-toggle="modal" data-target="#model{{ bind.unique_id }}">不等了</button>
                         {% else %}
-                            <p>确定后的绑定状态：被动（等待对方抢票）</p>
+                            <p>绑定确定后状态：被动（等待对方抢票）</p>
+                            <button class="btn btn-default btn-x" data-toggle="modal" data-target="#model{{ bind.unique_id }}"style="float: right;margin-left: 5px">残忍拒绝</button>
+                            <button type="submit" class="btn btn-primary" id="btn_confirm{{ bind.unique_id }}" data-dismiss="modal" style="float: right">确认绑定</button>
                         {% endif %}
-                        <button class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#model{{ bind.unique_id }}">处理请求</button>
                     </div>
                 </div>
             </div>
@@ -208,12 +208,15 @@
                <div class="modal-dialog">
                   <div class="modal-content">
                      <div class="modal-body">
-                        处理绑定请求╮(╯▽╰)╭
+                        {% if stu_id == bind.active_stu_id %}
+                            真的真的不等了吗_(:зゝ∠)_
+                        {% else %}
+                            真的真的要拒绝吗_(:зゝ∠)_
+                        {% endif %}
                      </div>
                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="btn_confirm{{ bind.unique_id }}" data-dismiss="modal">确认绑定</button>
-                        <button type="submit" class="btn btn-default" id="btn_cancel{{ bind.unique_id }}" data-dismiss="modal">残忍拒绝
-                        </button>
+                        <button type="submit" class="btn btn-danger" id="btn_cancel{{ bind.unique_id }}" data-dismiss="modal">真的</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">不不不</button>
                      </div>
                   </div>
               </div>
@@ -250,12 +253,21 @@
 {% block js %}
     <script src="{% static 'js/tt_2ticket.js' %}"></script>
     <script>
-    function ajaxForm() {
-        uc_bind2ticket('{{ weixin_id }}');
-    }
-    $(document).ready(function(){
-      $("li.active").toggleClass("active");
-      $("li#nav_2ticket").addClass("active");
-    });
+        function ajaxForm() {
+            uc_bind2ticket('{{ weixin_id }}');
+        }
+        $(document).ready(function(){
+            $("li.active").toggleClass("active");
+            $("li#nav_2ticket").addClass("active");
+            //处理可下拉收缩栏
+            $("a.a_collapse1").click(function(){
+                $("a.a_collapse1 span.glyphicon").toggleClass("glyphicon-chevron-down");
+                $("a.a_collapse1 span.glyphicon").toggleClass("glyphicon-chevron-up");
+            });
+            $("a.a_collapse2").click(function(){
+                $("a.a_collapse2 span.glyphicon").toggleClass("glyphicon-chevron-down");
+                $("a.a_collapse2 span.glyphicon").toggleClass("glyphicon-chevron-up");
+            });
+        });
     </script>
 {% endblock %}

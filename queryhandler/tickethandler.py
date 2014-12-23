@@ -339,6 +339,23 @@ def check_cancel_ticket(msg):
     return handler_check_text_header(msg, ['退票'])
 
 
+from userpage.views import disable_tickets, update_activity_seat_table, update_activity_tickets
+
+
+def uc_cancel_ticket(tickets):
+    disable_tickets(tickets)
+    ticket = tickets[0]
+    seat = ticket.seat.split('-')
+    activity = ticket.activity
+    if len(seat) > 1:
+        row = int(seat[0]) - 1
+        column = int(seat[1]) - 1
+        seat_table = json.loads(activity.seat_table)
+        seat_table[row][column] = 1
+        update_activity_seat_table(activity, json.dumps(json.dumps(seat_table)))
+    update_activity_tickets(activity, activity.remain_tickets + 1)
+
+
 def response_cancel_ticket(msg):
     fromuser = get_msg_from(msg)
     user = get_user(fromuser)
@@ -360,17 +377,7 @@ def response_cancel_ticket(msg):
         if activity.book_end >= now:
             tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status=1)
             if tickets.exists():   # user has already booked the activity
-                ticket = tickets[0]
-                ticket.status = 0
-                ticket.save()
-                seat = ticket.seat.split('-')
-                if len(seat) > 1:
-                    row = int(seat[0]) - 1
-                    column = int(seat[1]) - 1
-                    seat_table = json.loads(activity.seat_table)
-                    seat_table[row][column] = 1
-                    Activity.objects.filter(id=activity.id).update(seat_table=json.dumps(seat_table))
-                Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')+1)
+                uc_cancel_ticket(tickets)
                 return get_reply_text_xml(msg, get_text_success_cancel_ticket())
             else:
                 return get_reply_text_xml(msg, get_text_fail_cancel_ticket())
