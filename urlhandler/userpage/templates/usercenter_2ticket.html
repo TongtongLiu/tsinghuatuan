@@ -84,7 +84,7 @@
                      function(data, status){
                        $( '#div{{ bind.unique_id }}' ).remove();
                        if($('.panel .btn-sm').length == 0) {
-                       $('.panel-heading').eq(1).after("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                       $('#bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
                    }
                      });
                 });
@@ -157,7 +157,7 @@
                      function(data, status){
                        $( '#div{{ bind.unique_id }}' ).remove();
                        if($('.panel .btn-x').length == 0) {
-                       $('.panel-heading').eq(2).after("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                       $('#not_bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
                    }
                        var num = $('span#bind_unconfirmed_num').html();
                        num -= 1;
@@ -178,7 +178,7 @@
                      function(data, status){
                        $( '#div{{ bind.unique_id }}' ).remove();
                        if($('.panel .btn-x').length == 0) {
-                       $('.panel-heading').eq(2).after("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
+                       $('#not_bind_activity_collapse').prepend("<p style='text-align: center; font-weight: bold; margin-top: 5px;'>暂无</p>");
                    }
                        var num = $('span#bind_unconfirmed_num').html();
                        num -= 1;
@@ -202,8 +202,8 @@
                         {% else %}
                             <p>确定后的绑定状态：被动（等待对方抢票）</p>
                         {% endif %}
-                        <button type="submit" class="btn btn-primary" id="btn_confirm{{ bind.unique_id }}" data-dismiss="modal">确认绑定</button>
-                        <button class="btn btn-default btn-x" data-toggle="modal" data-target="#model{{ bind.unique_id }}">残忍拒绝</button>
+                        <button class="btn btn-default btn-x" data-toggle="modal" data-target="#model{{ bind.unique_id }}"style="float: right;margin-right: 5px">残忍拒绝</button>
+                        <button type="submit" class="btn btn-primary" id="btn_confirm{{ bind.unique_id }}" data-dismiss="modal" style="float: right">确认绑定</button>
                     </div>
                 </div>
             </div>
