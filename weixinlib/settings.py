@@ -26,7 +26,7 @@ WEIXIN_USERCENTER_OAUTH2_URL = "https://open.weixin.qq.com/connect/oauth2/author
                                "&redirect_uri=" + WEIXIN_USERCENTER_URL + \
                                "&response_type=code&scope=snsapi_base&state=0#wechat_redirect"
 
-WEIXIN_WALL_URL = "http://wx2.igeek.asia/u/loading"
+WEIXIN_WALL_URL = "http://wx1.igeek.asia/u/loading"
 
 WEIXIN_WALL_OAUTH2_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WEIXIN_APPID + \
                          "&redirect_uri=" + WEIXIN_WALL_URL + \
