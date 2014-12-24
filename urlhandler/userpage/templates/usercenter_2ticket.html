@@ -87,6 +87,8 @@
                          }
                          else if (data.result == "Error") {
                             $('#div{{ bind.unique_id }} .panel').append('<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert">&times;</a><strong>警告！</strong>数据库出现了奇怪的问题，请稍后重试。</div>');
+                         } else if (data.result == "Fail") {
+                             window.location.href = window.location.href;
                          }
                      });
                 });
