@@ -204,6 +204,13 @@ def seat_create(post, activity):
                 seat_dict['is_selected'] = 0
                 seat_dict['activity'] = activity
                 new_seat = Seat.objects.create(**seat_dict)
+    seat_dict['position_row'] = -1
+    seat_dict['position_column'] = -1
+    seat_dict['seat_section'] = ''
+    seat_dict['price'] = -1
+    seat_dict['is_selected'] = -1
+    seat_dict['activity'] = activity
+    new_seat = Seat.objects.create(**seat_dict)
 
 
 def activity_modify(activity):
