@@ -19,7 +19,7 @@ from queryhandler.settings import QRCODE_URL
 from urlhandler.models import User, Activity, Ticket, Bind, Seat
 from userpage.safe_reverse import *
 from weixinlib import http_get
-from weixinlib.settings import WEIXIN_OAUTH2_URL
+from weixinlib.settings import WEIXIN_USERCENTER_OAUTH2_URL
 from weixinlib.weixin_urls import WEIXIN_URLS
 
 
@@ -306,7 +306,7 @@ def ticket_view(request, uid):
     tickets = select_tickets_by_id(uid)
     if not tickets.exists() or tickets[0].status == 0:
         information = u'该票无效'
-        href = WEIXIN_OAUTH2_URL
+        href = WEIXIN_USERCENTER_OAUTH2_URL
         return render_to_response('404.html', {
             'information': information,
             'href': href
@@ -328,7 +328,7 @@ def ticket_view(request, uid):
     else:
         ticket_url = s_reverse_ticket_selection(uid)
     act_photo = '{}/fit/{}'.format(QRCODE_URL, uid)
-    href = WEIXIN_OAUTH2_URL
+    href = WEIXIN_USERCENTER_OAUTH2_URL
     variables = RequestContext(request, {
         'act_id': act_id,
         'act_name': act_name,
@@ -610,7 +610,7 @@ def views_seats_zongti(request, uid):
     ticket = Ticket.objects.filter(unique_id=uid, status=1)
     if not ticket.exists():
         information = "该票无效"
-        href = WEIXIN_OAUTH2_URL
+        href = WEIXIN_USERCENTER_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
     else:
         ticket_id = str(uid)
@@ -624,7 +624,7 @@ def views_seats_zongti(request, uid):
 def select_seats_zongti_post(request):
     if not request.POST:
         information = "出了点莫名其妙的错误"
-        href = WEIXIN_OAUTH2_URL
+        href = WEIXIN_USERCENTER_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
     post = request.POST
     return_json = dict()
@@ -647,7 +647,7 @@ def select_seats_zongti_post(request):
         return HttpResponse(json.dumps(return_json), content_type='application/json')
     except Exception as e:
         information = "出了点莫名其妙的错误"
-        href = WEIXIN_OAUTH2_URL
+        href = WEIXIN_USERCENTER_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
 
 
@@ -704,7 +704,7 @@ def section_select(post):
 def select_seats_xinqing_post(request):
     if not request.POST:
         information = "出了点莫名其妙的错误"
-        href = WEIXIN_OAUTH2_URL
+        href = WEIXIN_USERCENTER_OAUTH2_URL
         return render_to_response('404.html', {'information': information, 'href': href})
     post = request.POST
     return_json = dict()
