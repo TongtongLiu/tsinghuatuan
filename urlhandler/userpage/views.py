@@ -802,8 +802,18 @@ def seats_select(seats_selected, ticket, activity):
         change_seat_status(activity, row_1, column_1, 2)
         return seat
 
+
 def change_seat_status(activity, row, column, status):
     seat_table = json.loads(activity.seat_table)
     seat_table[row-1][column-1] = status
     activity.seat_table = json.dumps(seat_table)
     activity.save()
+
+
+def wechat_wall(request):
+    code = request.GET.get('code')
+    url = WEIXIN_URLS['get_openid'](code)
+    res = http_get(url)
+    rtn_json = json.loads(res)
+    openid = rtn_json['openid']
+    return redirect('http://wx1.igeek.asia/u/wall/' + openid)
