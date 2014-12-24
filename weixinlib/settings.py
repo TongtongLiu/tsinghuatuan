@@ -73,15 +73,15 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
             "name": "服务",
             "sub_button": [
                 {
+                    "type": "view",
+                    "name": "个人中心",
+                    "url": WEIXIN_USERCENTER_OAUTH2_URL
+                },
+                {
                     "type": "click",
                     "name": "活动中心",
                     "key": WEIXIN_EVENT_KEYS['ticket_book_what'],
                     "sub_button": []
-                },
-                {
-                    "type": "view",
-                    "name": "个人中心",
-                    "url": WEIXIN_USERCENTER_OAUTH2_URL
                 },
                 {
                     "type": "view",
@@ -108,7 +108,7 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                 #},
                 {
                     "type": "click",
-                    "name": "帮助",
+                    "name": "我要帮助",
                     "key": WEIXIN_EVENT_KEYS['help'],
                     "sub_button": []
                 }
