@@ -512,9 +512,11 @@ def uc_2ticket_bind(request):
 
 def uc_2ticket_handler(command, bind_id):
     binds = select_binds_by_id(bind_id)
-    if not binds or binds[0].status == -1:
+    if not binds:
         return {'result': 'Error'}
     if command == 'delete':
+        if binds[0].status == -1:
+            return {'result': 'Fail'}
         try:
             delete_binds(binds)
             return {'result': 'Success',
@@ -532,7 +534,7 @@ def uc_2ticket_handler(command, bind_id):
             print 'Error occured!!!!!!' + str(e)
             return {'result': 'Error'}
     elif command == 'cancel':
-        if binds[0].status == 1:
+        if binds[0].status == -1 or binds[0].status == 1:
             return {'result': 'Fail'}
         try:
             cancel_binds(binds)
