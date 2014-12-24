@@ -40,10 +40,14 @@
 			</div>
 			<div class="panel-body">
 				<p>活动地点：{{ ticket.activity.place }}&nbsp;&nbsp;
-				{% if ticket_seat == '' %}
+                {% if ticket.seat.is_selected == -1 %}
 					<a id="seat{{ ticket.unique_id }}">请选座</a>
 				{% else %}
-					座位：{{ ticket_seat }}
+                    {% if ticket.activity.seat_status == 1 %}
+  					    座位：{{ ticket.seat.seat_section }}
+                    {% else %}
+  					    座位：第 {{ ticket.seat.position_row }} 行, 第 {{ ticket.seat.position_column }} 列
+                    {% endif %}
 				{% endif %}
 				</p>
 				<p>活动开始时间：{{ ticket.activity.start_time }}</p>

@@ -80,7 +80,6 @@ def update_activity_tickets(activity, remain_tickets):
 
 
 def disable_tickets(tickets):
-    print tickets[0].status
     tickets.update(status=0)
 
 
@@ -350,8 +349,8 @@ def get_seat_string(ticket):
     if ticket.seat.activity.seat_status == 1:
         return tickets.seat.seat_section
     elif ticket.seat.activity.seat_status == 2:
-        row = tickets.seat.position_row
-        column = tickets.seat.position_column
+        row = ticket.seat.position_row
+        column = ticket.seat.position_column
         return (str(row) + u'行' + str(column) + u'列')
 
 
@@ -427,20 +426,18 @@ def uc_account(request, openid):
 
 
 def uc_cancel_ticket(tickets):
-    disable_tickets(tickets)
     ticket = tickets[0]
     activity = ticket.activity
     seat = ticket.seat
     if not seat.position_row == -1:
-        seat.is_selected == 0
+        seat.is_selected = 0
         seat.save()
         if activity.seat_status == 2:
-            row = seat.position_row - 1
-            column = seat.position_column - 1
-            seat_table = json.loads(activity.seat_table)
-            seat_table[row][column] = 1
-            update_activity_seat_table(activity, json.dumps(json.dumps(seat_table)))
+            row = seat.position_row
+            column = seat.position_column
+            change_seat_status(activity, row, column, 1)
     update_activity_tickets(activity, activity.remain_tickets + 1)
+    disable_tickets(tickets)
     return 'Success'
 
 
@@ -467,13 +464,11 @@ def uc_ticket(request, openid):
     if users:
         is_validated = 1
         tickets = select_tickets_unused_by_stu_id(users[0].stu_id)
-        ticket_seat = get_seat_string(tickets[0])
     else:
         is_validated = 0
     return render_to_response('usercenter_ticket.html', {
         'tickets': tickets,
         'isValidated': is_validated,
-        'ticket_seat': ticket_seat,
         'weixin_id': openid})
 
 
@@ -661,10 +656,8 @@ def select_seats_zongti_post(request):
             return HttpResponse(json.dumps(return_json), content_type='application/json')
         seat = section_select(post)
         if seat == None:
-            print "error"
             return_json['msg'] = 'error'
         else:
-            print "success"
             return_json['msg'] = 'success'
             return_json['next_url'] = s_reverse_ticket_detail(post['ticket_id'])
         return HttpResponse(json.dumps(return_json), content_type='application/json')
@@ -767,12 +760,10 @@ def get_valid_seat(uid):
 
 def seats_select(seats_selected, ticket, activity):
     with transaction.atomic():
-        print seats_selected
         seat_1 = seats_selected[0].split('-')
-        print seat_1
         section_1 = seat_1[0]
-        row_1 = seat_1[1]
-        column_1 = seat_1[2]
+        row_1 = int(seat_1[1])
+        column_1 = int(seat_1[2])
         seat_1_db = Seat.objects.select_for_update().filter(position_row=row_1,
                                                             position_column=column_1,
                                                             seat_section=section_1,
@@ -788,8 +779,8 @@ def seats_select(seats_selected, ticket, activity):
                 return None
             seat_2 = seats_selected[1].split('-')
             section_2 = seat_2[0]
-            row_2 = seat_2[1]
-            column_2 = seat_2[2]
+            row_2 = int(seat_2[1])
+            column_2 = int(seat_2[2])
             seat_2_db = Seat.objects.filter(position_row=row_2,
                                             position_column=column_2,
                                             seat_section=section_2,
@@ -813,6 +804,6 @@ def seats_select(seats_selected, ticket, activity):
 
 def change_seat_status(activity, row, column, status):
     seat_table = json.loads(activity.seat_table)
-    seat_table[row][column] = status
+    seat_table[row-1][column-1] = status
     activity.seat_table = json.dumps(seat_table)
     activity.save()
