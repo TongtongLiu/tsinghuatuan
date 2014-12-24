@@ -116,14 +116,14 @@ def delete_binds_of_user(user):
         user.bind_count = bind_count
         user.save()
         select_users_by_stu_id(bind.passive_stu_id).update(bind_count=F('bind_count')-1)
-    Bind.objects.filter(active_stu_id=user.stu_id).update(statue=-1)
+    Bind.objects.filter(active_stu_id=user.stu_id).update(status=-1)
     binds2 = Bind.objects.filter(passive_stu_id=user.stu_id, status=1)
     for bind in binds2:
         bind_count = user.bind_count - 1
         user.bind_count = bind_count
         user.save()
         select_users_by_stu_id(bind.active_stu_id).update(bind_count=F('bind_count')-1)
-    Bind.objects.filter(passive_stu_id=user.stu_id).update(statue=-1)
+    Bind.objects.filter(passive_stu_id=user.stu_id).update(status=-1)
 
 
 def insert_bind(activity, active_stu_id, passive_stu_id, unique_id):
