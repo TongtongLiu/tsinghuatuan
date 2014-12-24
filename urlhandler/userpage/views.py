@@ -816,4 +816,4 @@ def wechat_wall(request):
     res = http_get(url)
     rtn_json = json.loads(res)
     openid = rtn_json['openid']
-    return redirect('http://wx1.igeek.asia/u/wall/' + openid)
+    return redirect('http://wx1.igeek.asia/u/loading/' + openid)
